@@ -38,7 +38,7 @@ export function InteractiveSandbox() {
         </div>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-2 flex-wrap">
           <span>Interactive</span>
-          <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-rose-300 text-[1.08em]">
+          <span className="font-serif italic font-normal text-flow-vibrant text-[1.08em]">
             Playground
           </span>
           <span className="font-cursive text-cyan-300 text-xl font-normal select-none rotate-1">

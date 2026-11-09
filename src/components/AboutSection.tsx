@@ -73,9 +73,9 @@ export function AboutSection() {
             </div>
           </blockquote>
 
-          {/* Raghav's Handwritten Signature */}
+          {/* Raghav's Handwritten Signature with Lively Chromatic Flow */}
           <div className="pt-2 flex items-center justify-between">
-            <div className="font-cursive text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-indigo-300 -rotate-2 select-none tracking-wide">
+            <div className="font-cursive text-3xl sm:text-4xl text-flow-chromatic -rotate-2 select-none tracking-wide">
               Raghav Goyal
             </div>
             <span className="font-cursive text-slate-400 text-base rotate-1">
