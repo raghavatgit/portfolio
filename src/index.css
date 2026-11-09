@@ -32,6 +32,14 @@
   font-family: 'Caveat', cursive;
 }
 
+.font-signature {
+  font-family: 'Pinyon Script', cursive;
+}
+
+.font-brush {
+  font-family: 'Alex Brush', cursive;
+}
+
 .font-display {
   font-family: 'Syne', sans-serif;
 }
