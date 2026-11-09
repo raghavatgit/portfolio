@@ -34,15 +34,15 @@ export function Hero() {
             <span className="text-slate-300">CS @ South Asian Univ.</span>
           </motion.div>
 
-          {/* Simple, Powerful Headline */}
+          {/* Simple, Powerful Headline with Luxury Italic Serif Accent */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-[52px] font-extrabold tracking-tight text-white leading-[1.1] mb-5"
+            className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-white leading-[1.08] mb-5"
           >
             Building{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-rose-400">
+            <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-indigo-200 to-rose-300 text-[1.12em] tracking-normal pr-1">
               fast, reliable software
             </span>{' '}
             from the ground up.
@@ -53,12 +53,22 @@ export function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-slate-300 leading-relaxed font-light mb-8 max-w-xl"
+            className="text-base sm:text-lg text-slate-300 leading-relaxed font-light mb-6 max-w-xl"
           >
             Hi, I&apos;m <strong className="font-semibold text-white">Raghav Goyal</strong>. I build
             software that runs at full speed, protects privacy, and works even when the internet is
             down — from lightweight desktop tools and offline motion tracking to emergency radios.
           </motion.p>
+
+          {/* Cursive handwritten annotation */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="flex items-center gap-2 mb-3 font-cursive text-cyan-300 text-lg -rotate-1 select-none"
+          >
+            <span>✍️ zero bloat, native speed &amp; crafted with care</span>
+          </motion.div>
 
           {/* 3 Demonstrative Real-World Metric Cards */}
           <motion.div
@@ -165,6 +175,11 @@ export function Hero() {
 
         {/* Right Column: Pure Focus on the Interactive Lego Cube */}
         <div className="lg:col-span-6 flex flex-col items-center justify-center relative">
+          {/* Playful Cursive Mascot Tag */}
+          <div className="absolute -top-4 right-6 z-20 font-cursive text-amber-300 text-lg rotate-2 pointer-events-none select-none drop-shadow flex items-center gap-1">
+            <span>✨ click &amp; drag in 3D</span>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}

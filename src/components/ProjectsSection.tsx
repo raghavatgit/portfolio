@@ -136,8 +136,14 @@ export function ProjectsSection() {
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>REAL PROJECTS &amp; TOOLS</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Featured Work
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-2 flex-wrap">
+            <span>Featured</span>
+            <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-indigo-300 text-[1.08em]">
+              Works &amp; Systems
+            </span>
+            <span className="font-cursive text-amber-300 text-xl font-normal select-none -rotate-2">
+              ~ built for real use
+            </span>
           </h2>
           <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
             Every project here was built to solve a real practical problem — making software faster,

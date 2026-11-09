@@ -110,8 +110,14 @@ export function SkillsSection() {
           <Terminal className="w-3.5 h-3.5 text-cyan-400" />
           <span>TECHNICAL RANGE</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Skills &amp; Tools
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-2 flex-wrap">
+          <span>Skills &amp;</span>
+          <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-200 to-rose-300 text-[1.08em]">
+            Technical Craft
+          </span>
+          <span className="font-cursive text-emerald-300 text-xl font-normal select-none -rotate-1">
+            ~ real capability
+          </span>
         </h2>
         <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
           Technologies I work with daily, organized simply by what they achieve.

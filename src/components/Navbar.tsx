@@ -37,14 +37,14 @@ export function Navbar() {
           href="#"
           className="group flex items-center gap-3 text-sm tracking-tight text-white transition-opacity hover:opacity-90"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-400/40 text-cyan-300 font-mono font-bold text-xs shadow-[0_0_15px_rgba(0,240,255,0.15)] group-hover:border-cyan-300 transition-all">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-400/40 text-cyan-300 font-serif font-bold text-sm shadow-[0_0_15px_rgba(0,240,255,0.15)] group-hover:border-cyan-300 transition-all">
             RG
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold text-slate-100 text-sm tracking-tight leading-none">
+            <span className="font-bold text-slate-100 text-sm tracking-tight leading-none">
               Raghav Goyal
             </span>
-            <span className="text-[10px] font-mono text-cyan-400/90 tracking-wider uppercase mt-1">
+            <span className="text-xs font-cursive text-cyan-300/90 tracking-wide mt-0.5">
               Software Engineer
             </span>
           </div>

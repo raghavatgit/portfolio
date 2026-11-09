@@ -58,12 +58,12 @@ export function AboutSection() {
             </div>
           </div>
 
-          {/* Socrates Philosophical Quote Card */}
-          <blockquote className="p-5 rounded-2xl bg-gradient-to-r from-cyan-500/[0.08] to-transparent border-l-3 border-cyan-400 text-sm text-slate-300">
-            <div className="flex items-start gap-3">
-              <Quote className="w-5 h-5 text-cyan-400/80 shrink-0 mt-0.5" />
+          {/* Socrates Philosophical Quote Card with Luxury Italic Serif */}
+          <blockquote className="p-6 rounded-2xl bg-gradient-to-r from-cyan-500/[0.08] to-transparent border-l-3 border-cyan-400 text-slate-200">
+            <div className="flex items-start gap-3.5">
+              <Quote className="w-5 h-5 text-cyan-400 shrink-0 mt-1" />
               <div>
-                <p className="italic text-slate-100 font-medium mb-1">
+                <p className="font-serif italic text-2xl sm:text-3xl text-white font-normal leading-snug mb-2">
                   &ldquo;The unexamined life is not worth living.&rdquo;
                 </p>
                 <footer className="text-xs font-mono text-cyan-300">
@@ -72,6 +72,16 @@ export function AboutSection() {
               </div>
             </div>
           </blockquote>
+
+          {/* Raghav's Handwritten Signature */}
+          <div className="pt-2 flex items-center justify-between">
+            <div className="font-cursive text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-indigo-300 -rotate-2 select-none tracking-wide">
+              Raghav Goyal
+            </div>
+            <span className="font-cursive text-slate-400 text-base rotate-1">
+              ~ software with soul
+            </span>
+          </div>
         </div>
 
         {/* Right Column: Pictures & Visual Collage */}

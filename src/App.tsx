@@ -9,6 +9,7 @@ import { SkillsSection } from '@/components/SkillsSection'
 import { AboutSection } from '@/components/AboutSection'
 import { ContactSection } from '@/components/ContactSection'
 import { Footer } from '@/components/Footer'
+import { MascotCompanion } from '@/components/MascotCompanion'
 
 export function App() {
   return (
@@ -36,6 +37,9 @@ export function App() {
 
         {/* Footer */}
         <Footer />
+
+        {/* Persistent Floating 3D Lego Mascot Companion */}
+        <MascotCompanion />
       </div>
     </SmoothScroll>
   )
