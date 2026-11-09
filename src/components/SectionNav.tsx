@@ -3,11 +3,11 @@ import { motion } from 'framer-motion'
 import { Code2, Play, Layers, User, Send } from 'lucide-react'
 
 const SECTIONS = [
-  { id: 'projects', label: 'Systems & Work', icon: Code2 },
-  { id: 'sandbox', label: 'Interactive Demos', icon: Play },
-  { id: 'stack', label: 'Tech Stack', icon: Layers },
-  { id: 'about', label: 'About & Ethos', icon: User },
-  { id: 'contact', label: 'Connect', icon: Send },
+  { id: 'projects', label: 'Projects', icon: Code2 },
+  { id: 'sandbox', label: 'Playground', icon: Play },
+  { id: 'stack', label: 'Skills & Tools', icon: Layers },
+  { id: 'about', label: 'About Me', icon: User },
+  { id: 'contact', label: 'Contact', icon: Send },
 ]
 
 export function SectionNav() {

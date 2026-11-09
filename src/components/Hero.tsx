@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown, Copy, Check, ExternalLink, Shield, Cpu, Activity, Box } from 'lucide-react'
+import { ArrowDown, Copy, Check, ExternalLink, Shield, Cpu, Radio, Sparkles } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, DiscordIcon } from '@/components/icons/SocialIcons'
-import { InteractiveCube } from './InteractiveCube'
+import { LegoCube } from './LegoCube'
 
 export function Hero() {
   const [discordCopied, setDiscordCopied] = useState(false)
@@ -14,9 +14,9 @@ export function Hero() {
   }
 
   return (
-    <section className="relative min-h-[94vh] flex items-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-        {/* Left Column: Demonstrative Title & Value Proposition */}
+    <section className="relative min-h-[92vh] flex items-center pt-24 pb-16 px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        {/* Left Column: Clear, Human, High-Impact Introduction */}
         <div className="lg:col-span-6 flex flex-col items-start z-10">
           {/* Institutional / Academic Credentials Badge */}
           <motion.div
@@ -29,77 +29,76 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
             </span>
-            <span className="font-semibold tracking-wide">SYSTEMS &amp; DISTRIBUTED PLATFORMS</span>
+            <span className="font-semibold tracking-wide">SOFTWARE ENGINEER</span>
             <span className="text-white/20">|</span>
             <span className="text-slate-300">CS @ South Asian Univ.</span>
           </motion.div>
 
-          {/* Demonstrative Title */}
+          {/* Simple, Powerful Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-white leading-[1.08] mb-6"
+            className="text-4xl sm:text-5xl lg:text-[52px] font-extrabold tracking-tight text-white leading-[1.1] mb-5"
           >
-            Architecting{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">
-              low-level systems
+            Building{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-rose-400">
+              fast, reliable software
             </span>{' '}
-            &amp; high-performance runtimes.
+            from the ground up.
           </motion.h1>
 
-          {/* Concise, Professional Narrative */}
+          {/* Natural, Simple, Professional Narrative */}
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-base sm:text-lg text-slate-300 leading-relaxed font-light mb-8 max-w-xl"
           >
-            I am <strong className="font-semibold text-white">Raghav Goyal</strong>, a software
-            engineer focused on low-level Windows systems in Rust, native creative automation
-            bridges, and real-time distributed hardware networks. Delivering resilient software
-            engineered without overhead.
+            Hi, I&apos;m <strong className="font-semibold text-white">Raghav Goyal</strong>. I build
+            software that runs at full speed, protects privacy, and works even when the internet is
+            down — from lightweight desktop tools and offline motion tracking to emergency radios.
           </motion.p>
 
-          {/* Demonstrative Telemetry Cards */}
+          {/* 3 Demonstrative Real-World Metric Cards */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
             className="w-full grid grid-cols-3 gap-2.5 mb-8"
           >
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-              <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-mono mb-1">
+            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-rose-400 text-xs font-mono mb-1 font-semibold">
                 <Shield className="w-3.5 h-3.5" />
-                <span>3.1 MB</span>
+                <span>3 MB App</span>
               </div>
               <span className="text-[11px] text-slate-400 leading-tight block">
-                Portable Rust binary with zero drivers
+                Single file download with zero extra drivers
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-              <div className="flex items-center gap-1.5 text-indigo-400 text-xs font-mono mb-1">
+            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-mono mb-1 font-semibold">
                 <Cpu className="w-3.5 h-3.5" />
-                <span>Sub-ms</span>
+                <span>Instant</span>
               </div>
               <span className="text-[11px] text-slate-400 leading-tight block">
-                Direct DWM compositor hook latency
+                Hides windows from screen shares in under 1ms
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-              <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-mono mb-1">
-                <Activity className="w-3.5 h-3.5" />
-                <span>Ad-Hoc</span>
+            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-amber-400 text-xs font-mono mb-1 font-semibold">
+                <Radio className="w-3.5 h-3.5" />
+                <span>Offline</span>
               </div>
               <span className="text-[11px] text-slate-400 leading-tight block">
-                LoRa mesh packets with zero web reliance
+                Sends SOS alerts without cell towers or web
               </span>
             </div>
           </motion.div>
 
-          {/* Action CTAs */}
+          {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,9 +107,9 @@ export function Hero() {
           >
             <a
               href="#projects"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all shadow-lg shadow-cyan-500/25"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all shadow-lg shadow-cyan-500/25"
             >
-              <span>Review Architectures</span>
+              <span>Explore Projects</span>
               <ArrowDown className="w-3.5 h-3.5" />
             </a>
 
@@ -164,34 +163,29 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Right Column: Demonstrative 3D Interactive Cube */}
+        {/* Right Column: Vibrant, Minimalistic, Interactive Lego Cube */}
         <div className="lg:col-span-6 flex flex-col items-center justify-center relative">
-          {/* Subtle background circular pulse behind cube */}
-          <div className="absolute w-72 h-72 rounded-full bg-cyan-500/10 blur-[80px] pointer-events-none" />
-
-          {/* 3D Cube Card Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="w-full relative rounded-3xl bg-[#090c18]/80 border border-white/[0.1] backdrop-blur-2xl shadow-2xl shadow-black/80 p-2 sm:p-4 overflow-hidden"
+            className="w-full relative rounded-3xl bg-[#090d18]/85 border border-white/[0.1] backdrop-blur-2xl shadow-2xl shadow-black/80 p-3 sm:p-5 overflow-hidden"
           >
-            {/* Top HUD Bar */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-white/[0.06] text-xs font-mono text-slate-400">
+            {/* Top Bar for Lego Canvas */}
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06] text-xs font-mono text-slate-400 mb-2">
               <div className="flex items-center gap-2">
-                <Box className="w-4 h-4 text-cyan-400" />
-                <span className="text-slate-200 font-semibold tracking-wider uppercase text-[11px]">
-                  Spatial Systems Matrix
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-slate-200 font-semibold tracking-wide text-[11px]">
+                  Interactive Lego Matrix
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[10px]">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-emerald-400">WebGL 60FPS</span>
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                <span>Click any block to inspect</span>
               </div>
             </div>
 
-            {/* 3D WebGL Interactive Cube */}
-            <InteractiveCube />
+            {/* The 3D Tactile Lego Cube */}
+            <LegoCube />
           </motion.div>
         </div>
       </div>

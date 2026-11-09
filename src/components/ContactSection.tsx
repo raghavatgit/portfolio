@@ -24,14 +24,14 @@ export function ContactSection() {
           {/* Left Text */}
           <div className="lg:col-span-5 space-y-4">
             <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase block">
-              Direct Communication
+              GET IN TOUCH
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-              Initiate Contact
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Let&apos;s Connect
             </h2>
             <p className="text-sm text-slate-300 font-light leading-relaxed">
-              Available for systems engineering engagements, software development roles, and research
-              collaborations. Direct inquiries and technical discussions are welcome.
+              Whether you want to collaborate on a project, discuss software engineering roles, or
+              just talk tech — feel free to drop me an email or message me on Discord.
             </p>
 
             <div className="pt-4 flex flex-col gap-2.5">

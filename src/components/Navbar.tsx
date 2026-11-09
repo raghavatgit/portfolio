@@ -4,10 +4,10 @@ import { Menu, X, ArrowUpRight, Terminal } from 'lucide-react'
 import { GithubIcon } from '@/components/icons/SocialIcons'
 
 const NAV_LINKS = [
-  { label: 'Systems & Work', href: '#projects' },
-  { label: 'Interactive Demos', href: '#sandbox' },
-  { label: 'Technical Range', href: '#stack' },
-  { label: 'About', href: '#about' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Playground', href: '#sandbox' },
+  { label: 'Skills & Tools', href: '#stack' },
+  { label: 'About Me', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -44,8 +44,8 @@ export function Navbar() {
             <span className="font-semibold text-slate-100 text-sm tracking-tight leading-none">
               Raghav Goyal
             </span>
-            <span className="text-[10px] font-mono text-cyan-400/80 tracking-wider uppercase mt-1">
-              Systems &amp; Software
+            <span className="text-[10px] font-mono text-cyan-400/90 tracking-wider uppercase mt-1">
+              Software Engineer
             </span>
           </div>
         </a>
