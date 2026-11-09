@@ -2,6 +2,17 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Shield, Radio, Sparkles, CheckCircle2, Compass, Layers, Music, Eye } from 'lucide-react'
 import { GithubIcon } from '@/components/icons/SocialIcons'
+import { useMascot } from '@/context/MascotContext'
+
+const PROJECT_BRICK_COLORS: Record<string, string> = {
+  streamshield: '#FF4757',
+  sidereal: '#00F0FF',
+  navdrishti: '#00E676',
+  brandnest: '#EC4899',
+  'aegis-raksha': '#FFA502',
+  'new-atlas': '#8B5CF6',
+  'vencord-ytm-player': '#38BDF8',
+}
 
 interface Project {
   id: string
@@ -124,6 +135,7 @@ const PROJECTS: Project[] = [
 
 export function ProjectsSection() {
   const [filter, setFilter] = useState<'all' | 'systems' | 'creative' | 'iot'>('all')
+  const { setHoveredProject } = useMascot()
 
   const filteredProjects = PROJECTS.filter((p) => filter === 'all' || p.category === filter)
 
@@ -186,6 +198,8 @@ export function ProjectsSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.35 }}
+              onMouseEnter={() => setHoveredProject(project.id)}
+              onMouseLeave={() => setHoveredProject(null)}
               className="group relative flex flex-col justify-between rounded-3xl bg-[#090d18]/85 border border-white/[0.09] hover:border-cyan-400/40 p-5 sm:p-7 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/80 overflow-hidden"
             >
               {/* Optional Real Project Image Showcase */}
@@ -234,11 +248,20 @@ export function ProjectsSection() {
                 </div>
               )}
 
-              {/* Title & Tagline */}
+              {/* Title & Tagline with Matching Mascot Brick Tag */}
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors tracking-tight mb-1">
-                  {project.title}
-                </h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <div
+                    className="w-3.5 h-3.5 rounded-[4px] shrink-0 flex items-center justify-center relative shadow-sm border border-white/20 transition-transform group-hover:scale-125"
+                    style={{ backgroundColor: PROJECT_BRICK_COLORS[project.id] || '#00F0FF' }}
+                    title="Mascot Lego Brick Color"
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/80" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors tracking-tight">
+                    {project.title}
+                  </h3>
+                </div>
                 <p className="text-xs font-mono text-cyan-400 mb-4 font-normal">
                   {project.tagline}
                 </p>

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Code2, Play, Layers, User, Send } from 'lucide-react'
+import { useMascot, type SectionId } from '@/context/MascotContext'
 
 const SECTIONS = [
   { id: 'projects', label: 'Projects', icon: Code2 },
@@ -11,14 +12,14 @@ const SECTIONS = [
 ]
 
 export function SectionNav() {
-  const [activeSection, setActiveSection] = useState('projects')
+  const { activeSection, setActiveSection } = useMascot()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id)
+            setActiveSection(entry.target.id as SectionId)
           }
         })
       },
@@ -34,7 +35,7 @@ export function SectionNav() {
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [setActiveSection])
 
   return (
     <div className="sticky top-20 z-40 w-full flex justify-center px-4 py-2 pointer-events-none mb-12">
@@ -48,7 +49,7 @@ export function SectionNav() {
             <a
               key={id}
               href={`#${id}`}
-              onClick={() => setActiveSection(id)}
+              onClick={() => setActiveSection(id as SectionId)}
               className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
                 isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'
               }`}

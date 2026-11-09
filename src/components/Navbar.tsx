@@ -32,20 +32,32 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
-        {/* Brand / Logo */}
+        {/* Brand / Logo with Tactile Isometric Lego Monogram */}
         <a
           href="#"
-          className="group flex items-center gap-3 text-sm tracking-tight text-white transition-opacity hover:opacity-90"
+          className="group flex items-center gap-3.5 text-sm tracking-tight text-white transition-opacity hover:opacity-95"
+          title="Raghav Goyal — Software Engineer"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-400/40 text-cyan-300 font-serif font-bold text-sm shadow-[0_0_15px_rgba(0,240,255,0.15)] group-hover:border-cyan-300 transition-all">
-            RG
+          {/* Tactile 3D Lego Monogram with Physical Studs */}
+          <div className="relative flex flex-col items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
+            {/* 2 Top Studs */}
+            <div className="flex gap-1.5 -mb-1 z-10">
+              <div className="w-2.5 h-1.5 rounded-full bg-cyan-300 border border-cyan-200 shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+              <div className="w-2.5 h-1.5 rounded-full bg-indigo-300 border border-indigo-200 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
+            </div>
+
+            {/* Brick Body */}
+            <div className="flex h-8 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500/30 via-indigo-600/30 to-purple-600/30 border border-cyan-400/50 text-cyan-200 font-serif font-bold text-sm shadow-[0_0_20px_rgba(0,240,255,0.25)] group-hover:border-cyan-300 transition-all backdrop-blur-md">
+              RG
+            </div>
           </div>
+
           <div className="flex flex-col">
             <span className="font-bold text-slate-100 text-sm tracking-tight leading-none">
               Raghav Goyal
             </span>
             <span className="text-xs font-cursive text-cyan-300/90 tracking-wide mt-0.5">
-              Software Engineer
+              Software Engineer ~
             </span>
           </div>
         </a>
