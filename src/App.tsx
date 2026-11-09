@@ -2,7 +2,7 @@ import { SmoothScroll } from '@/components/providers/SmoothScroll'
 import { FlowingBackground } from '@/components/FlowingBackground'
 import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
-import { SectionNav } from '@/components/SectionNav'
+import { RightNavDock } from '@/components/RightNavDock'
 import { ProjectsSection } from '@/components/ProjectsSection'
 import { InteractiveSandbox } from '@/components/InteractiveSandbox'
 import { SkillsSection } from '@/components/SkillsSection'
@@ -26,10 +26,12 @@ export function App() {
           {/* Top Professional Navbar */}
           <Navbar />
 
+          {/* Right Border Vertical Navigation Dock */}
+          <RightNavDock />
+
           {/* Main Content Flow */}
           <main className="relative z-10">
             <Hero />
-            <SectionNav />
             <ProjectsSection />
             <InteractiveSandbox />
             <SkillsSection />
