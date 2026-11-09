@@ -1,116 +1,180 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Layers, CheckCircle2 } from 'lucide-react'
+import {
+  Layers,
+  Sparkles,
+  RotateCw,
+  Activity,
+  Volume2,
+  VolumeX,
+  Compass,
+} from 'lucide-react'
 
-export interface LegoModule {
-  id: string
-  name: string
-  category: string
-  color: string
-  desc: string
-  feature: string
-  iconName?: string
+// Procedural Audio Synthesizer for tactile feedback
+class SoundFX {
+  private ctx: AudioContext | null = null
+  public enabled = true
+
+  private init() {
+    if (!this.ctx && typeof window !== 'undefined') {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      if (AudioCtx) {
+        this.ctx = new AudioCtx()
+      }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume()
+    }
+  }
+
+  playTick() {
+    if (!this.enabled) return
+    try {
+      this.init()
+      if (!this.ctx) return
+      const osc = this.ctx.createOscillator()
+      const gain = this.ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(1800, this.ctx.currentTime)
+      osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.02)
+      gain.gain.setValueAtTime(0.06, this.ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.02)
+      osc.connect(gain)
+      gain.connect(this.ctx.destination)
+      osc.start()
+      osc.stop(this.ctx.currentTime + 0.02)
+    } catch {
+      // AudioContext unavailable
+    }
+  }
+
+  playPop(noteIndex = 0) {
+    if (!this.enabled) return
+    try {
+      this.init()
+      if (!this.ctx) return
+      // Pentatonic scale frequencies: C5, D5, E5, G5, A5, C6, D6, E6
+      const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51]
+      const freq = notes[noteIndex % notes.length]
+
+      const osc = this.ctx.createOscillator()
+      const gain = this.ctx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
+
+      gain.gain.setValueAtTime(0.14, this.ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35)
+
+      osc.connect(gain)
+      gain.connect(this.ctx.destination)
+      osc.start()
+      osc.stop(this.ctx.currentTime + 0.35)
+    } catch {
+      // AudioContext unavailable
+    }
+  }
+
+  playSnap() {
+    if (!this.enabled) return
+    try {
+      this.init()
+      if (!this.ctx) return
+      const osc = this.ctx.createOscillator()
+      const gain = this.ctx.createGain()
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(1200, this.ctx.currentTime)
+      osc.frequency.exponentialRampToValueAtTime(160, this.ctx.currentTime + 0.05)
+      gain.gain.setValueAtTime(0.1, this.ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05)
+      osc.connect(gain)
+      gain.connect(this.ctx.destination)
+      osc.start()
+      osc.stop(this.ctx.currentTime + 0.05)
+    } catch {
+      // AudioContext unavailable
+    }
+  }
 }
 
-export const LEGO_MODULES: LegoModule[] = [
+const sfx = new SoundFX()
+
+// Vibrant, expertly graded color themes
+const PALETTES = [
   {
-    id: 'privacy',
-    name: 'Screen Privacy',
-    category: 'StreamShield',
-    color: '#FF4757', // Vibrant Coral
-    desc: 'Hides your private chats and passwords from screen shares on Discord or Zoom.',
-    feature: 'Runs in background · Zero lag · 3 MB',
+    name: 'Vibrant Chroma',
+    colors: [
+      '#FF3366', // Hot Coral / Neon Pink
+      '#0066FF', // Cobalt Azure
+      '#00F0FF', // Electric Cyan
+      '#00E676', // Hyper Emerald
+      '#FFB800', // Warm Gold
+      '#8B5CF6', // Ultra Violet
+      '#FF4757', // Flame Red
+      '#38BDF8', // Glacier Blue
+    ],
+    coreColor: '#00F0FF',
   },
   {
-    id: 'systems',
-    name: 'Fast Windows Tools',
-    category: 'Rust & C++',
-    color: '#0066FF', // Electric Cobalt
-    desc: 'Lightweight desktop programs built in Rust that start instantly without bloat.',
-    feature: 'Uses under 15 MB RAM · No installer needed',
+    name: 'Cyber Stealth',
+    colors: [
+      '#1E2235', // Midnight Slate
+      '#00F5D4', // Mint Cyan
+      '#7B2CBF', // Deep Royal Violet
+      '#F72585', // Neon Magenta
+      '#4CC9F0', // Sky Neon
+      '#242B42', // Obsidian Carbon
+      '#FFB703', // Electric Amber
+      '#4361EE', // Hyper Indigo
+    ],
+    coreColor: '#F72585',
   },
   {
-    id: 'navigation',
-    name: 'Offline Navigation',
-    category: 'NavDrishti',
-    color: '#00E676', // Hyper Emerald
-    desc: 'Tracks where you walk inside subways and tunnels where satellite GPS cannot reach.',
-    feature: 'Uses phone motion sensors · 100% offline',
-  },
-  {
-    id: 'radio',
-    name: 'Emergency Radios',
-    category: 'Aegis Mesh',
-    color: '#FFA502', // Warm Amber
-    desc: 'Pocket radio devices that send SOS alerts and messages when cell towers go down.',
-    feature: 'LoRa radio mesh · 10+ km range · Zero internet',
-  },
-  {
-    id: 'creative',
-    name: 'Video Workflow Bridge',
-    category: 'PerpEdit',
-    color: '#8B5CF6', // Vivid Violet
-    desc: 'One-click tool connecting Adobe After Effects and DaVinci Resolve without rebuilding animations.',
-    feature: 'Saves 3+ hours per project · Exact keyframes',
-  },
-  {
-    id: 'space',
-    name: '3D Space Simulator',
-    category: 'Sidereal',
-    color: '#00F0FF', // Electric Cyan
-    desc: 'Interactive 3D solar system flight simulation driven by real gravitational orbital math.',
-    feature: 'Real-time WebGL · 60 FPS flight physics',
-  },
-  {
-    id: 'media',
-    name: 'Agency Showcases',
-    category: 'BrandNest',
-    color: '#EC4899', // Hot Pink
-    desc: 'High-speed video presentation websites tailored for creative agencies and artists.',
-    feature: 'Instant video buffering · Custom layouts',
-  },
-  {
-    id: 'audio',
-    name: 'Discord Music Player',
-    category: 'Vencord Tool',
-    color: '#38BDF8', // Glacier Blue
-    desc: 'Minimal mini-player inside Discord to control YouTube Music without switching windows.',
-    feature: 'Album art display · One-click hotkeys',
+    name: 'Candy Pop',
+    colors: [
+      '#FF6B6B', // Watermelon
+      '#4ECDC4', // Seafoam
+      '#FFE66D', // Lemon
+      '#9B5DE5', // Lavender
+      '#F15BB5', // Bubblegum
+      '#00BBF9', // Sky Pop
+      '#00F5D4', // Spearmint
+      '#FEE440', // Sunshine
+    ],
+    coreColor: '#FFE66D',
   },
 ]
 
-// 3 Color palettes
-const PALETTES = [
-  {
-    name: 'Vibrant Neo',
-    colors: ['#FF4757', '#0066FF', '#00E676', '#FFA502', '#8B5CF6', '#00F0FF', '#EC4899', '#38BDF8'],
-  },
-  {
-    name: 'Solar Warmth',
-    colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#AF52DE', '#5856D6', '#FF2D55', '#007AFF'],
-  },
-  {
-    name: 'Cyber Minimal',
-    colors: ['#00F5D4', '#7B2CBF', '#F72585', '#4CC9F0', '#3A0CA3', '#7209B7', '#4361EE', '#4895EF'],
-  },
-]
+type CubeMode = 'assembled' | 'exploded' | 'wave'
 
 export function LegoCube() {
   const mountRef = useRef<HTMLDivElement>(null)
-  const [selectedModule, setSelectedModule] = useState<LegoModule>(LEGO_MODULES[0])
-  const [isExploded, setIsExploded] = useState(false)
-  const [paletteIndex, setPaletteIndex] = useState(0)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  // References for animation state
-  const explodedRef = useRef(false)
-  explodedRef.current = isExploded
+  // Interaction State
+  const [cubeMode, setCubeMode] = useState<CubeMode>('assembled')
+  const [paletteIdx, setPaletteIdx] = useState(0)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [activeBrickIdx, setActiveBrickIdx] = useState<number | null>(null)
 
-  const currentColorsRef = useRef(PALETTES[0].colors)
-  currentColorsRef.current = PALETTES[paletteIndex].colors
+  // Mutable refs for RAF loop
+  const modeRef = useRef<CubeMode>('assembled')
+  modeRef.current = cubeMode
 
-  const brickMeshesRef = useRef<THREE.Group[]>([])
+  const colorsRef = useRef(PALETTES[0].colors)
+  colorsRef.current = PALETTES[paletteIdx].colors
+
+  const topLayerRotRef = useRef(0)
+  const targetTopLayerRotRef = useRef(0)
+
+  const brickGroupsRef = useRef<THREE.Group[]>([])
+  const coreMeshRef = useRef<THREE.Mesh | null>(null)
+  const coreParticlesRef = useRef<THREE.Points | null>(null)
+  const connectingLinesRef = useRef<THREE.LineSegments | null>(null)
+
+  useEffect(() => {
+    sfx.enabled = soundEnabled
+  }, [soundEnabled])
 
   useEffect(() => {
     const container = mountRef.current
@@ -119,137 +183,224 @@ export function LegoCube() {
     const width = container.clientWidth
     const height = container.clientHeight
 
-    // Scene
+    // Scene & Camera
     const scene = new THREE.Scene()
-
-    // Camera (Isometric angle)
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100)
-    camera.position.set(4.2, 3.4, 4.2)
+    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100)
+    camera.position.set(4.5, 3.6, 4.5)
     camera.lookAt(0, 0, 0)
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
+    // WebGL Renderer
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    })
     renderer.setSize(width, height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.2
+    renderer.toneMappingExposure = 1.3
     container.appendChild(renderer.domElement)
 
-    // Main Group containing all Lego bricks
-    const legoCluster = new THREE.Group()
-    scene.add(legoCluster)
+    // Master Group
+    const masterGroup = new THREE.Group()
+    scene.add(masterGroup)
 
-    // Lighting (Tactile studio lighting that brings out Lego specular highlights)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4)
+    // Separate group for top layer to enable Rubik layer twisting
+    const topLayerGroup = new THREE.Group()
+    const bottomLayerGroup = new THREE.Group()
+    masterGroup.add(topLayerGroup)
+    masterGroup.add(bottomLayerGroup)
+
+    // Lighting (Tactile studio environment with clearcoat reflections)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5)
     scene.add(ambientLight)
 
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.8)
-    mainLight.position.set(5, 8, 6)
-    mainLight.castShadow = true
-    mainLight.shadow.mapSize.width = 1024
-    mainLight.shadow.mapSize.height = 1024
-    scene.add(mainLight)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.0)
+    keyLight.position.set(6, 10, 7)
+    keyLight.castShadow = true
+    keyLight.shadow.mapSize.width = 1024
+    keyLight.shadow.mapSize.height = 1024
+    keyLight.shadow.bias = -0.0001
+    scene.add(keyLight)
 
-    const fillLight = new THREE.DirectionalLight(0x90e0ef, 1.2)
-    fillLight.position.set(-5, -2, -4)
+    const fillLight = new THREE.DirectionalLight(0x70d6ff, 1.4)
+    fillLight.position.set(-6, -2, -5)
     scene.add(fillLight)
 
-    const topRimLight = new THREE.PointLight(0xffffff, 2, 12)
-    topRimLight.position.set(0, 5, 0)
-    scene.add(topRimLight)
+    const rimLight = new THREE.PointLight(0xffffff, 2.5, 15)
+    rimLight.position.set(0, 6, 0)
+    scene.add(rimLight)
 
-    // Helper: Create a single Lego brick with 4 cylindrical studs on top
+    // Central Glowing Quantum Core (Revealed when exploded)
+    const coreGeo = new THREE.IcosahedronGeometry(0.38, 2)
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(PALETTES[0].coreColor),
+      emissive: new THREE.Color(PALETTES[0].coreColor),
+      emissiveIntensity: 0.8,
+      roughness: 0.1,
+      metalness: 0.1,
+      clearcoat: 1.0,
+      transparent: true,
+      opacity: 0.9,
+    })
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat)
+    masterGroup.add(coreMesh)
+    coreMeshRef.current = coreMesh
+
+    // Core Wireframe Halo
+    const coreWireGeo = new THREE.IcosahedronGeometry(0.44, 1)
+    const coreWireMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4,
+    })
+    const coreWire = new THREE.Mesh(coreWireGeo, coreWireMat)
+    coreMesh.add(coreWire)
+
+    // Core Particle Aura
+    const particleCount = 120
+    const particleGeo = new THREE.BufferGeometry()
+    const particlePositions = new Float32Array(particleCount * 3)
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      const radius = 0.5 + Math.random() * 0.9
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.acos(Math.random() * 2 - 1)
+      particlePositions[i] = radius * Math.sin(phi) * Math.cos(theta)
+      particlePositions[i + 1] = radius * Math.sin(phi) * Math.sin(theta)
+      particlePositions[i + 2] = radius * Math.cos(phi)
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3))
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.035,
+      color: 0x00f0ff,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+    })
+    const coreParticles = new THREE.Points(particleGeo, particleMat)
+    masterGroup.add(coreParticles)
+    coreParticlesRef.current = coreParticles
+
+    // Construct the 8 Modular Lego Bricks
     const brickSize = 0.92
-    const brickHeight = 0.75
+    const brickHeight = 0.76
     const studRadius = 0.14
-    const studHeight = 0.12
+    const studHeight = 0.13
 
     const boxGeo = new THREE.BoxGeometry(brickSize, brickHeight, brickSize)
-    const studGeo = new THREE.CylinderGeometry(studRadius, studRadius, studHeight, 20)
+    const studGeo = new THREE.CylinderGeometry(studRadius, studRadius, studHeight, 24)
 
     const brickGroups: THREE.Group[] = []
     const brickMaterials: THREE.MeshPhysicalMaterial[] = []
 
-    // 2x2x2 positions
-    const offsets = [
-      { x: -0.5, y: 0.42, z: 0.5 },
-      { x: 0.5, y: 0.42, z: 0.5 },
-      { x: -0.5, y: 0.42, z: -0.5 },
-      { x: 0.5, y: 0.42, z: -0.5 },
-      { x: -0.5, y: -0.42, z: 0.5 },
-      { x: 0.5, y: -0.42, z: 0.5 },
-      { x: -0.5, y: -0.42, z: -0.5 },
-      { x: 0.5, y: -0.42, z: -0.5 },
+    // 2x2x2 coordinate layout
+    const brickPositions = [
+      // Top Layer (Y > 0)
+      { x: -0.5, y: 0.43, z: 0.5, isTop: true },
+      { x: 0.5, y: 0.43, z: 0.5, isTop: true },
+      { x: -0.5, y: 0.43, z: -0.5, isTop: true },
+      { x: 0.5, y: 0.43, z: -0.5, isTop: true },
+      // Bottom Layer (Y < 0)
+      { x: -0.5, y: -0.43, z: 0.5, isTop: false },
+      { x: 0.5, y: -0.43, z: 0.5, isTop: false },
+      { x: -0.5, y: -0.43, z: -0.5, isTop: false },
+      { x: 0.5, y: -0.43, z: -0.5, isTop: false },
     ]
 
-    offsets.forEach((pos, idx) => {
+    brickPositions.forEach((pos, idx) => {
       const brickGroup = new THREE.Group()
       brickGroup.position.set(pos.x, pos.y, pos.z)
       brickGroup.userData = {
         index: idx,
+        isTop: pos.isTop,
         basePos: new THREE.Vector3(pos.x, pos.y, pos.z),
-        explodeDir: new THREE.Vector3(
-          pos.x > 0 ? 0.75 : -0.75,
-          pos.y > 0 ? 0.65 : -0.65,
-          pos.z > 0 ? 0.75 : -0.75
+        explodeOffset: new THREE.Vector3(
+          pos.x > 0 ? 0.8 : -0.8,
+          pos.y > 0 ? 0.75 : -0.75,
+          pos.z > 0 ? 0.8 : -0.8
         ),
+        targetScale: 1,
+        spinAngle: 0,
+        spinVelocity: 0,
       }
 
-      // Material with tactile Lego satin sheen
+      // Satin, high-sheen plastic physical material
       const mat = new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(currentColorsRef.current[idx] || '#FF4757'),
-        roughness: 0.18,
-        metalness: 0.04,
-        clearcoat: 0.5,
-        clearcoatRoughness: 0.12,
-        reflectivity: 0.8,
+        color: new THREE.Color(colorsRef.current[idx] || '#FF3366'),
+        roughness: 0.14,
+        metalness: 0.05,
+        clearcoat: 0.85,
+        clearcoatRoughness: 0.08,
+        reflectivity: 0.9,
       })
       brickMaterials.push(mat)
 
-      // Main Brick Body
-      const bodyMesh = new THREE.Mesh(boxGeo, mat)
-      bodyMesh.castShadow = true
-      bodyMesh.receiveShadow = true
-      brickGroup.add(bodyMesh)
+      // Main Block Body
+      const body = new THREE.Mesh(boxGeo, mat)
+      body.castShadow = true
+      body.receiveShadow = true
+      brickGroup.add(body)
 
-      // Top 4 Studs (Only on bricks, giving authentic Lego tactile feel)
+      // 4 Physical Cylindrical Studs on top
       const studOffset = 0.23
-      const studPositions = [
+      const studs = [
         [-studOffset, studOffset],
         [studOffset, studOffset],
         [-studOffset, -studOffset],
         [studOffset, -studOffset],
       ]
 
-      studPositions.forEach(([sx, sz]) => {
-        const studMesh = new THREE.Mesh(studGeo, mat)
-        studMesh.position.set(sx, brickHeight / 2 + studHeight / 2, sz)
-        studMesh.castShadow = true
-        studMesh.receiveShadow = true
-        brickGroup.add(studMesh)
+      studs.forEach(([sx, sz]) => {
+        const stud = new THREE.Mesh(studGeo, mat)
+        stud.position.set(sx, brickHeight / 2 + studHeight / 2, sz)
+        stud.castShadow = true
+        stud.receiveShadow = true
+        brickGroup.add(stud)
       })
 
-      legoCluster.add(brickGroup)
+      // Add to appropriate layer
+      if (pos.isTop) {
+        topLayerGroup.add(brickGroup)
+      } else {
+        bottomLayerGroup.add(brickGroup)
+      }
+
       brickGroups.push(brickGroup)
     })
 
-    brickMeshesRef.current = brickGroups
+    brickGroupsRef.current = brickGroups
 
-    // Raycaster for Hover and Click detection
+    // Futuristic connecting laser lines for exploded mode
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x00f0ff,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+    })
+    const linePositions = new Float32Array(8 * 2 * 3) // 8 lines from core to 8 bricks
+    const lineGeo = new THREE.BufferGeometry()
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
+    const lineSegments = new THREE.LineSegments(lineGeo, lineMat)
+    masterGroup.add(lineSegments)
+    connectingLinesRef.current = lineSegments
+
+    // Raycasting & Pointer Tracking
     const raycaster = new THREE.Raycaster()
     const mouse = new THREE.Vector2(-100, -100)
 
     let isDragging = false
     let prevMouseX = 0
     let prevMouseY = 0
-    let rotX = 0
-    let rotY = 0
+    let rotX = 0.1
+    let rotY = 0.1
     let targetRotX = 0
     let targetRotY = 0
 
-    // Hover detection
+    let lastHoveredIdx: number | null = null
+
     const onPointerMove = (e: PointerEvent) => {
       const rect = renderer.domElement.getBoundingClientRect()
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
@@ -258,14 +409,14 @@ export function LegoCube() {
       if (isDragging) {
         const deltaX = e.clientX - prevMouseX
         const deltaY = e.clientY - prevMouseY
-        targetRotY += deltaX * 0.008
-        targetRotX += deltaY * 0.008
+        targetRotY += deltaX * 0.009
+        targetRotX += deltaY * 0.009
         prevMouseX = e.clientX
         prevMouseY = e.clientY
       } else {
-        // Subtle tilt parallax when hovering
-        targetRotY = THREE.MathUtils.lerp(targetRotY, mouse.x * 0.25, 0.05)
-        targetRotX = THREE.MathUtils.lerp(targetRotX, -mouse.y * 0.2, 0.05)
+        // Natural parallax tilt
+        targetRotY = THREE.MathUtils.lerp(targetRotY, mouse.x * 0.35, 0.06)
+        targetRotX = THREE.MathUtils.lerp(targetRotX, -mouse.y * 0.3, 0.06)
       }
     }
 
@@ -285,19 +436,30 @@ export function LegoCube() {
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
-      const allMeshes: THREE.Object3D[] = []
-      brickGroups.forEach((g) => allMeshes.push(...g.children))
-      const intersects = raycaster.intersectObjects(allMeshes)
+      const allObjects: THREE.Object3D[] = []
+      brickGroups.forEach((g) => allObjects.push(...g.children))
+      const intersects = raycaster.intersectObjects(allObjects)
 
       if (intersects.length > 0) {
         const hitGroup = intersects[0].object.parent as THREE.Group
         if (hitGroup && typeof hitGroup.userData.index === 'number') {
           const idx = hitGroup.userData.index
-          if (LEGO_MODULES[idx]) {
-            setSelectedModule(LEGO_MODULES[idx])
-          }
+          setActiveBrickIdx(idx)
+          // Trigger snappy 360 spin & acoustic chime note!
+          hitGroup.userData.spinVelocity = 0.35
+          sfx.playPop(idx)
         }
+      } else {
+        // Clicking outside snaps sounds
+        sfx.playSnap()
       }
+    }
+
+    const onDoubleClick = () => {
+      // Snappy reset to original isometric view
+      targetRotX = 0
+      targetRotY = 0
+      sfx.playSnap()
     }
 
     const dom = renderer.domElement
@@ -305,24 +467,49 @@ export function LegoCube() {
     dom.addEventListener('pointerdown', onPointerDown)
     window.addEventListener('pointerup', onPointerUp)
     dom.addEventListener('click', onClick)
+    dom.addEventListener('dblclick', onDoubleClick)
 
-    // Animation loop
+    // Main Kinetic Loop
     let frameId: number
+    let clockTime = 0
 
     const animate = () => {
       frameId = requestAnimationFrame(animate)
+      clockTime += 0.02
 
-      // Smooth damped rotation
-      rotX = THREE.MathUtils.lerp(rotX, targetRotX, 0.08)
-      rotY = THREE.MathUtils.lerp(rotY, targetRotY, 0.08)
-      legoCluster.rotation.x = rotX
-      legoCluster.rotation.y = rotY
+      // Damped rotation for master group
+      rotX = THREE.MathUtils.lerp(rotX, targetRotX, 0.07)
+      rotY = THREE.MathUtils.lerp(rotY, targetRotY, 0.07)
+      masterGroup.rotation.x = rotX
+      masterGroup.rotation.y = rotY
 
-      // Raycast for hover state
+      // Rubik Layer Twist interpolation
+      topLayerRotRef.current = THREE.MathUtils.lerp(
+        topLayerRotRef.current,
+        targetTopLayerRotRef.current,
+        0.1
+      )
+      topLayerGroup.rotation.y = topLayerRotRef.current
+
+      // Core rotation & pulsing
+      if (coreMeshRef.current) {
+        coreMeshRef.current.rotation.y += 0.02
+        coreMeshRef.current.rotation.x += 0.012
+        const pulse = 1 + Math.sin(clockTime * 2) * 0.08
+        coreMeshRef.current.scale.set(pulse, pulse, pulse)
+      }
+
+      // Particle aura spin
+      if (coreParticlesRef.current) {
+        coreParticlesRef.current.rotation.y -= 0.005
+        coreParticlesRef.current.rotation.z += 0.003
+      }
+
+      // Hover Raycast
       raycaster.setFromCamera(mouse, camera)
-      const allMeshes: THREE.Object3D[] = []
-      brickGroups.forEach((g) => allMeshes.push(...g.children))
-      const intersects = raycaster.intersectObjects(allMeshes)
+      const allObjects: THREE.Object3D[] = []
+      brickGroups.forEach((g) => allObjects.push(...g.children))
+      const intersects = raycaster.intersectObjects(allObjects)
 
       let currentHoveredIdx: number | null = null
       if (intersects.length > 0) {
@@ -331,37 +518,75 @@ export function LegoCube() {
           currentHoveredIdx = hitGroup.userData.index
         }
       }
-      setHoveredIndex(currentHoveredIdx)
 
-      // Update position of each brick (Normal vs Exploded vs Hovered)
-      const exploded = explodedRef.current
+      // Play tick on hover change
+      if (currentHoveredIdx !== null && currentHoveredIdx !== lastHoveredIdx) {
+        sfx.playTick()
+      }
+      lastHoveredIdx = currentHoveredIdx
+
+      // Mode-based Brick Kinetic Update
+      const mode = modeRef.current
+      const linePosAttr = connectingLinesRef.current?.geometry.attributes.position as
+        | THREE.BufferAttribute
+        | undefined
+
       brickGroups.forEach((group, idx) => {
         const base = group.userData.basePos as THREE.Vector3
-        const explodeDir = group.userData.explodeDir as THREE.Vector3
+        const explodeDir = group.userData.explodeOffset as THREE.Vector3
 
         let targetPos = base.clone()
 
-        if (exploded) {
-          // Floating apart in space
+        if (mode === 'exploded') {
           targetPos.add(explodeDir)
+          // Subtle breathing float
+          targetPos.y += Math.sin(clockTime * 2 + idx) * 0.04
+        } else if (mode === 'wave') {
+          // Hypnotic kinetic wave oscillation
+          const waveHeight = Math.sin(clockTime * 3 + idx * 0.8) * 0.35
+          targetPos.y += waveHeight
         }
 
+        // Lift hovered or active brick
         if (currentHoveredIdx === idx) {
-          // Elevate hovered brick with tactile lift
-          targetPos.add(explodeDir.clone().multiplyScalar(0.35))
-          group.scale.lerp(new THREE.Vector3(1.06, 1.06, 1.06), 0.15)
+          targetPos.add(explodeDir.clone().multiplyScalar(0.4))
+          group.scale.lerp(new THREE.Vector3(1.08, 1.08, 1.08), 0.18)
         } else {
-          group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.15)
+          group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.18)
         }
 
-        group.position.lerp(targetPos, 0.1)
+        group.position.lerp(targetPos, 0.12)
 
-        // Subtle floating breathing motion when exploded
-        if (exploded) {
-          const time = Date.now() * 0.0015
-          group.position.y += Math.sin(time + idx) * 0.002
+        // Spin animation when clicked
+        if (group.userData.spinVelocity > 0.001) {
+          group.rotation.y += group.userData.spinVelocity
+          group.userData.spinVelocity *= 0.92
+        } else {
+          group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, 0, 0.1)
+        }
+
+        // Update connecting laser lines in exploded mode
+        if (linePosAttr) {
+          // Point 1: Core center (0, 0, 0)
+          linePosAttr.setXYZ(idx * 2, 0, 0, 0)
+          // Point 2: Brick center in master coordinate space
+          const worldPos = group.position.clone()
+          if (group.userData.isTop) {
+            worldPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), topLayerRotRef.current)
+          }
+          linePosAttr.setXYZ(idx * 2 + 1, worldPos.x, worldPos.y, worldPos.z)
         }
       })
+
+      // Update line opacity
+      if (connectingLinesRef.current) {
+        const mat = connectingLinesRef.current.material as THREE.LineBasicMaterial
+        const targetOpacity = mode === 'exploded' ? 0.45 : 0
+        mat.opacity = THREE.MathUtils.lerp(mat.opacity, targetOpacity, 0.1)
+        if (linePosAttr) {
+          linePosAttr.needsUpdate = true
+        }
+      }
 
       renderer.render(scene, camera)
     }
@@ -387,9 +612,14 @@ export function LegoCube() {
       dom.removeEventListener('pointerdown', onPointerDown)
       window.removeEventListener('pointerup', onPointerUp)
       dom.removeEventListener('click', onClick)
+      dom.removeEventListener('dblclick', onDoubleClick)
       renderer.dispose()
       boxGeo.dispose()
       studGeo.dispose()
+      coreGeo.dispose()
+      coreWireGeo.dispose()
+      particleGeo.dispose()
+      lineGeo.dispose()
       brickMaterials.forEach((m) => m.dispose())
       if (container.contains(dom)) {
         container.removeChild(dom)
@@ -397,159 +627,144 @@ export function LegoCube() {
     }
   }, [])
 
-  // Sync color palette changes smoothly
+  // Update Palette Colors
   useEffect(() => {
-    const colors = PALETTES[paletteIndex].colors
-    brickMeshesRef.current.forEach((group, idx) => {
+    const palette = PALETTES[paletteIdx]
+    brickGroupsRef.current.forEach((group, idx) => {
       group.children.forEach((child) => {
         if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhysicalMaterial) {
-          child.material.color.set(colors[idx] || '#FF4757')
+          child.material.color.set(palette.colors[idx] || '#FF3366')
         }
       })
     })
-  }, [paletteIndex])
 
-  const handleCyclePalette = () => {
-    setPaletteIndex((prev) => (prev + 1) % PALETTES.length)
+    if (coreMeshRef.current) {
+      const mat = coreMeshRef.current.material as THREE.MeshPhysicalMaterial
+      mat.color.set(palette.coreColor)
+      mat.emissive.set(palette.coreColor)
+    }
+  }, [paletteIdx])
+
+  // Multifunctional Actions
+  const handleToggleExplode = () => {
+    sfx.playSnap()
+    setCubeMode((prev) => (prev === 'exploded' ? 'assembled' : 'exploded'))
   }
 
-  const handleToggleExplode = () => {
-    setIsExploded((prev) => !prev)
+  const handleToggleWave = () => {
+    sfx.playTick()
+    setCubeMode((prev) => (prev === 'wave' ? 'assembled' : 'wave'))
+  }
+
+  const handleTwistLayer = () => {
+    sfx.playPop(3)
+    targetTopLayerRotRef.current += Math.PI / 2 // Rotate 90 degrees
+  }
+
+  const handleCyclePalette = () => {
+    sfx.playTick()
+    setPaletteIdx((prev) => (prev + 1) % PALETTES.length)
+  }
+
+  const handleReset = () => {
+    sfx.playSnap()
+    setCubeMode('assembled')
+    targetTopLayerRotRef.current = 0
   }
 
   return (
-    <div className="w-full flex flex-col items-center select-none">
-      {/* 3D Canvas Container */}
-      <div className="relative w-full h-[400px] sm:h-[450px] flex items-center justify-center">
-        {/* Soft background radial glow tinted with selected block's color */}
-        <div
-          className="absolute w-64 h-64 rounded-full blur-[100px] opacity-25 pointer-events-none transition-colors duration-500"
-          style={{ backgroundColor: selectedModule.color }}
-        />
+    <div className="relative w-full h-[480px] sm:h-[540px] flex items-center justify-center select-none overflow-hidden">
+      {/* Dynamic Ambient Core Glow */}
+      <div
+        className="pointer-events-none absolute w-80 h-80 rounded-full blur-[110px] opacity-25 transition-all duration-700"
+        style={{
+          backgroundColor:
+            activeBrickIdx !== null
+              ? PALETTES[paletteIdx].colors[activeBrickIdx]
+              : PALETTES[paletteIdx].coreColor,
+        }}
+      />
 
-        {/* The 3D Mount */}
-        <div
-          ref={mountRef}
-          className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
-          title="Click any Lego block to inspect it. Drag to tilt."
-        />
+      {/* 3D WebGL Canvas */}
+      <div
+        ref={mountRef}
+        className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
+        title="Interact with the 3D Lego construct: Click bricks, drag to rotate, double-click to center"
+      />
 
-        {/* Minimal Floating Action Controls (Top right corner of the canvas) */}
-        <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleToggleExplode}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono transition-all backdrop-blur-md border ${
-              isExploded
-                ? 'bg-cyan-500 text-slate-950 font-semibold border-cyan-400 shadow-lg shadow-cyan-500/20'
-                : 'bg-white/[0.06] text-slate-200 hover:bg-white/[0.12] border-white/[0.12]'
-            }`}
-            title="Separate all Lego blocks to see internal structure"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>{isExploded ? 'Snap Together' : 'Disassemble'}</span>
-          </button>
+      {/* Sleek, Futuristic, Iconographic Multifunctional Controls Dock */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 p-1.5 rounded-full bg-[#070a14]/85 border border-white/[0.12] backdrop-blur-2xl shadow-2xl shadow-black/90">
+        {/* Action 1: Disassemble / Explode */}
+        <button
+          type="button"
+          onClick={handleToggleExplode}
+          className={`p-2.5 rounded-full transition-all ${
+            cubeMode === 'exploded'
+              ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30'
+              : 'bg-white/[0.05] hover:bg-white/[0.12] text-slate-200'
+          }`}
+          title="CAD Disassemble / Reassemble"
+        >
+          <Layers className="w-4 h-4" />
+        </button>
 
-          <button
-            type="button"
-            onClick={handleCyclePalette}
-            className="p-2 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/[0.12] transition-all backdrop-blur-md"
-            title={`Switch Color Theme: currently ${PALETTES[paletteIndex].name}`}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-          </button>
-        </div>
+        {/* Action 2: Kinetic Wave */}
+        <button
+          type="button"
+          onClick={handleToggleWave}
+          className={`p-2.5 rounded-full transition-all ${
+            cubeMode === 'wave'
+              ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+              : 'bg-white/[0.05] hover:bg-white/[0.12] text-slate-200'
+          }`}
+          title="Kinetic Wave Oscillation"
+        >
+          <Activity className="w-4 h-4" />
+        </button>
 
-        {/* Interaction Hint (Top left) */}
-        <div className="absolute top-3 left-3 z-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md text-[11px] font-mono text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span>Interactive 8-Block Lego Matrix</span>
-        </div>
-      </div>
+        {/* Action 3: Twist 90° */}
+        <button
+          type="button"
+          onClick={handleTwistLayer}
+          className="p-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.12] text-slate-200 transition-all hover:rotate-90 duration-300"
+          title="Twist Top Layer 90°"
+        >
+          <RotateCw className="w-4 h-4" />
+        </button>
 
-      {/* Tactile Lego Block Inspector Card */}
-      <div className="w-full px-2 sm:px-4 -mt-2 z-20">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedModule.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25 }}
-            className="w-full p-4 rounded-2xl bg-[#090d18]/90 border border-white/[0.12] backdrop-blur-2xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          >
-            <div className="flex items-start gap-3.5">
-              {/* Vibrant Lego Color Block Indicator with tactile studs icon */}
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md relative overflow-hidden"
-                style={{ backgroundColor: selectedModule.color }}
-              >
-                {/* 2 miniature white dots representing Lego studs */}
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-white/70 shadow-sm" />
-                  <div className="w-2 h-2 rounded-full bg-white/70 shadow-sm" />
-                </div>
-              </div>
+        {/* Action 4: Palette Switcher */}
+        <button
+          type="button"
+          onClick={handleCyclePalette}
+          className="p-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.12] text-amber-300 transition-all"
+          title={`Switch Color Grade (${PALETTES[paletteIdx].name})`}
+        >
+          <Sparkles className="w-4 h-4" />
+        </button>
 
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-white tracking-wide">
-                    {selectedModule.name}
-                  </h4>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.08] text-slate-300 border border-white/[0.08]">
-                    {selectedModule.category}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                  {selectedModule.desc}
-                </p>
-                <div className="flex items-center gap-2 mt-2 text-[11px] font-mono text-cyan-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>{selectedModule.feature}</span>
-                </div>
-              </div>
-            </div>
+        {/* Action 5: Sound Feedback */}
+        <button
+          type="button"
+          onClick={() => setSoundEnabled(!soundEnabled)}
+          className={`p-2.5 rounded-full transition-all ${
+            soundEnabled
+              ? 'bg-white/[0.05] hover:bg-white/[0.12] text-cyan-300'
+              : 'bg-white/[0.02] text-slate-500'
+          }`}
+          title={soundEnabled ? 'Mute Audio Synth' : 'Enable Audio Synth'}
+        >
+          {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+        </button>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.06]">
-              <a
-                href="#projects"
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] text-white border border-white/[0.12] text-xs font-semibold tracking-wide text-center transition-all"
-              >
-                See Project
-              </a>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Quick Click Strip: 8 colored mini-blocks so mobile users can easily tap any block */}
-        <div className="flex items-center justify-center gap-2 mt-3 overflow-x-auto py-1">
-          {LEGO_MODULES.map((mod, idx) => {
-            const isSelected = selectedModule.id === mod.id
-            const isHovered = hoveredIndex === idx
-            return (
-              <button
-                key={mod.id}
-                type="button"
-                onClick={() => setSelectedModule(mod)}
-                className={`group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-mono transition-all ${
-                  isSelected
-                    ? 'bg-white/[0.12] border-white/40 text-white font-semibold shadow-sm'
-                    : 'bg-white/[0.03] border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                }`}
-                title={mod.name}
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-sm shrink-0 transition-transform duration-200"
-                  style={{
-                    backgroundColor: currentColorsRef.current[idx] || mod.color,
-                    transform: isSelected || isHovered ? 'scale(1.25)' : 'scale(1)',
-                  }}
-                />
-                <span className="hidden md:inline">{mod.name}</span>
-              </button>
-            )
-          })}
-        </div>
+        {/* Action 6: Reset Angle */}
+        <button
+          type="button"
+          onClick={handleReset}
+          className="p-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.12] text-slate-300 transition-all"
+          title="Reset View & Position"
+        >
+          <Compass className="w-4 h-4" />
+        </button>
       </div>
     </div>
   )

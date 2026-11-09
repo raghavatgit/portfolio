@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown, Copy, Check, ExternalLink, Shield, Cpu, Radio, Sparkles } from 'lucide-react'
+import { ArrowDown, Copy, Check, ExternalLink, Shield, Cpu, Radio } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, DiscordIcon } from '@/components/icons/SocialIcons'
 import { LegoCube } from './LegoCube'
 
@@ -163,27 +163,14 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Right Column: Vibrant, Minimalistic, Interactive Lego Cube */}
+        {/* Right Column: Pure Focus on the Interactive Lego Cube */}
         <div className="lg:col-span-6 flex flex-col items-center justify-center relative">
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="w-full relative rounded-3xl bg-[#090d18]/85 border border-white/[0.1] backdrop-blur-2xl shadow-2xl shadow-black/80 p-3 sm:p-5 overflow-hidden"
+            className="w-full relative rounded-3xl bg-[#090d18]/60 border border-white/[0.08] backdrop-blur-2xl shadow-2xl shadow-black/80 overflow-hidden p-1 sm:p-2"
           >
-            {/* Top Bar for Lego Canvas */}
-            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06] text-xs font-mono text-slate-400 mb-2">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-slate-200 font-semibold tracking-wide text-[11px]">
-                  Interactive Lego Matrix
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-                <span>Click any block to inspect</span>
-              </div>
-            </div>
-
             {/* The 3D Tactile Lego Cube */}
             <LegoCube />
           </motion.div>
