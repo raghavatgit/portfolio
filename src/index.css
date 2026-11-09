@@ -2,13 +2,14 @@
 
 @layer base {
   :root {
-    --bg-primary: #07080b;
-    --bg-surface: #0e1017;
-    --bg-surface-elevated: #151822;
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-hover: rgba(255, 255, 255, 0.16);
-    --accent: #f59e0b; /* warm amber */
-    --accent-glow: rgba(245, 158, 11, 0.15);
+    --bg-primary: #06080e;
+    --bg-surface: #0a0d16;
+    --bg-surface-elevated: #111524;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.18);
+    --accent-cyan: #00f0ff;
+    --accent-violet: #8b5cf6;
+    --accent-emerald: #10b981;
   }
 
   body {
@@ -22,24 +23,58 @@
   }
 }
 
+/* Dynamic Flowing Keyframe Animations */
+@keyframes flow1 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(120px, 80px) scale(1.18); }
+  66% { transform: translate(-60px, 110px) scale(0.92); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes flow2 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-110px, -90px) scale(1.22); }
+  66% { transform: translate(80px, -50px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes flow3 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(80px, -100px) scale(1.12); }
+  66% { transform: translate(-90px, -60px) scale(0.94); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes flow4 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-80px, 90px) scale(1.16); }
+  66% { transform: translate(90px, 50px) scale(0.88); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-flow-1 { animation: flow1 20s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-flow-2 { animation: flow2 24s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-flow-3 { animation: flow3 28s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-flow-4 { animation: flow4 22s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+
 /* Custom subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #07080b;
+  background: #06080e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   border-radius: 9999px;
-  border: 2px solid #07080b;
+  border: 1px solid #06080e;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(0, 240, 255, 0.35);
 }
 
 /* Grain overlay */
@@ -49,17 +84,12 @@
 
 /* Card glass styles */
 .glass-panel {
-  background: rgba(14, 16, 23, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(10, 13, 22, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
 }
 
 .glass-panel:hover {
   border-color: var(--border-hover);
-}
-
-/* Fluid transition helper */
-.subtle-border {
-  border: 1px solid rgba(255, 255, 255, 0.08);
 }

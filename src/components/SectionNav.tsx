@@ -57,10 +57,10 @@ export function SectionNav() {
                 <motion.div
                   layoutId="active-nav-indicator"
                   transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                  className="absolute inset-0 rounded-full bg-white/[0.1] border border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                  className="absolute inset-0 rounded-full bg-white/[0.1] border border-cyan-400/50 shadow-[0_0_15px_rgba(0,240,255,0.2)]"
                 />
               )}
-              <Icon className={`relative z-10 w-3.5 h-3.5 ${isActive ? 'text-amber-400' : 'text-slate-400'}`} />
+              <Icon className={`relative z-10 w-3.5 h-3.5 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
               <span className="relative z-10">{label}</span>
             </a>
           )
@@ -69,3 +69,4 @@ export function SectionNav() {
     </div>
   )
 }
+

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown, Copy, Check, ExternalLink, Terminal, Shield, Cpu, Layers } from 'lucide-react'
+import { ArrowDown, Copy, Check, ExternalLink, Shield, Cpu, Activity, Box } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, DiscordIcon } from '@/components/icons/SocialIcons'
+import { InteractiveCube } from './InteractiveCube'
 
 export function Hero() {
   const [discordCopied, setDiscordCopied] = useState(false)
@@ -13,161 +14,186 @@ export function Hero() {
   }
 
   return (
-    <section className="relative min-h-[92vh] flex flex-col justify-center pt-28 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Ambient background subtle radial glow - restrained, no loud gradients */}
-      <div
-        className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[340px] bg-amber-500/[0.04] blur-[120px] rounded-full"
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 flex flex-col items-start max-w-3xl">
-        {/* Availability / Context Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-slate-300 mb-6"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          <span>CS @ South Asian University, Delhi</span>
-          <span className="text-white/20">·</span>
-          <span className="text-amber-400 font-medium">Open to Summer '27 Roles</span>
-        </motion.div>
-
-        {/* Primary Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.12] mb-6"
-        >
-          Software, systems, and creative tools built with{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500">
-            precision.
-          </span>
-        </motion.h1>
-
-        {/* Editorial Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg sm:text-xl text-slate-300 leading-relaxed font-light mb-8 max-w-2xl"
-        >
-          Hi, I’m <strong className="font-semibold text-white">Raghav Goyal</strong>. I build
-          low-level Windows utilities in Rust, custom creative engine bridges for video editors, and
-          resilient web applications. Focused on software that stays fast and doesn't break.
-        </motion.p>
-
-        {/* Action Group */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap items-center gap-3.5 mb-14"
-        >
-          <a
-            href="#projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-semibold text-sm hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/20"
+    <section className="relative min-h-[94vh] flex items-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        {/* Left Column: Demonstrative Title & Value Proposition */}
+        <div className="lg:col-span-6 flex flex-col items-start z-10">
+          {/* Institutional / Academic Credentials Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-cyan-500/[0.08] border border-cyan-500/25 text-xs font-mono text-cyan-300 mb-6 backdrop-blur-md"
           >
-            <span>Explore Engineering Work</span>
-            <ArrowDown className="w-4 h-4" />
-          </a>
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+            </span>
+            <span className="font-semibold tracking-wide">SYSTEMS &amp; DISTRIBUTED PLATFORMS</span>
+            <span className="text-white/20">|</span>
+            <span className="text-slate-300">CS @ South Asian Univ.</span>
+          </motion.div>
 
-          <button
-            type="button"
-            onClick={handleCopyDiscord}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/[0.1] text-sm font-medium transition-all"
-            title="Click to copy Discord handle"
+          {/* Demonstrative Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-white leading-[1.08] mb-6"
           >
-            {discordCopied ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-300 font-mono text-xs">Copied @johnmaybesnow</span>
-              </>
-            ) : (
-              <>
-                <DiscordIcon className="w-3.5 h-3.5 text-indigo-400" />
-                <span className="font-mono text-xs">Discord: @johnmaybesnow</span>
-                <Copy className="w-3 h-3 text-slate-500 ml-0.5" />
-              </>
-            )}
-          </button>
+            Architecting{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">
+              low-level systems
+            </span>{' '}
+            &amp; high-performance runtimes.
+          </motion.h1>
 
-          <div className="flex items-center gap-1.5 pl-1">
+          {/* Concise, Professional Narrative */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-base sm:text-lg text-slate-300 leading-relaxed font-light mb-8 max-w-xl"
+          >
+            I am <strong className="font-semibold text-white">Raghav Goyal</strong>, a software
+            engineer focused on low-level Windows systems in Rust, native creative automation
+            bridges, and real-time distributed hardware networks. Delivering resilient software
+            engineered without overhead.
+          </motion.p>
+
+          {/* Demonstrative Telemetry Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="w-full grid grid-cols-3 gap-2.5 mb-8"
+          >
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-mono mb-1">
+                <Shield className="w-3.5 h-3.5" />
+                <span>3.1 MB</span>
+              </div>
+              <span className="text-[11px] text-slate-400 leading-tight block">
+                Portable Rust binary with zero drivers
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-indigo-400 text-xs font-mono mb-1">
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Sub-ms</span>
+              </div>
+              <span className="text-[11px] text-slate-400 leading-tight block">
+                Direct DWM compositor hook latency
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-mono mb-1">
+                <Activity className="w-3.5 h-3.5" />
+                <span>Ad-Hoc</span>
+              </div>
+              <span className="text-[11px] text-slate-400 leading-tight block">
+                LoRa mesh packets with zero web reliance
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Action CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap items-center gap-3 w-full"
+          >
             <a
-              href="https://github.com/raghavatgit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
-              aria-label="GitHub Profile"
-              title="GitHub - @raghavatgit"
+              href="#projects"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all shadow-lg shadow-cyan-500/25"
             >
-              <GithubIcon className="w-4 h-4" />
+              <span>Review Architectures</span>
+              <ArrowDown className="w-3.5 h-3.5" />
             </a>
-            <a
-              href="https://linkedin.com/in/raghav-goyal-216a913b4"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
-              aria-label="LinkedIn Profile"
-              title="LinkedIn - Raghav Goyal"
+
+            <button
+              type="button"
+              onClick={handleCopyDiscord}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/[0.1] text-xs font-mono transition-all"
+              title="Copy Discord handle"
             >
-              <LinkedinIcon className="w-4 h-4" />
-            </a>
-            <a
-              href="mailto:goyalraghav1289@gmail.com"
-              className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
-              aria-label="Send Email"
-              title="Email - goyalraghav1289@gmail.com"
-            >
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
-        </motion.div>
+              {discordCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300">Copied @johnmaybesnow</span>
+                </>
+              ) : (
+                <>
+                  <DiscordIcon className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Discord: @johnmaybesnow</span>
+                  <Copy className="w-3 h-3 text-slate-500" />
+                </>
+              )}
+            </button>
 
-        {/* Architectural Pillars / Domains */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 pt-8 border-t border-white/[0.06]"
-        >
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-            <Shield className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="block text-xs font-semibold text-slate-200">Systems & Win32</span>
-              <span className="block text-[11px] font-mono text-slate-400">Rust · DWM · ASLR</span>
+            <div className="flex items-center gap-1.5 pl-1">
+              <a
+                href="https://github.com/raghavatgit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
+                title="GitHub - @raghavatgit"
+              >
+                <GithubIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://linkedin.com/in/raghav-goyal-216a913b4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
+                title="LinkedIn - Raghav Goyal"
+              >
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="mailto:goyalraghav1289@gmail.com"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-colors"
+                title="Email Inquiry"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
             </div>
-          </div>
+          </motion.div>
+        </div>
 
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-            <Terminal className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="block text-xs font-semibold text-slate-200">Creative Engines</span>
-              <span className="block text-[11px] font-mono text-slate-400">AE · Resolve · Lua</span>
-            </div>
-          </div>
+        {/* Right Column: Demonstrative 3D Interactive Cube */}
+        <div className="lg:col-span-6 flex flex-col items-center justify-center relative">
+          {/* Subtle background circular pulse behind cube */}
+          <div className="absolute w-72 h-72 rounded-full bg-cyan-500/10 blur-[80px] pointer-events-none" />
 
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-            <Cpu className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="block text-xs font-semibold text-slate-200">Signals & Inertial</span>
-              <span className="block text-[11px] font-mono text-slate-400">Kalman · LoRa · ESP32</span>
+          {/* 3D Cube Card Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="w-full relative rounded-3xl bg-[#090c18]/80 border border-white/[0.1] backdrop-blur-2xl shadow-2xl shadow-black/80 p-2 sm:p-4 overflow-hidden"
+          >
+            {/* Top HUD Bar */}
+            <div className="flex items-center justify-between px-4 py-2 border-b border-white/[0.06] text-xs font-mono text-slate-400">
+              <div className="flex items-center gap-2">
+                <Box className="w-4 h-4 text-cyan-400" />
+                <span className="text-slate-200 font-semibold tracking-wider uppercase text-[11px]">
+                  Spatial Systems Matrix
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-emerald-400">WebGL 60FPS</span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-            <Layers className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="block text-xs font-semibold text-slate-200">Full-Stack & Web</span>
-              <span className="block text-[11px] font-mono text-slate-400">React 19 · TS · Vite</span>
-            </div>
-          </div>
-        </motion.div>
+            {/* 3D WebGL Interactive Cube */}
+            <InteractiveCube />
+          </motion.div>
+        </div>
       </div>
     </section>
   )

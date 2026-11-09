@@ -5,69 +5,68 @@ export function AboutSection() {
     <section id="about" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-24">
       {/* Header */}
       <div className="mb-12">
-        <span className="text-xs font-mono font-semibold tracking-wider text-amber-400 uppercase block mb-2">
-          Ethos &amp; Context
+        <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase block mb-2">
+          Engineering Ethos
         </span>
         <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-          Behind the Screen
+          Background &amp; Philosophy
         </h2>
         <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light">
-          A bit about where I study, how I approach engineering problems, and what keeps me building.
+          Academic foundation, systems engineering mindset, and practical development standards.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Personal Narrative */}
         <div className="lg:col-span-7 space-y-6 text-slate-300 font-light leading-relaxed">
-          <div className="p-6 rounded-2xl bg-[#0e1017]/70 border border-white/[0.07] backdrop-blur-xl">
+          <div className="p-6 rounded-2xl bg-[#090c18]/80 border border-white/[0.08] backdrop-blur-xl">
             <h3 className="text-lg font-semibold text-white mb-3">
               Understanding systems from the silicon up.
             </h3>
             <p className="text-sm text-slate-300 mb-4">
-              I’m a Computer Science student at <strong>South Asian University in New Delhi</strong>.
-              I don’t treat software as black boxes. Whether it’s figuring out how Windows DWM composes
-              desktop surfaces into video streams, how an Extended Kalman Filter reconciles noisy IMU
-              drift, or how to write ExtendScript bridges that control native timeline keyframes — I
-              enjoy understanding how things work under the hood.
+              I am a Computer Science student at <strong>South Asian University in New Delhi</strong>.
+              I avoid treating systems as black boxes. Whether analyzing how Windows Desktop Window
+              Manager composes frame buffers into video feeds, formulating Extended Kalman Filters to
+              fuse noisy inertial telemetry, or bridging multi-host timeline runtimes across C++ and Lua —
+              I prioritize low-level comprehension and deterministic execution.
             </p>
             <p className="text-sm text-slate-300">
-              My engineering philosophy is simple: write code that is straightforward to reason about,
-              respects device memory, and solves real friction. I prefer small, portable, standalone
-              binaries over bloated micro-frameworks.
+              My engineering standard is strict: produce software that is easily reasoned about,
+              respects hardware constraints, and eliminates unnecessary runtime bloat.
             </p>
           </div>
 
           {/* Quick Context Highlights */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-              <MapPin className="w-4 h-4 text-amber-400 mb-2" />
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+              <MapPin className="w-4 h-4 text-cyan-400 mb-2" />
               <span className="block text-xs font-semibold text-white">Location</span>
               <span className="block text-xs text-slate-400 font-mono">Delhi, India</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-              <GraduationCap className="w-4 h-4 text-amber-400 mb-2" />
-              <span className="block text-xs font-semibold text-white">University</span>
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+              <GraduationCap className="w-4 h-4 text-indigo-400 mb-2" />
+              <span className="block text-xs font-semibold text-white">Institution</span>
               <span className="block text-xs text-slate-400 font-mono">South Asian Univ.</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-              <Laptop className="w-4 h-4 text-amber-400 mb-2" />
-              <span className="block text-xs font-semibold text-white">Focus</span>
+            <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+              <Laptop className="w-4 h-4 text-emerald-400 mb-2" />
+              <span className="block text-xs font-semibold text-white">Specialization</span>
               <span className="block text-xs text-slate-400 font-mono">Systems &amp; Tools</span>
             </div>
           </div>
 
           {/* Socrates Philosophical Quote Card */}
-          <blockquote className="p-5 rounded-xl bg-gradient-to-r from-amber-500/[0.06] to-transparent border-l-2 border-amber-400 text-sm text-slate-300">
+          <blockquote className="p-5 rounded-xl bg-gradient-to-r from-cyan-500/[0.08] to-transparent border-l-2 border-cyan-400 text-sm text-slate-300">
             <div className="flex items-start gap-3">
-              <Quote className="w-5 h-5 text-amber-400/60 shrink-0 mt-0.5" />
+              <Quote className="w-5 h-5 text-cyan-400/70 shrink-0 mt-0.5" />
               <div>
                 <p className="italic text-slate-200 mb-1">
                   &ldquo;The unexamined life is not worth living.&rdquo;
                 </p>
-                <footer className="text-xs font-mono text-amber-400/80">
-                  — Socrates <span className="text-slate-500 font-sans">(A reminder to question defaults and test rigorously)</span>
+                <footer className="text-xs font-mono text-cyan-300/80">
+                  — Socrates <span className="text-slate-400 font-sans">(A commitment to continuous inspection and first-principles reasoning)</span>
                 </footer>
               </div>
             </div>
@@ -97,3 +96,4 @@ export function AboutSection() {
     </section>
   )
 }
+

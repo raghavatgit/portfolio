@@ -9,7 +9,7 @@ export function Footer() {
     <footer className="border-t border-white/[0.06] py-10 px-4 sm:px-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded bg-white/[0.06] text-[10px] text-amber-400 font-bold">
+          <span className="flex h-5 w-5 items-center justify-center rounded bg-white/[0.06] text-[10px] text-cyan-400 font-bold">
             RG
           </span>
           <span>Raghav Goyal &copy; 2026</span>
@@ -33,3 +33,4 @@ export function Footer() {
     </footer>
   )
 }
+

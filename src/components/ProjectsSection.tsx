@@ -117,7 +117,7 @@ export function ProjectsSection() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <span className="text-xs font-mono font-semibold tracking-wider text-amber-400 uppercase block mb-2">
+          <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase block mb-2">
             Engineered Systems &amp; Software
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
@@ -141,9 +141,9 @@ export function ProjectsSection() {
               key={id}
               type="button"
               onClick={() => setFilter(id as typeof filter)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 filter === id
-                  ? 'bg-amber-500 text-slate-950 font-semibold shadow'
+                  ? 'bg-cyan-500 text-slate-950 font-semibold shadow-md shadow-cyan-500/20'
                   : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
@@ -164,16 +164,16 @@ export function ProjectsSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.35 }}
-              className="group relative flex flex-col justify-between rounded-2xl bg-[#0e1017]/70 border border-white/[0.07] hover:border-white/[0.16] p-6 sm:p-7 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/60"
+              className="group relative flex flex-col justify-between rounded-2xl bg-[#090c18]/80 border border-white/[0.08] hover:border-cyan-500/30 p-6 sm:p-7 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/70"
             >
               {/* Top Meta */}
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-amber-400">
-                      {project.category === 'systems' && <Shield className="w-4 h-4" />}
-                      {project.category === 'creative' && <Sliders className="w-4 h-4" />}
-                      {project.category === 'iot' && <Radio className="w-4 h-4" />}
+                    <span className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.08]">
+                      {project.category === 'systems' && <Shield className="w-4 h-4 text-cyan-400" />}
+                      {project.category === 'creative' && <Sliders className="w-4 h-4 text-indigo-400" />}
+                      {project.category === 'iot' && <Radio className="w-4 h-4 text-emerald-400" />}
                     </span>
                     <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
                       {project.category === 'systems' ? 'Systems & OS' : project.category === 'creative' ? 'Creative Tech' : 'Hardware & IoT'}
@@ -186,10 +186,10 @@ export function ProjectsSection() {
                 </div>
 
                 {/* Title & Tagline */}
-                <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-300 transition-colors tracking-tight mb-1.5">
+                <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors tracking-tight mb-1.5">
                   {project.title}
                 </h3>
-                <p className="text-xs font-mono text-amber-400/90 mb-4 font-normal">
+                <p className="text-xs font-mono text-cyan-400/90 mb-4 font-normal">
                   {project.tagline}
                 </p>
 
@@ -229,7 +229,7 @@ export function ProjectsSection() {
                 <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/[0.06] mb-5">
                   {project.metrics.map((metric) => (
                     <div key={metric} className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400/80 shrink-0" />
                       <span className="truncate">{metric}</span>
                     </div>
                   ))}

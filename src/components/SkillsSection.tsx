@@ -98,7 +98,7 @@ export function SkillsSection() {
     <section id="stack" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-24">
       {/* Header */}
       <div className="mb-12">
-        <span className="text-xs font-mono font-semibold tracking-wider text-amber-400 uppercase block mb-2">
+        <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase block mb-2">
           Technical Competencies
         </span>
         <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
@@ -114,11 +114,11 @@ export function SkillsSection() {
         {SKILL_CATEGORIES.map(({ title, icon: Icon, description, skills }) => (
           <div
             key={title}
-            className="flex flex-col justify-between p-6 rounded-2xl bg-[#0e1017]/70 border border-white/[0.07] hover:border-white/[0.14] backdrop-blur-xl transition-all duration-200"
+            className="flex flex-col justify-between p-6 rounded-2xl bg-[#090c18]/80 border border-white/[0.08] hover:border-cyan-500/30 backdrop-blur-xl transition-all duration-200 hover:shadow-xl hover:shadow-black/60"
           >
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <span className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-amber-400">
+                <span className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-cyan-400">
                   <Icon className="w-4 h-4" />
                 </span>
                 <h3 className="text-base font-semibold text-white tracking-tight">{title}</h3>
@@ -147,3 +147,4 @@ export function SkillsSection() {
     </section>
   )
 }
+

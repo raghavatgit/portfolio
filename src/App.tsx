@@ -1,4 +1,5 @@
 import { SmoothScroll } from '@/components/providers/SmoothScroll'
+import { FlowingBackground } from '@/components/FlowingBackground'
 import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { SectionNav } from '@/components/SectionNav'
@@ -12,15 +13,18 @@ import { Footer } from '@/components/Footer'
 export function App() {
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-[#07080b] text-slate-200 overflow-x-hidden selection:bg-amber-500/20 selection:text-amber-200">
-        {/* Subtle decorative grain */}
+      <div className="relative min-h-screen bg-[#06080e] text-slate-200 overflow-x-hidden selection:bg-cyan-500/25 selection:text-cyan-200">
+        {/* Continuously Flowing Chromatic Fluid Background */}
+        <FlowingBackground />
+
+        {/* Subtle decorative grain texture */}
         <div className="pointer-events-none fixed inset-0 z-30 grain-overlay" aria-hidden="true" />
 
-        {/* Top Navbar */}
+        {/* Top Professional Navbar */}
         <Navbar />
 
         {/* Main Content Flow */}
-        <main>
+        <main className="relative z-10">
           <Hero />
           <SectionNav />
           <ProjectsSection />
