@@ -29,30 +29,37 @@ export function InteractiveSandbox() {
   }
 
   return (
-    <section id="sandbox" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-24">
-      {/* Section Header */}
-      <div className="mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3">
-          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-          <span>TRY IT YOURSELF</span>
+    <section id="sandbox" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
+      {/* Section Header: Minimal & Typographic (Zero Boxed Cards) */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-8">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span>DIRECT PHYSICS LAB</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
+            <span>Interactive</span>
+            <span className="font-serif italic font-normal text-flow-vibrant text-[1.08em]">
+              Playground
+            </span>
+            <span className="font-cursive text-cyan-300 text-xl font-normal select-none rotate-1">
+              ~ test it live
+            </span>
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
+            Hands-on software logic simulations: test how Bézier acceleration feels or trigger live OS window cloaking.
+          </p>
         </div>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-2 flex-wrap">
-          <span>Interactive</span>
-          <span className="font-serif italic font-normal text-flow-vibrant text-[1.08em]">
-            Playground
-          </span>
-          <span className="font-cursive text-cyan-300 text-xl font-normal select-none rotate-1">
-            ~ test it live
-          </span>
-        </h2>
-        <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
-          Play with live simulations of the software logic — see how smooth acceleration curves feel,
-          or test how window hiding protects your screen share.
-        </p>
+
+        {/* Live Active Status */}
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+          <span>Real-time CSS &amp; Window Affinities</span>
+        </div>
       </div>
 
       {/* Sandbox Container */}
-      <div className="rounded-3xl bg-[#090d18]/85 border border-white/[0.09] backdrop-blur-2xl overflow-hidden shadow-2xl shadow-black/80">
+      <div className="rounded-3xl bg-[#080b16]/75 border border-white/[0.08] backdrop-blur-2xl overflow-hidden shadow-2xl shadow-black/80">
         {/* Module Selector Bar */}
         <div className="flex flex-wrap border-b border-white/[0.07] bg-black/40 p-2 sm:p-3 gap-2">
           <button

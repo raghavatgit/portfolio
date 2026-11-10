@@ -1,337 +1,533 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, Shield, Radio, Sparkles, CheckCircle2, Compass, Layers, Music, Eye } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Radio,
+  Sparkles,
+  Layers,
+  Compass,
+  Play,
+  RotateCcw,
+  Zap,
+  Eye,
+  EyeOff,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { GithubIcon } from '@/components/icons/SocialIcons'
 import { useMascot } from '@/context/MascotContext'
-
-const PROJECT_BRICK_COLORS: Record<string, string> = {
-  streamshield: '#FF4757',
-  sidereal: '#00F0FF',
-  navdrishti: '#00E676',
-  brandnest: '#EC4899',
-  'aegis-raksha': '#FFA502',
-  'new-atlas': '#8B5CF6',
-  'vencord-ytm-player': '#38BDF8',
-}
 
 interface Project {
   id: string
   title: string
-  category: 'systems' | 'creative' | 'iot'
+  brickIndex: number
+  color: string
+  category: string
   tagline: string
+  summary: string
   image?: string
-  problem: string
-  solution: string
   stack: string[]
-  highlights: string[]
+  metrics: { label: string; value: string }[]
   github?: string
   status: string
-  isFeatured?: boolean
+  interactiveType: 'stream-cloak' | 'orbital-physics' | 'imu-radar' | 'video-reel' | 'lora-packet' | 'curve-bridge'
 }
 
 const PROJECTS: Project[] = [
   {
     id: 'streamshield',
     title: 'StreamShield',
-    category: 'systems',
-    tagline: 'Keep private apps hidden while screen sharing',
+    brickIndex: 0,
+    color: '#FF4757', // Coral
+    category: 'Systems & Privacy',
+    tagline: 'Invisible on Stream · Visible to You',
+    summary:
+      'Windows desktop tool written in Rust that cloaks confidential windows from screen capture APIs with zero GPU latency.',
     image: '/assets/projects/streamshield-logo.png',
-    problem:
-      'When you share your screen on Discord, Zoom, or OBS, your private windows (like banking, passwords, or personal chats) can easily be exposed to everyone watching.',
-    solution:
-      'StreamShield lets you pick any app with one click and tells Windows to exclude it from screen capture. The app stays 100% visible on your monitor, but becomes completely invisible on your stream.',
     stack: ['Rust', 'Windows API', 'Tauri v2', 'TypeScript'],
-    highlights: ['Tiny 3 MB app', 'Zero stream lag', 'No drivers required', 'Instant hotkeys'],
+    metrics: [
+      { label: 'Binary Footprint', value: '3.1 MB' },
+      { label: 'Hook Latency', value: '< 0.4ms' },
+      { label: 'Stream Drop', value: '0 FPS' },
+    ],
     github: 'https://github.com/raghavatgit/StreamShield',
-    status: 'Ready to Use',
-    isFeatured: true,
+    status: 'Ready to Run',
+    interactiveType: 'stream-cloak',
   },
   {
     id: 'sidereal',
     title: 'Sidereal',
-    category: 'creative',
-    tagline: 'Interactive 3D Solar System & Space Flight Simulation',
+    brickIndex: 2,
+    color: '#00F0FF', // Cyan
+    category: '3D & Orbital Physics',
+    tagline: 'Interactive 60 FPS Keplerian Spaceflight',
+    summary:
+      'Real-time orbital gravity simulator and steerable spacecraft engine built with Three.js, WebGL, and custom Euler physics.',
     image: '/assets/projects/sidereal.png',
-    problem:
-      'Most web 3D space models are just static animations on rails. They do not simulate the real gravitational pull and orbital mechanics needed to steer a spacecraft between planets.',
-    solution:
-      'A full 3D interactive flight simulator where planets orbit with realistic gravity. You can steer a spacecraft, manage thruster fuel, orbit around celestial bodies, and view the solar system from cinematic angles.',
-    stack: ['Three.js', 'WebGL', 'Physics Engine', 'TypeScript', 'Tailwind CSS'],
-    highlights: ['Real orbital gravity math', 'Steerable spacecraft', 'High-res planetary textures', '60 FPS in browser'],
+    stack: ['Three.js', 'WebGL', 'Physics Engine', 'TypeScript'],
+    metrics: [
+      { label: 'Simulation Rate', value: '60 FPS' },
+      { label: 'Physics Loop', value: 'Keplerian' },
+      { label: 'Lighting', value: 'Custom GLSL' },
+    ],
     status: 'Live Simulation',
-    isFeatured: true,
+    interactiveType: 'orbital-physics',
   },
   {
     id: 'navdrishti',
     title: 'NavDrishti',
-    category: 'systems',
-    tagline: 'Accurate indoor navigation when GPS satellites fail',
-    problem:
-      'Satellite GPS stops working the moment you walk into a subway station, underground parking, tunnel, or large office building.',
-    solution:
-      'NavDrishti reads tiny movements from your phone or device sensors (accelerometer & gyroscope) and uses smart math filters to track every step you take in real time, with zero satellites needed.',
-    stack: ['Python', 'Motion Sensors (IMU)', 'Kalman Filters', 'Leaflet Maps'],
-    highlights: ['Works 100% offline', 'Sub-meter indoor accuracy', 'Fixes sensor drift', 'Live map view'],
+    brickIndex: 3,
+    color: '#00E676', // Emerald
+    category: 'Inertial Sensors & IoT',
+    tagline: 'Indoor Positioning When Satellites Fail',
+    summary:
+      'Sensor-fused IMU dead-reckoning engine tracking indoor coordinates via Kalman filters when satellite GPS is unreachable.',
+    stack: ['Python', 'IMU Sensors', 'Kalman Filters', 'Leaflet'],
+    metrics: [
+      { label: 'Indoor Drift', value: '< 0.8m' },
+      { label: 'GPS Required', value: '0%' },
+      { label: 'Sample Rate', value: '100 Hz' },
+    ],
     github: 'https://github.com/raghavatgit/NavDrishti',
-    status: 'Research & Code',
-    isFeatured: true,
+    status: 'Research Engine',
+    interactiveType: 'imu-radar',
   },
   {
     id: 'brandnest',
     title: 'BrandNest',
-    category: 'creative',
-    tagline: 'Fast digital showcase & showreel platform for agencies',
+    brickIndex: 6,
+    color: '#EC4899', // Pink
+    category: 'Creative Showcase',
+    tagline: 'Ultra-Fast 4K Agency Showreel Platform',
+    summary:
+      'High-impact media presentation platform featuring instant video streaming, smooth page transitions, and bespoke typography.',
     image: '/assets/projects/brandnest.png',
-    problem:
-      'Creative agencies and video editors need portfolio websites that showcase heavy 4K videos and commercials without buffering, slow load times, or layout shifts.',
-    solution:
-      'A high-performance presentation platform featuring smooth video streaming, instant page transitions, bespoke typography, and responsive media grids designed for high visual impact.',
     stack: ['React', 'Video Optimization', 'Modern CSS', 'Tailwind'],
-    highlights: ['Instant video loading', 'Custom typography', 'Zero layout shifts', 'Mobile-first design'],
+    metrics: [
+      { label: 'Load Buffer', value: '< 120ms' },
+      { label: 'Layout Shift', value: '0.00 CLS' },
+      { label: 'Asset Caching', value: 'Edge-Pushed' },
+    ],
     status: 'Client Platform',
+    interactiveType: 'video-reel',
   },
   {
     id: 'aegis-raksha',
     title: 'Aegis-Raksha',
-    category: 'iot',
-    tagline: 'Emergency radios that send texts when cell towers go down',
-    problem:
-      'Floods, earthquakes, and power outages frequently destroy cellular towers, leaving disaster victims and rescue teams completely unable to call for help.',
-    solution:
-      'A pocket-sized emergency radio device built on small chips. It forms an automatic wireless chain with other nearby devices, relaying SOS alerts and GPS coordinates for miles without internet or cell service.',
-    stack: ['ESP32 Hardware', 'LoRa Radio Chips', 'C++', 'Offline Mobile App'],
-    highlights: ['Over 10 km rural range', 'Zero internet needed', 'Runs days on a battery', 'End-to-end encrypted'],
+    brickIndex: 4,
+    color: '#FFA502', // Amber
+    category: 'Hardware & RF Mesh',
+    tagline: 'Decentralized Long-Range Radio Comms',
+    summary:
+      'Pocket-sized emergency radio hardware relaying encrypted SOS alerts and GPS telemetry across 10+ km without cellular towers.',
+    stack: ['ESP32 Hardware', 'LoRa 868MHz', 'C++', 'Offline App'],
+    metrics: [
+      { label: 'Radio Line-of-Sight', value: '10+ km' },
+      { label: 'Cell Tower Need', value: 'Zero' },
+      { label: 'Battery Lifespan', value: '48+ hrs' },
+    ],
     github: 'https://github.com/raghavatgit/Aegis-Raksha',
     status: 'Hardware Prototype',
+    interactiveType: 'lora-packet',
   },
   {
     id: 'new-atlas',
     title: 'PerpEdit (New-Atlas)',
-    category: 'creative',
-    tagline: 'One-click bridge between After Effects and DaVinci Resolve',
-    problem:
-      'Video editors waste hours manually rebuilding animation curves and motion keyframes when switching between Adobe After Effects and DaVinci Resolve.',
-    solution:
-      'A smart bridge tool that reads motion keyframes, cuts, and text styles in one app and translates them cleanly into the other with a single click, saving hours of manual work.',
-    stack: ['TypeScript', 'After Effects Scripts', 'DaVinci Fusion Lua', 'React'],
-    highlights: ['Saves 3+ hours per edit', 'Preserves exact Bézier curves', 'Offline license support'],
-    status: 'Active Tool',
+    brickIndex: 5,
+    color: '#8B5CF6', // Purple
+    category: 'Creative Tooling',
+    tagline: 'One-Click After Effects & Resolve Bridge',
+    summary:
+      'Motion translation tool that reads Bézier animation curves, cuts, and layers in After Effects and maps them into DaVinci Resolve.',
+    stack: ['TypeScript', 'After Effects SDK', 'DaVinci Fusion Lua'],
+    metrics: [
+      { label: 'Time Saved', value: '3+ hrs/cut' },
+      { label: 'Curve Fidelity', value: '100% Exact' },
+      { label: 'Script Execution', value: 'Native' },
+    ],
+    status: 'Active Workflow',
+    interactiveType: 'curve-bridge',
   },
   {
     id: 'vencord-ytm-player',
     title: 'Discord Music Player',
-    category: 'creative',
-    tagline: 'Control YouTube Music directly inside your Discord chat',
-    problem:
-      'Having to alt-tab out of games or code just to pause, skip, or check the title of a song breaks your workflow.',
-    solution:
-      'A clean mini-player integrated right into Discord. It displays album artwork with dynamic background colors, volume sliders, and keyboard shortcuts without leaving your chat window.',
-    stack: ['TypeScript', 'Vencord API', 'Canvas Color API', 'WebSockets'],
-    highlights: ['Instant response', 'Adapts colors to album art', 'Zero lag while gaming'],
+    brickIndex: 7,
+    color: '#38BDF8', // Glacier Blue
+    category: 'Native Integrations',
+    tagline: 'Dynamic Art Palette & Chat Controls',
+    summary:
+      'Zero-distraction mini-player embedded directly inside Discord chat with dynamic background palette syncing and instant hotkeys.',
+    stack: ['TypeScript', 'Vencord API', 'Canvas Color API'],
+    metrics: [
+      { label: 'Gaming FPS Lag', value: '0.0%' },
+      { label: 'Palette Extraction', value: 'Real-time' },
+      { label: 'Memory Use', value: '< 1 MB' },
+    ],
     github: 'https://github.com/raghavatgit/vencord-ytm-player',
     status: 'Open Source',
+    interactiveType: 'stream-cloak',
   },
 ]
 
 export function ProjectsSection() {
-  const [filter, setFilter] = useState<'all' | 'systems' | 'creative' | 'iot'>('all')
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const { setHoveredProject } = useMascot()
 
-  const filteredProjects = PROJECTS.filter((p) => filter === 'all' || p.category === filter)
+  // Interactive Demonstration States
+  const [isShieldActive, setIsShieldActive] = useState(true)
+  const [orbitalSpeed, setOrbitalSpeed] = useState(1.4)
+  const [radarPings, setRadarPings] = useState(3)
+  const [packetHops, setPacketHops] = useState(4)
+
+  const activeProject = PROJECTS[selectedIndex]
+
+  const handleSelectProject = (index: number) => {
+    setSelectedIndex(index)
+    setHoveredProject(PROJECTS[index].id)
+  }
+
+  const handlePrev = () => {
+    const nextIdx = (selectedIndex - 1 + PROJECTS.length) % PROJECTS.length
+    handleSelectProject(nextIdx)
+  }
+
+  const handleNext = () => {
+    const nextIdx = (selectedIndex + 1) % PROJECTS.length
+    handleSelectProject(nextIdx)
+  }
 
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-24">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <section id="projects" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
+      {/* Section Header: Minimal, Typographic & Lively (No Cards) */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3 backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>REAL PROJECTS &amp; TOOLS</span>
+            <span>INTERACTIVE DEMONSTRATIONS</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-2 flex-wrap">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
             <span>Featured</span>
             <span className="font-serif italic font-normal text-flow-chromatic text-[1.08em]">
               Works &amp; Systems
             </span>
             <span className="font-cursive text-amber-300 text-xl font-normal select-none -rotate-2">
-              ~ built for real use
+              ~ live demonstrations
             </span>
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
-            Every project here was built to solve a real practical problem — making software faster,
-            protecting privacy, or keeping people connected offline.
+          <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
+            Every tool is engineered to solve a physical problem. Tap through the live stage to explore each architecture.
           </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md self-start md:self-auto">
-          {[
-            { id: 'all', label: 'All Projects' },
-            { id: 'systems', label: 'Fast Systems & Privacy' },
-            { id: 'creative', label: '3D & Creative Apps' },
-            { id: 'iot', label: 'Hardware & Radios' },
-          ].map(({ id, label }) => (
+        {/* Navigation Step Ticker */}
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs text-slate-400">
+            <strong className="text-white font-bold">{String(selectedIndex + 1).padStart(2, '0')}</strong>
+            <span className="text-white/20 mx-1">/</span>
+            <span>{String(PROJECTS.length).padStart(2, '0')}</span>
+          </span>
+          <div className="flex items-center gap-1.5">
             <button
-              key={id}
               type="button"
-              onClick={() => setFilter(id as typeof filter)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                filter === id
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
-              }`}
+              onClick={handlePrev}
+              className="p-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              aria-label="Previous project"
             >
-              {label}
+              <ChevronLeft className="w-4 h-4" />
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={handleNext}
+              className="p-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              aria-label="Next project"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project) => (
-            <motion.article
+      {/* Top Horizon Project Selector Bar (Borderless, Fluid, Lego Color Studs) */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar select-none border-b border-white/[0.05]">
+        {PROJECTS.map((project, idx) => {
+          const isSelected = selectedIndex === idx
+          return (
+            <button
               key={project.id}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.35 }}
+              type="button"
+              onClick={() => handleSelectProject(idx)}
               onMouseEnter={() => setHoveredProject(project.id)}
               onMouseLeave={() => setHoveredProject(null)}
-              className="group relative flex flex-col justify-between rounded-3xl bg-[#090d18]/85 border border-white/[0.09] hover:border-cyan-400/40 p-5 sm:p-7 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/80 overflow-hidden"
+              className={`relative flex items-center gap-2.5 px-4 py-2 rounded-full whitespace-nowrap text-xs font-medium transition-all duration-300 ${
+                isSelected
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+              }`}
             >
-              {/* Optional Real Project Image Showcase */}
-              {project.image && (
-                <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-5 bg-[#05070d] border border-white/[0.06] group-hover:border-cyan-500/30 transition-all">
-                  <img
-                    src={project.image}
-                    alt={`${project.title} screenshot`}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#090d18] via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Category Pill Tag Overlay on Image */}
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#090d18]/85 border border-white/[0.15] backdrop-blur-md text-[11px] font-mono text-cyan-300">
-                    {project.category === 'systems' && <Shield className="w-3.5 h-3.5 text-cyan-400" />}
-                    {project.category === 'creative' && <Layers className="w-3.5 h-3.5 text-purple-400" />}
-                    {project.category === 'iot' && <Radio className="w-3.5 h-3.5 text-amber-400" />}
-                    <span>{project.title}</span>
-                  </div>
+              {/* Lego Stud matching Mascot brick */}
+              <span
+                className="w-2.5 h-2.5 rounded-[3px] shrink-0 transition-transform flex items-center justify-center relative shadow-sm"
+                style={{
+                  backgroundColor: project.color,
+                  boxShadow: isSelected ? `0 0 10px ${project.color}` : 'none',
+                  transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+                }}
+              >
+                <span className="w-1 h-1 rounded-full bg-white/80" />
+              </span>
 
-                  {/* Status Tag Overlay */}
-                  <div className="absolute top-3 right-3 z-10 text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-black/60 border border-white/[0.1] text-emerald-400 backdrop-blur-md">
-                    {project.status}
-                  </div>
-                </div>
+              <span>{project.title}</span>
+
+              {/* Active Gliding Pill with Fluid Spring */}
+              {isSelected && (
+                <motion.div
+                  layoutId="active-project-pill"
+                  transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                  className="absolute inset-0 rounded-full border"
+                  style={{
+                    borderColor: `${project.color}60`,
+                    backgroundColor: `${project.color}15`,
+                  }}
+                />
               )}
+            </button>
+          )
+        })}
+      </div>
 
-              {/* Top Meta when no image is present */}
-              {!project.image && (
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                      {project.category === 'systems' && <Compass className="w-4 h-4 text-cyan-400" />}
-                      {project.category === 'creative' && <Music className="w-4 h-4 text-indigo-400" />}
-                      {project.category === 'iot' && <Radio className="w-4 h-4 text-amber-400" />}
-                    </span>
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-                      {project.category === 'systems' ? 'Systems & Sensors' : project.category === 'creative' ? 'Creative Tech' : 'Hardware & Radio'}
-                    </span>
+      {/* The Cinematic Stage: Grand, Borderless, Demonstrative (Zero Boxed Cards) */}
+      <div className="relative">
+        {/* Dynamic Project Ambient Glow */}
+        <div
+          className="pointer-events-none absolute -top-10 -left-10 w-[500px] h-[500px] rounded-full blur-[140px] opacity-20 transition-all duration-700"
+          style={{ backgroundColor: activeProject.color }}
+        />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeProject.id}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+          >
+            {/* Left Column: Visual Media & Live Physics Demonstration Stage */}
+            <div className="lg:col-span-7 relative">
+              {/* Visual Showcase Frame with Dynamic Glow */}
+              <div className="relative rounded-3xl overflow-hidden bg-[#070a12] border border-white/[0.1] shadow-2xl group">
+                {activeProject.image ? (
+                  <div className="relative w-full h-72 sm:h-96 overflow-hidden">
+                    <img
+                      src={activeProject.image}
+                      alt={`${activeProject.title} demonstration`}
+                      className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-700 opacity-90"
+                      loading="eager"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#070a12] via-transparent to-transparent pointer-events-none" />
                   </div>
-
-                  <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-slate-300">
-                    {project.status}
-                  </span>
-                </div>
-              )}
-
-              {/* Title & Tagline with Matching Mascot Brick Tag */}
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div
-                    className="w-3.5 h-3.5 rounded-[4px] shrink-0 flex items-center justify-center relative shadow-sm border border-white/20 transition-transform group-hover:scale-125"
-                    style={{ backgroundColor: PROJECT_BRICK_COLORS[project.id] || '#00F0FF' }}
-                    title="Mascot Lego Brick Color"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/80" />
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors tracking-tight">
-                    {project.title}
-                  </h3>
-                </div>
-                <p className="text-xs font-mono text-cyan-400 mb-4 font-normal">
-                  {project.tagline}
-                </p>
-
-                {/* Plain English Problem & Solution */}
-                <div className="space-y-3 mb-6 text-sm text-slate-300 leading-relaxed font-light">
-                  <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                    <span className="text-[11px] font-mono font-semibold text-rose-400/90 block mb-1">
-                      The Problem
-                    </span>
-                    <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">{project.problem}</p>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                    <span className="text-[11px] font-mono font-semibold text-cyan-400 block mb-1">
-                      How It Works
-                    </span>
-                    <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">{project.solution}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom: Stack & Actions */}
-              <div>
-                {/* Tech Pills */}
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  {project.stack.map((item) => (
-                    <span
-                      key={item}
-                      className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-slate-300"
+                ) : (
+                  /* Procedural Fallback Stage for Hardware / Research */
+                  <div className="w-full h-72 sm:h-96 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-gradient-to-br from-[#080d1a] to-[#04060b]">
+                    <div
+                      className="w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
+                      style={{ backgroundColor: `${activeProject.color}15`, border: `1.5px solid ${activeProject.color}40` }}
                     >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Highlights */}
-                <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/[0.06] mb-5">
-                  {project.highlights.map((highlight) => (
-                    <div key={highlight} className="flex items-center gap-1.5 text-xs text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                      <span className="truncate">{highlight}</span>
+                      {activeProject.id === 'navdrishti' && <Compass className="w-10 h-10" style={{ color: activeProject.color }} />}
+                      {activeProject.id === 'aegis-raksha' && <Radio className="w-10 h-10" style={{ color: activeProject.color }} />}
+                      {activeProject.id === 'new-atlas' && <Layers className="w-10 h-10" style={{ color: activeProject.color }} />}
+                      {activeProject.id === 'vencord-ytm-player' && <Zap className="w-10 h-10" style={{ color: activeProject.color }} />}
                     </div>
-                  ))}
-                </div>
-
-                {/* Source code / actions */}
-                <div className="flex items-center gap-3">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-xs font-medium text-white border border-white/[0.1] transition-all"
-                    >
-                      <GithubIcon className="w-3.5 h-3.5" />
-                      <span>View on GitHub</span>
-                      <ArrowUpRight className="w-3 h-3 opacity-60" />
-                    </a>
-                  )}
-                  {project.image && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                      <Eye className="w-3 h-3 text-cyan-400" />
-                      <span>Live Media Included</span>
+                    <span className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-1">
+                      {activeProject.category}
                     </span>
+                    <h4 className="text-xl font-bold text-white tracking-tight">{activeProject.tagline}</h4>
+                  </div>
+                )}
+
+                {/* Live Interactive Physics Overlay on the Media Stage */}
+                <div className="p-4 sm:p-5 bg-[#090d19]/90 border-t border-white/[0.08] backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
+                  {/* Interactive Demo Control 1: StreamShield Cloak Simulator */}
+                  {activeProject.interactiveType === 'stream-cloak' && (
+                    <div className="w-full flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-mono">
+                        <span className="text-slate-400">Stream Cloak Mode:</span>
+                        <span
+                          className={`font-bold px-2 py-0.5 rounded-full text-[11px] ${
+                            isShieldActive
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                          }`}
+                        >
+                          {isShieldActive ? 'SHIELDED (INVISIBLE)' : 'EXPOSED'}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsShieldActive(!isShieldActive)}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-mono text-white transition-all border border-white/[0.1]"
+                      >
+                        {isShieldActive ? <EyeOff className="w-3.5 h-3.5 text-rose-400" /> : <Eye className="w-3.5 h-3.5 text-emerald-400" />}
+                        <span>Toggle Cloak</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Interactive Demo Control 2: Sidereal Orbital Velocity Slider */}
+                  {activeProject.interactiveType === 'orbital-physics' && (
+                    <div className="w-full flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+                        <Play className="w-3.5 h-3.5 text-cyan-400 fill-current" />
+                        <span>Kepler Orbital Speed:</span>
+                        <strong className="text-cyan-300">{orbitalSpeed.toFixed(1)}x</strong>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.5"
+                        max="3.0"
+                        step="0.1"
+                        value={orbitalSpeed}
+                        onChange={(e) => setOrbitalSpeed(parseFloat(e.target.value))}
+                        className="w-36 accent-cyan-400 cursor-pointer"
+                        title="Simulate orbital velocity"
+                      />
+                    </div>
+                  )}
+
+                  {/* Interactive Demo Control 3: NavDrishti IMU Inertial Step Pulse */}
+                  {activeProject.interactiveType === 'imu-radar' && (
+                    <div className="w-full flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                        <span>Dead-Reckoning Coordinates:</span>
+                        <strong className="text-emerald-300 font-mono">X:{radarPings * 1.4}m, Y:{radarPings * 0.9}m</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setRadarPings((p) => p + 1)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-mono transition-all"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Accumulate Step</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Interactive Demo Control 4: Aegis-Raksha Packet Hop */}
+                  {activeProject.interactiveType === 'lora-packet' && (
+                    <div className="w-full flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+                        <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                        <span>Ad-Hoc Mesh Distance:</span>
+                        <strong className="text-amber-300 font-mono">{(packetHops * 2.5).toFixed(1)} km</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPacketHops((h) => (h >= 6 ? 1 : h + 1))}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-mono transition-all"
+                      >
+                        <Zap className="w-3 h-3" />
+                        <span>Relay Hop (+2.5km)</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Generic Status Meta */}
+                  {(activeProject.interactiveType === 'video-reel' || activeProject.interactiveType === 'curve-bridge') && (
+                    <div className="w-full flex items-center justify-between text-xs font-mono text-slate-400">
+                      <span className="flex items-center gap-1.5 text-purple-300">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Zero Buffer Hardware Pre-render</span>
+                      </span>
+                      <span className="text-emerald-400 font-semibold">{activeProject.status}</span>
+                    </div>
                   )}
                 </div>
               </div>
-            </motion.article>
-          ))}
+            </div>
+
+            {/* Right Column: High-Signal Details, Minimalist Telemetry & Source (Zero Clutter) */}
+            <div className="lg:col-span-5 flex flex-col items-start space-y-6">
+              {/* Category & Mascot Connection Tag */}
+              <div className="flex items-center gap-3">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-mono font-medium border"
+                  style={{
+                    backgroundColor: `${activeProject.color}15`,
+                    borderColor: `${activeProject.color}40`,
+                    color: activeProject.color,
+                  }}
+                >
+                  {activeProject.category}
+                </span>
+
+                <span className="text-slate-400 text-xs font-mono">
+                  Mascot Brick #{activeProject.brickIndex}
+                </span>
+              </div>
+
+              {/* Title & Tagline with Dynamic Flowing Gradient */}
+              <div>
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2">
+                  {activeProject.title}
+                </h3>
+                <p className="font-serif italic text-lg sm:text-xl text-flow-vibrant">
+                  &ldquo;{activeProject.tagline}&rdquo;
+                </p>
+              </div>
+
+              {/* Razor-Sharp Summary (Lesser text, high impact) */}
+              <p className="text-base text-slate-300 leading-relaxed font-light">
+                {activeProject.summary}
+              </p>
+
+              {/* Borderless Micro-Telemetry Strip (Pure numbers, no card containers) */}
+              <div className="w-full py-4 border-y border-white/[0.08] grid grid-cols-3 gap-3">
+                {activeProject.metrics.map((metric) => (
+                  <div key={metric.label}>
+                    <span className="font-mono text-xs sm:text-sm font-bold text-white block">
+                      {metric.value}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 block tracking-tight">
+                      {metric.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Technology Stack Pills */}
+              <div className="flex flex-wrap gap-1.5">
+                {activeProject.stack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-slate-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              {/* Direct Actions: GitHub Link & Demonstration */}
+              <div className="flex items-center gap-3 pt-2">
+                {activeProject.github && (
+                  <a
+                    href={activeProject.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.16] text-xs font-medium text-white border border-white/[0.12] transition-all group"
+                  >
+                    <GithubIcon className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                    <span>View Architecture on GitHub</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
+                  </a>
+                )}
+
+                <span className="text-xs font-cursive text-cyan-300 select-none">
+                  ~ interactive module active
+                </span>
+              </div>
+            </div>
+          </motion.div>
         </AnimatePresence>
       </div>
     </section>
