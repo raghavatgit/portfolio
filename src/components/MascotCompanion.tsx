@@ -288,11 +288,11 @@ export function MascotCompanion() {
             className="px-3.5 py-1.5 rounded-2xl bg-[#090d18]/95 border border-cyan-400/40 backdrop-blur-xl shadow-xl shadow-black/80 flex items-center gap-2"
           >
             {activeSection === 'contact' ? (
-              <Radio className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
+              <Radio className="w-3.5 h-3.5 text-rose-400" />
             ) : activeSection === 'sandbox' ? (
-              <Activity className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+              <Activity className="w-3.5 h-3.5 text-purple-400" />
             ) : (
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             )}
             <span className="font-cursive text-cyan-200 text-base tracking-wide whitespace-nowrap">
               {bubbleText}

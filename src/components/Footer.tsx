@@ -23,7 +23,7 @@ export function Footer() {
           <button
             type="button"
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white transition-all border border-white/[0.08]"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors"
             title="Scroll to top"
           >
             <span>Top</span>

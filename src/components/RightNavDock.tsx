@@ -150,7 +150,7 @@ export function RightNavDock() {
                     className="absolute right-full mr-3.5 px-3 py-1.5 rounded-xl bg-[#090d18]/95 border border-white/[0.15] backdrop-blur-2xl shadow-xl shadow-black/80 flex items-center gap-2 whitespace-nowrap pointer-events-none z-50"
                   >
                     <span
-                      className="w-2 h-2 rounded-full animate-ping"
+                      className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
                     <div className="flex flex-col">
@@ -158,7 +158,7 @@ export function RightNavDock() {
                         {item.label}
                       </span>
                       <span className="font-cursive text-cyan-300 text-sm leading-none mt-0.5">
-                        ~ {item.subtitle}
+                        {item.subtitle}
                       </span>
                     </div>
                   </motion.div>

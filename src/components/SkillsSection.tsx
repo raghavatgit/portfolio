@@ -73,11 +73,11 @@ export function SkillsSection() {
 
   return (
     <section id="stack" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
-      {/* Header: Minimal, Architectural (Zero Boxed Cards) */}
+      {/* Header: Minimal, Architectural (No Sloppy Rounded Boxes, No Pulsating Dots) */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 border-b border-white/[0.08] pb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3 backdrop-blur-md">
-            <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <Terminal className="w-3.5 h-3.5" />
             <span>TECHNICAL SPECTRUM</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
@@ -86,7 +86,7 @@ export function SkillsSection() {
               Technical Craft
             </span>
             <span className="font-cursive text-emerald-300 text-xl font-normal select-none -rotate-1">
-              ~ architectural depth
+              architectural depth
             </span>
           </h2>
           <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
@@ -96,7 +96,6 @@ export function SkillsSection() {
 
         {/* Live Active Status Indicator */}
         <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
           <span>Interactive Matrix Synced with Mascot</span>
         </div>
       </div>

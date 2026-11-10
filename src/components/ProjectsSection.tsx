@@ -198,11 +198,11 @@ export function ProjectsSection() {
 
   return (
     <section id="projects" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
-      {/* Section Header: Minimal, Typographic & Lively (No Cards) */}
+      {/* Section Header: Minimal, Typographic & Lively (No Sloppy Rounded Boxes, No Pulsating Dots) */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/[0.08] border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-3 backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5" />
             <span>INTERACTIVE DEMONSTRATIONS</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
@@ -211,7 +211,7 @@ export function ProjectsSection() {
               Works &amp; Systems
             </span>
             <span className="font-cursive text-amber-300 text-xl font-normal select-none -rotate-2">
-              ~ live demonstrations
+              live demonstrations
             </span>
           </h2>
           <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
@@ -230,7 +230,7 @@ export function ProjectsSection() {
             <button
               type="button"
               onClick={handlePrev}
-              className="p-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
               aria-label="Previous project"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -238,7 +238,7 @@ export function ProjectsSection() {
             <button
               type="button"
               onClick={handleNext}
-              className="p-2.5 rounded-full bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
               aria-label="Next project"
             >
               <ChevronRight className="w-4 h-4" />
@@ -258,7 +258,7 @@ export function ProjectsSection() {
               onClick={() => handleSelectProject(idx)}
               onMouseEnter={() => setHoveredProject(project.id)}
               onMouseLeave={() => setHoveredProject(null)}
-              className={`relative flex items-center gap-2.5 px-4 py-2 rounded-full whitespace-nowrap text-xs font-medium transition-all duration-300 ${
+              className={`relative flex items-center gap-2.5 px-4 py-2 rounded-xl whitespace-nowrap text-xs font-medium transition-all duration-300 ${
                 isSelected
                   ? 'text-white'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
@@ -278,12 +278,12 @@ export function ProjectsSection() {
 
               <span>{project.title}</span>
 
-              {/* Active Gliding Pill with Fluid Spring */}
+              {/* Active Indicator with Fluid Spring */}
               {isSelected && (
                 <motion.div
                   layoutId="active-project-pill"
                   transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                  className="absolute inset-0 rounded-full border"
+                  className="absolute inset-0 rounded-xl border"
                   style={{
                     borderColor: `${project.color}60`,
                     backgroundColor: `${project.color}15`,
@@ -353,7 +353,7 @@ export function ProjectsSection() {
                       <div className="flex items-center gap-2 text-xs font-mono">
                         <span className="text-slate-400">Stream Cloak Mode:</span>
                         <span
-                          className={`font-bold px-2 py-0.5 rounded-full text-[11px] ${
+                          className={`font-bold px-2.5 py-0.5 rounded-lg text-[11px] ${
                             isShieldActive
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                               : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
@@ -398,7 +398,6 @@ export function ProjectsSection() {
                   {activeProject.interactiveType === 'imu-radar' && (
                     <div className="w-full flex items-center justify-between">
                       <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                         <span>Dead-Reckoning Coordinates:</span>
                         <strong className="text-emerald-300 font-mono">X:{radarPings * 1.4}m, Y:{radarPings * 0.9}m</strong>
                       </div>
@@ -417,7 +416,6 @@ export function ProjectsSection() {
                   {activeProject.interactiveType === 'lora-packet' && (
                     <div className="w-full flex items-center justify-between">
                       <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-                        <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                         <span>Ad-Hoc Mesh Distance:</span>
                         <strong className="text-amber-300 font-mono">{(packetHops * 2.5).toFixed(1)} km</strong>
                       </div>
@@ -451,7 +449,7 @@ export function ProjectsSection() {
               {/* Category & Mascot Connection Tag */}
               <div className="flex items-center gap-3">
                 <span
-                  className="px-3 py-1 rounded-full text-xs font-mono font-medium border"
+                  className="px-3 py-1 rounded-lg text-xs font-mono font-medium border"
                   style={{
                     backgroundColor: `${activeProject.color}15`,
                     borderColor: `${activeProject.color}40`,
@@ -523,7 +521,7 @@ export function ProjectsSection() {
                 )}
 
                 <span className="text-xs font-cursive text-cyan-300 select-none">
-                  ~ interactive module active
+                  interactive module active
                 </span>
               </div>
             </div>
