@@ -31,46 +31,46 @@ export function InteractiveSandbox() {
   return (
     <section id="sandbox" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
       {/* Section Header: Minimal & Typographic (No Sloppy Rounded Boxes, No Pulsating Dots) */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-slate-200 dark:border-white/[0.08] pb-8 transition-colors">
         <div>
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+          <div className="text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5" />
             <span>DIRECT PHYSICS LAB</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-baseline gap-3 flex-wrap">
             <span>Interactive</span>
             <span className="font-serif italic font-normal text-flow-vibrant text-[1.08em]">
               Playground
             </span>
-            <span className="font-cursive text-cyan-300 text-xl font-normal select-none rotate-1">
+            <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-xl font-normal select-none rotate-1">
               test it live
             </span>
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
             Hands-on software logic simulations: test how Bézier acceleration feels or trigger live OS window cloaking.
           </p>
         </div>
 
         {/* Status */}
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
           <span>Real-time CSS &amp; Window Affinities</span>
         </div>
       </div>
 
       {/* Sandbox Container */}
-      <div className="rounded-3xl bg-[#080b16]/75 border border-white/[0.08] backdrop-blur-2xl overflow-hidden shadow-2xl shadow-black/80">
+      <div className="rounded-3xl bg-white/80 dark:bg-[#080b16]/75 border border-slate-200 dark:border-white/[0.08] backdrop-blur-2xl overflow-hidden shadow-xl dark:shadow-2xl transition-colors">
         {/* Module Selector Bar */}
-        <div className="flex flex-wrap border-b border-white/[0.07] bg-black/40 p-2 sm:p-3 gap-2">
+        <div className="flex flex-wrap border-b border-slate-200 dark:border-white/[0.07] bg-slate-100/70 dark:bg-black/40 p-2 sm:p-3 gap-2 transition-colors">
           <button
             type="button"
             onClick={() => setActiveTab('easing')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'easing'
-                ? 'bg-white/[0.1] text-white border border-white/[0.15] shadow-md'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                ? 'bg-white dark:bg-white/[0.1] text-slate-950 dark:text-white border border-slate-300 dark:border-white/[0.15] shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-white/[0.04]'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Sparkles className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
             <span>Smooth Motion Curves</span>
           </button>
 
@@ -79,11 +79,11 @@ export function InteractiveSandbox() {
             onClick={() => setActiveTab('privacy')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'privacy'
-                ? 'bg-white/[0.1] text-white border border-white/[0.15] shadow-md'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                ? 'bg-white dark:bg-white/[0.1] text-slate-950 dark:text-white border border-slate-300 dark:border-white/[0.15] shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-white/[0.04]'
             }`}
           >
-            <ShieldCheck className="w-4 h-4 text-rose-400" />
+            <ShieldCheck className="w-4 h-4 text-rose-500 dark:text-rose-400" />
             <span>Screen Privacy Simulator</span>
           </button>
         </div>

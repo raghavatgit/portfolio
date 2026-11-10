@@ -199,38 +199,38 @@ export function ProjectsSection() {
   return (
     <section id="projects" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
       {/* Section Header: Minimal, Typographic & Lively (No Sloppy Rounded Boxes, No Pulsating Dots) */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-slate-200 dark:border-white/[0.08] pb-8 transition-colors">
         <div>
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+          <div className="text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5" />
             <span>INTERACTIVE DEMONSTRATIONS</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-baseline gap-3 flex-wrap">
             <span>Featured</span>
             <span className="font-serif italic font-normal text-flow-chromatic text-[1.08em]">
               Works &amp; Systems
             </span>
-            <span className="font-cursive text-amber-300 text-xl font-normal select-none -rotate-2">
+            <span className="font-cursive text-amber-600 dark:text-amber-300 text-xl font-normal select-none -rotate-2">
               live demonstrations
             </span>
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
             Every tool is engineered to solve a physical problem. Tap through the live stage to explore each architecture.
           </p>
         </div>
 
         {/* Navigation Step Ticker */}
         <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-slate-400">
-            <strong className="text-white font-bold">{String(selectedIndex + 1).padStart(2, '0')}</strong>
-            <span className="text-white/20 mx-1">/</span>
+          <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
+            <strong className="text-slate-900 dark:text-white font-bold">{String(selectedIndex + 1).padStart(2, '0')}</strong>
+            <span className="text-slate-300 dark:text-white/20 mx-1">/</span>
             <span>{String(PROJECTS.length).padStart(2, '0')}</span>
           </span>
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={handlePrev}
-              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-black dark:bg-white/[0.04] dark:hover:bg-white/[0.1] dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-white/[0.08] transition-all"
               aria-label="Previous project"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -238,7 +238,7 @@ export function ProjectsSection() {
             <button
               type="button"
               onClick={handleNext}
-              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/[0.08] transition-all"
+              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-black dark:bg-white/[0.04] dark:hover:bg-white/[0.1] dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-white/[0.08] transition-all"
               aria-label="Next project"
             >
               <ChevronRight className="w-4 h-4" />
@@ -248,7 +248,7 @@ export function ProjectsSection() {
       </div>
 
       {/* Top Horizon Project Selector Bar (Borderless, Fluid, Lego Color Studs) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar select-none border-b border-white/[0.05]">
+      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar select-none border-b border-slate-200/60 dark:border-white/[0.05]">
         {PROJECTS.map((project, idx) => {
           const isSelected = selectedIndex === idx
           return (
@@ -260,8 +260,8 @@ export function ProjectsSection() {
               onMouseLeave={() => setHoveredProject(null)}
               className={`relative flex items-center gap-2.5 px-4 py-2 rounded-xl whitespace-nowrap text-xs font-medium transition-all duration-300 ${
                 isSelected
-                  ? 'text-white'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                  ? 'text-slate-950 dark:text-white font-bold'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-white/[0.03]'
               }`}
             >
               {/* Lego Stud matching Mascot brick */}
@@ -315,20 +315,20 @@ export function ProjectsSection() {
             {/* Left Column: Visual Media & Live Physics Demonstration Stage */}
             <div className="lg:col-span-7 relative">
               {/* Visual Showcase Frame with Dynamic Glow */}
-              <div className="relative rounded-3xl overflow-hidden bg-[#070a12] border border-white/[0.1] shadow-2xl group">
+              <div className="relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-[#070a12] border border-slate-200 dark:border-white/[0.1] shadow-xl dark:shadow-2xl group transition-colors">
                 {activeProject.image ? (
                   <div className="relative w-full h-72 sm:h-96 overflow-hidden">
                     <img
                       src={activeProject.image}
                       alt={`${activeProject.title} demonstration`}
-                      className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-700 opacity-90"
+                      className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-700 opacity-95 dark:opacity-90"
                       loading="eager"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#070a12] via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent dark:from-[#070a12] pointer-events-none transition-colors" />
                   </div>
                 ) : (
                   /* Procedural Fallback Stage for Hardware / Research */
-                  <div className="w-full h-72 sm:h-96 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-gradient-to-br from-[#080d1a] to-[#04060b]">
+                  <div className="w-full h-72 sm:h-96 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#080d1a] dark:to-[#04060b] transition-colors">
                     <div
                       className="w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
                       style={{ backgroundColor: `${activeProject.color}15`, border: `1.5px solid ${activeProject.color}40` }}
@@ -338,15 +338,15 @@ export function ProjectsSection() {
                       {activeProject.id === 'new-atlas' && <Layers className="w-10 h-10" style={{ color: activeProject.color }} />}
                       {activeProject.id === 'vencord-ytm-player' && <Zap className="w-10 h-10" style={{ color: activeProject.color }} />}
                     </div>
-                    <span className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-1">
+                    <span className="font-mono text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">
                       {activeProject.category}
                     </span>
-                    <h4 className="text-xl font-bold text-white tracking-tight">{activeProject.tagline}</h4>
+                    <h4 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{activeProject.tagline}</h4>
                   </div>
                 )}
 
                 {/* Live Interactive Physics Overlay on the Media Stage */}
-                <div className="p-4 sm:p-5 bg-[#090d19]/90 border-t border-white/[0.08] backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
+                <div className="p-4 sm:p-5 bg-white/95 dark:bg-[#090d19]/90 border-t border-slate-200 dark:border-white/[0.08] backdrop-blur-md flex flex-wrap items-center justify-between gap-3 transition-colors">
                   {/* Interactive Demo Control 1: StreamShield Cloak Simulator */}
                   {activeProject.interactiveType === 'stream-cloak' && (
                     <div className="w-full flex items-center justify-between">
@@ -466,7 +466,7 @@ export function ProjectsSection() {
 
               {/* Title & Tagline with Dynamic Flowing Gradient */}
               <div>
-                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2">
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-2 transition-colors">
                   {activeProject.title}
                 </h3>
                 <p className="font-serif italic text-lg sm:text-xl text-flow-vibrant">
@@ -475,18 +475,18 @@ export function ProjectsSection() {
               </div>
 
               {/* Razor-Sharp Summary (Lesser text, high impact) */}
-              <p className="text-base text-slate-300 leading-relaxed font-light">
+              <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed font-light transition-colors">
                 {activeProject.summary}
               </p>
 
               {/* Borderless Micro-Telemetry Strip (Pure numbers, no card containers) */}
-              <div className="w-full py-4 border-y border-white/[0.08] grid grid-cols-3 gap-3">
+              <div className="w-full py-4 border-y border-slate-200 dark:border-white/[0.08] grid grid-cols-3 gap-3 transition-colors">
                 {activeProject.metrics.map((metric) => (
                   <div key={metric.label}>
-                    <span className="font-mono text-xs sm:text-sm font-bold text-white block">
+                    <span className="font-mono text-xs sm:text-sm font-bold text-slate-900 dark:text-white block transition-colors">
                       {metric.value}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400 block tracking-tight">
+                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block tracking-tight transition-colors">
                       {metric.label}
                     </span>
                   </div>
@@ -498,7 +498,7 @@ export function ProjectsSection() {
                 {activeProject.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-slate-300"
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.07] text-[11px] font-mono text-slate-700 dark:text-slate-300 transition-colors"
                   >
                     {tech}
                   </span>
@@ -512,15 +512,15 @@ export function ProjectsSection() {
                     href={activeProject.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.16] text-xs font-medium text-white border border-white/[0.12] transition-all group"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 dark:bg-white/[0.08] dark:hover:bg-white/[0.16] dark:text-white border border-slate-300 dark:border-white/[0.12] transition-all group"
                   >
-                    <GithubIcon className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                    <GithubIcon className="w-4 h-4 text-cyan-500 dark:text-cyan-400 group-hover:scale-110 transition-transform" />
                     <span>View Architecture on GitHub</span>
                     <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
                   </a>
                 )}
 
-                <span className="text-xs font-cursive text-cyan-300 select-none">
+                <span className="text-xs font-cursive text-cyan-600 dark:text-cyan-300 select-none">
                   interactive module active
                 </span>
               </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { useTheme } from '@/context/ThemeContext'
 
 // Procedural Audio Synthesizer for Tactile Physics
 class SoundEngine {
@@ -97,6 +98,11 @@ export function LegoCube() {
   const isExplodedRef = useRef(false)
   const topTwistRef = useRef(0)
   const targetTopTwistRef = useRef(0)
+  const { colorScheme, theme } = useTheme()
+  const colorSchemeRef = useRef(colorScheme)
+  colorSchemeRef.current = colorScheme
+  const themeRef = useRef(theme)
+  themeRef.current = theme
 
   useEffect(() => {
     const container = mountRef.current
@@ -469,6 +475,21 @@ export function LegoCube() {
       coreMesh.scale.set(corePulse, corePulse, corePulse)
       haloMesh.rotation.z -= 0.012
 
+      // Dynamically adapt studio rim light colors based on selected scheme
+      if (colorSchemeRef.current === 'solar') {
+        cyanRim.color.setHex(0xffa502)
+        magentaRim.color.setHex(0xff4757)
+      } else if (colorSchemeRef.current === 'aurora') {
+        cyanRim.color.setHex(0x00ff88)
+        magentaRim.color.setHex(0x00f5ff)
+      } else if (colorSchemeRef.current === 'violet') {
+        cyanRim.color.setHex(0xa855f7)
+        magentaRim.color.setHex(0xff007f)
+      } else {
+        cyanRim.color.setHex(0x00f5ff)
+        magentaRim.color.setHex(0xff007f)
+      }
+
       // Orbiting Spark Swirl
       particleCloud.rotation.y -= 0.005
       particleCloud.rotation.z += 0.003
@@ -608,11 +629,11 @@ export function LegoCube() {
       />
 
       {/* Clean Interaction Legend: No sloppy rounded boxes, no pulsating dots */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 text-[11px] font-mono text-slate-400 select-none pointer-events-none">
-        <span className="text-cyan-300">Click piece to recoil</span>
-        <span className="text-white/20">/</span>
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 text-[11px] font-mono text-slate-500 dark:text-slate-400 select-none pointer-events-none">
+        <span className="text-cyan-600 dark:text-cyan-300">Click piece to recoil</span>
+        <span className="text-slate-300 dark:text-white/20">/</span>
         <span>Double-click to explode</span>
-        <span className="text-white/20">/</span>
+        <span className="text-slate-300 dark:text-white/20">/</span>
         <span>Drag to rotate</span>
       </div>
     </div>

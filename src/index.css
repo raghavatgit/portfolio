@@ -5,17 +5,38 @@
     --bg-primary: #06080e;
     --bg-surface: #0a0d16;
     --bg-surface-elevated: #111524;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-hover: rgba(255, 255, 255, 0.18);
-    --accent-cyan: #00f0ff;
-    --accent-violet: #8b5cf6;
+    --accent-primary: #00f0ff;
+    --accent-secondary: #8b5cf6;
     --accent-emerald: #10b981;
+    --glass-bg: rgba(9, 13, 24, 0.85);
+  }
+
+  html.light,
+  [data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f1f5f9;
+    --text-primary: #090d16;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.18);
+    --accent-primary: #0284c7;
+    --accent-secondary: #7c3aed;
+    --accent-emerald: #059669;
+    --glass-bg: rgba(255, 255, 255, 0.88);
   }
 
   body {
     background-color: var(--bg-primary);
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   code, pre, .font-mono {
@@ -44,13 +65,14 @@
   font-family: 'Syne', sans-serif;
 }
 
-/* Animated Flowing Chromatic Text (No static gradients) */
+/* Animated Flowing Chromatic Text Animations */
 @keyframes chromaticFlow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+/* 1. Default Prism Chromatic Palette */
 .text-flow-chromatic {
   background: linear-gradient(90deg, #00f0ff, #8b5cf6, #ec4899, #ffb800, #00e676, #00f0ff);
   background-size: 300% 300%;
@@ -73,6 +95,76 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: chromaticFlow 9s ease-in-out infinite;
+}
+
+/* Light Mode Overrides for Default Chromatic (High-Contrast Rich Jewels) */
+html.light .text-flow-chromatic,
+[data-theme="light"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #0284c7, #7c3aed, #db2777, #d97706, #059669, #0284c7);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.light .text-flow-vibrant,
+[data-theme="light"] .text-flow-vibrant {
+  background: linear-gradient(90deg, #0369a1, #6d28d9, #e11d48, #b45309, #047857, #0369a1);
+  background-size: 250% 250%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.light .text-flow-aurora,
+[data-theme="light"] .text-flow-aurora {
+  background: linear-gradient(90deg, #0891b2, #7c3aed, #c026d3, #ea580c, #0891b2);
+  background-size: 250% 250%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 2. Solar Sunset Color Scheme */
+[data-color-scheme="solar"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #ffa502, #ff4757, #ec4899, #ffd000, #ff6b81, #ffa502);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html.light[data-color-scheme="solar"] .text-flow-chromatic,
+[data-theme="light"][data-color-scheme="solar"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #b45309, #e11d48, #be185d, #ea580c, #b45309);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3. Nordic Aurora Color Scheme */
+[data-color-scheme="aurora"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #00e676, #00f0ff, #38bdf8, #10b981, #06b6d4, #00e676);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html.light[data-color-scheme="aurora"] .text-flow-chromatic,
+[data-theme="light"][data-color-scheme="aurora"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #047857, #0284c7, #0369a1, #059669, #047857);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 4. Cyber Orchid / Violet Color Scheme */
+[data-color-scheme="violet"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #a855f7, #ec4899, #6366f1, #d946ef, #c084fc, #a855f7);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html.light[data-color-scheme="violet"] .text-flow-chromatic,
+[data-theme="light"][data-color-scheme="violet"] .text-flow-chromatic {
+  background: linear-gradient(90deg, #7e22ce, #db2777, #4f46e5, #9333ea, #7e22ce);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Dynamic Flowing Keyframe Animations */
@@ -116,17 +208,17 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #06080e;
+  background: var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--border-subtle);
   border-radius: 9999px;
-  border: 1px solid #06080e;
+  border: 1px solid var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.35);
+  background: var(--border-hover);
 }
 
 /* Grain overlay */
@@ -134,9 +226,14 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
+html.light .grain-overlay,
+[data-theme="light"] .grain-overlay {
+  opacity: 0.02;
+}
+
 /* Card glass styles */
 .glass-panel {
-  background: rgba(10, 13, 22, 0.7);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);

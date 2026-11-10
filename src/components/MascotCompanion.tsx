@@ -285,22 +285,22 @@ export function MascotCompanion() {
             key={bubbleText}
             initial={{ opacity: 0, y: 6, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="px-3.5 py-1.5 rounded-2xl bg-[#090d18]/95 border border-cyan-400/40 backdrop-blur-xl shadow-xl shadow-black/80 flex items-center gap-2"
+            className="px-3.5 py-1.5 rounded-2xl bg-white/95 dark:bg-[#090d18]/95 border border-cyan-500/30 dark:border-cyan-400/40 backdrop-blur-xl shadow-lg dark:shadow-xl shadow-black/10 dark:shadow-black/80 flex items-center gap-2 transition-colors"
           >
             {activeSection === 'contact' ? (
-              <Radio className="w-3.5 h-3.5 text-rose-400" />
+              <Radio className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
             ) : activeSection === 'sandbox' ? (
-              <Activity className="w-3.5 h-3.5 text-purple-400" />
+              <Activity className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
             ) : (
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-300" />
             )}
-            <span className="font-cursive text-cyan-200 text-base tracking-wide whitespace-nowrap">
+            <span className="font-cursive text-cyan-700 dark:text-cyan-200 text-base tracking-wide whitespace-nowrap">
               {bubbleText}
             </span>
           </motion.div>
 
           {/* Floating Mascot HUD Dock */}
-          <div className="flex items-center gap-2 p-2 rounded-full bg-[#080b16]/92 border border-white/[0.15] backdrop-blur-2xl shadow-2xl shadow-black/95">
+          <div className="flex items-center gap-2 p-2 rounded-full bg-white/90 dark:bg-[#080b16]/92 border border-slate-200 dark:border-white/[0.15] backdrop-blur-2xl shadow-xl dark:shadow-2xl shadow-black/10 dark:shadow-black/95 transition-colors">
             {/* Expanded Controls on Hover */}
             <AnimatePresence>
               {showControls && (

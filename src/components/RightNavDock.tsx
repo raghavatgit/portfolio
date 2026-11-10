@@ -131,7 +131,7 @@ export function RightNavDock() {
       className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 select-none pointer-events-auto"
     >
       {/* Vertical Dock Capsule */}
-      <nav className="relative flex flex-col items-center gap-2 p-2 rounded-full bg-[#080b16]/90 border border-white/[0.12] backdrop-blur-2xl shadow-2xl shadow-black/90">
+      <nav className="relative flex flex-col items-center gap-2 p-2 rounded-full bg-white/85 dark:bg-[#080b16]/90 border border-slate-200 dark:border-white/[0.12] backdrop-blur-2xl shadow-xl dark:shadow-2xl shadow-black/10 dark:shadow-black/90 transition-colors">
         {NAV_ITEMS.map((item, idx) => {
           const Icon = item.icon
           const isActive = activeSection === item.id
@@ -147,17 +147,17 @@ export function RightNavDock() {
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: 8, scale: 0.9 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    className="absolute right-full mr-3.5 px-3 py-1.5 rounded-xl bg-[#090d18]/95 border border-white/[0.15] backdrop-blur-2xl shadow-xl shadow-black/80 flex items-center gap-2 whitespace-nowrap pointer-events-none z-50"
+                    className="absolute right-full mr-3.5 px-3 py-1.5 rounded-xl bg-white/95 dark:bg-[#090d18]/95 border border-slate-200 dark:border-white/[0.15] backdrop-blur-2xl shadow-xl shadow-black/10 dark:shadow-black/80 flex items-center gap-2 whitespace-nowrap pointer-events-none z-50 transition-colors"
                   >
                     <span
                       className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-white tracking-wide">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wide">
                         {item.label}
                       </span>
-                      <span className="font-cursive text-cyan-300 text-sm leading-none mt-0.5">
+                      <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-sm leading-none mt-0.5">
                         {item.subtitle}
                       </span>
                     </div>
@@ -179,8 +179,8 @@ export function RightNavDock() {
                 onMouseLeave={() => setHoveredId(null)}
                 className={`relative flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 group ${
                   isActive
-                    ? 'text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-white/[0.08]'
+                    ? 'text-slate-900 dark:text-white font-bold'
+                    : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/[0.08]'
                 }`}
                 aria-label={`Jump to ${item.label}`}
               >

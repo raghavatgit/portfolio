@@ -74,28 +74,28 @@ export function SkillsSection() {
   return (
     <section id="stack" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
       {/* Header: Minimal, Architectural (No Sloppy Rounded Boxes, No Pulsating Dots) */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 border-b border-white/[0.08] pb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 border-b border-slate-200 dark:border-white/[0.08] pb-8 transition-colors">
         <div>
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+          <div className="text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <Terminal className="w-3.5 h-3.5" />
             <span>TECHNICAL SPECTRUM</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight flex items-baseline gap-3 flex-wrap">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-baseline gap-3 flex-wrap">
             <span>Capabilities &amp;</span>
             <span className="font-serif italic font-normal text-flow-aurora text-[1.08em]">
               Technical Craft
             </span>
-            <span className="font-cursive text-emerald-300 text-xl font-normal select-none -rotate-1">
+            <span className="font-cursive text-emerald-600 dark:text-emerald-300 text-xl font-normal select-none -rotate-1">
               architectural depth
             </span>
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
             Organized as an active frequency matrix. Hover or tap any spectrum lane to inspect its capabilities and live telemetry.
           </p>
         </div>
 
         {/* Live Active Status Indicator */}
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
           <span>Interactive Matrix Synced with Mascot</span>
         </div>
       </div>
@@ -116,8 +116,8 @@ export function SkillsSection() {
               onMouseLeave={() => setHighlightedBrickIndex(null)}
               className={`relative rounded-2xl transition-all duration-300 border ${
                 isActive
-                  ? 'bg-white/[0.03] border-white/[0.14] shadow-xl shadow-black/40'
-                  : 'bg-transparent border-white/[0.05] hover:border-white/[0.1]'
+                  ? 'bg-white dark:bg-white/[0.04] border-slate-300 dark:border-white/[0.14] shadow-md dark:shadow-xl'
+                  : 'bg-slate-50/50 dark:bg-transparent border-slate-200/80 dark:border-white/[0.05] hover:border-slate-300 dark:hover:border-white/[0.1]'
               } p-5 sm:p-7 overflow-hidden`}
             >
               {/* Dynamic Atmospheric Color Aura */}
@@ -143,20 +143,20 @@ export function SkillsSection() {
                       <span className="w-1 h-1 rounded-full bg-white/90" />
                     </span>
 
-                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                       <span>{track.title}</span>
                       <Icon className="w-4 h-4 opacity-60" style={{ color: track.color }} />
                     </h3>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed max-w-md">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-light leading-relaxed max-w-md">
                     {track.philosophy}
                   </p>
                 </div>
 
                 {/* Column 2: Live Kinetic Frequency Meter (Demonstration) */}
                 <div className="lg:col-span-3 flex flex-col justify-center">
-                  <span className="text-[10px] font-mono text-slate-400 block mb-1.5 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-1.5 uppercase tracking-wider">
                     {track.telemetry}
                   </span>
 
@@ -179,7 +179,7 @@ export function SkillsSection() {
                         }}
                         className="w-1 rounded-full transition-colors duration-300"
                         style={{
-                          backgroundColor: isActive ? track.color : 'rgba(255, 255, 255, 0.15)',
+                          backgroundColor: isActive ? track.color : 'rgba(150, 150, 150, 0.25)',
                         }}
                       />
                     ))}
@@ -193,8 +193,8 @@ export function SkillsSection() {
                       key={skill}
                       className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all duration-300 ${
                         isActive
-                          ? 'bg-white/[0.08] text-white border border-white/[0.15] shadow-sm'
-                          : 'bg-white/[0.02] text-slate-400 border border-white/[0.04]'
+                          ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white border border-slate-300 dark:border-white/[0.15] shadow-sm'
+                          : 'bg-white dark:bg-white/[0.02] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/[0.04]'
                       }`}
                     >
                       {skill}
