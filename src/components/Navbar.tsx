@@ -40,6 +40,19 @@ export function Navbar() {
 
         {/* Right Architectural Plate: Theme Toggle, Palette Selector & Conduits */}
         <div className="flex items-center gap-5 text-xs font-mono">
+          {/* Command palette trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event('palette:open'))}
+            className="hidden sm:flex items-center gap-2 py-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-cyan-300 transition-colors"
+            title="Command palette (Ctrl K)"
+          >
+            <span className="text-[11px] uppercase tracking-wider">Search</span>
+            <span className="border border-slate-300 dark:border-white/20 px-1.5 text-[10px] leading-4">Ctrl K</span>
+          </button>
+
+          <span className="w-px h-3.5 bg-black/[0.08] dark:bg-white/10 hidden sm:block" />
+
           {/* Associated Color Schemes Palette Selector */}
           <div className="relative">
             <button
@@ -57,7 +70,7 @@ export function Navbar() {
             {/* Floating Palette Dropdown */}
             {showPalettes && (
               <div
-                className="absolute right-0 top-full mt-2 p-2 rounded-2xl bg-white/95 dark:bg-[#090d18]/95 border border-black/[0.08] dark:border-white/[0.12] backdrop-blur-2xl shadow-xl z-50 flex flex-col gap-1 min-w-[170px]"
+                className="absolute right-0 top-full mt-3 p-1 bg-white dark:bg-[#090d18] border border-slate-300 dark:border-white/[0.14] shadow-xl z-50 flex flex-col min-w-[190px]"
                 onMouseLeave={() => setShowPalettes(false)}
               >
                 <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-400 px-2 py-1 block">
@@ -71,7 +84,7 @@ export function Navbar() {
                       setColorScheme(scheme.id)
                       setShowPalettes(false)
                     }}
-                    className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left text-xs transition-colors ${
+                    className={`flex items-center justify-between px-2.5 py-2 text-left text-xs transition-colors ${
                       colorScheme === scheme.id
                         ? 'bg-slate-100 dark:bg-white/[0.1] text-slate-900 dark:text-white font-bold'
                         : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.05]'
@@ -82,7 +95,7 @@ export function Navbar() {
                       {scheme.colors.slice(0, 3).map((c, i) => (
                         <span
                           key={i}
-                          className="w-2 h-2 rounded-full"
+                          className="w-2 h-2"
                           style={{ backgroundColor: c }}
                         />
                       ))}

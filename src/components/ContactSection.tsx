@@ -1,173 +1,101 @@
 import { useState } from 'react'
-import { Mail, Copy, Check, ArrowUpRight, MessageSquare, Sparkles } from 'lucide-react'
-import { GithubIcon, LinkedinIcon, YoutubeIcon, InstagramIcon } from '@/components/icons/SocialIcons'
+import { ArrowUpRight, Check, Copy } from 'lucide-react'
+import { InstagramIcon, GithubIcon, LinkedinIcon, YoutubeIcon } from '@/components/icons/SocialIcons'
+import { SectionHeader } from '@/components/SectionHeader'
+import { PROFILE } from '@/data/profile'
+
+const CHANNELS = [
+  { id: 'github', label: 'GitHub', handle: `@${PROFILE.handle}`, href: PROFILE.github, icon: GithubIcon },
+  { id: 'linkedin', label: 'LinkedIn', handle: 'raghav-goyal-linkd', href: PROFILE.linkedin, icon: LinkedinIcon },
+  { id: 'youtube', label: 'YouTube', handle: '@socrates-anxious', href: PROFILE.youtube, icon: YoutubeIcon },
+  { id: 'instagram', label: 'Instagram', handle: '@ykraghv', href: PROFILE.instagram, icon: InstagramIcon },
+]
 
 export function ContactSection() {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null)
-
-  const handleCopy = (key: string, text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedKey(key)
-    setTimeout(() => setCopiedKey(null), 2000)
+  const [copied, setCopied] = useState<string | null>(null)
+  const copy = (key: string, text: string) => {
+    void navigator.clipboard.writeText(text)
+    setCopied(key)
+    setTimeout(() => setCopied(null), 1800)
   }
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-24">
-      {/* Section Header: Minimal & Typographic (No Sloppy Rounded Boxes, No Pulsating Dots) */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 border-b border-slate-200 dark:border-white/[0.08] pb-8 transition-colors">
-        <div>
-          <div className="text-xs font-mono text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>COMMUNICATION CONDUITS</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-baseline gap-3 flex-wrap">
-            <span>Direct</span>
-            <span className="font-serif italic font-normal text-flow-chromatic text-[1.08em]">
-              Connections
-            </span>
-            <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-xl font-normal select-none rotate-1">
-              say hello
-            </span>
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2 max-w-xl font-light leading-relaxed">
-            Reach out directly for systems engineering collaborations, technical inquiries, or shared curiosity.
-          </p>
-        </div>
+    <section id="contact" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+      <SectionHeader
+        eyebrow="Communication"
+        lead="Direct"
+        accent="Connections"
+        note="say hello"
+        right={<span className="text-emerald-600 dark:text-emerald-400">Open to freelance and internships</span>}
+      />
 
-        {/* Status Indicator (No pulsating dot) */}
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400">
-          <span>Open to High-Impact Opportunities</span>
-        </div>
+      {/* Oversized email, the single call to action */}
+      <button
+        type="button"
+        onClick={() => copy('email', PROFILE.email)}
+        className="group mb-14 block w-full text-left"
+        data-cursor
+      >
+        <span className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          {copied === 'email' ? 'Copied to clipboard' : 'Click to copy'}
+        </span>
+        <span className="flex flex-wrap items-center gap-4">
+          <span className="font-display text-3xl font-extrabold tracking-tight text-flow-chromatic sm:text-5xl lg:text-6xl">
+            {PROFILE.email}
+          </span>
+          {copied === 'email' ? (
+            <Check className="h-6 w-6 text-emerald-500" />
+          ) : (
+            <Copy className="h-6 w-6 text-slate-400 transition-colors group-hover:text-cyan-500" />
+          )}
+        </span>
+      </button>
+
+      <div className="divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+        {CHANNELS.map(({ id, label, handle, href, icon: Icon }) => (
+          <a
+            key={id}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group grid grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 md:grid-cols-[2rem_12rem_1fr_auto]"
+          >
+            <Icon className="h-4 w-4 text-slate-400 transition-colors group-hover:text-cyan-500" />
+            <span className="font-display text-xl font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-2 dark:text-white">
+              {label}
+            </span>
+            <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{handle}</span>
+            <ArrowUpRight className="h-4 w-4 text-slate-400 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-500" />
+          </a>
+        ))}
+        <button
+          type="button"
+          onClick={() => copy('discord', PROFILE.discord)}
+          className="group grid w-full grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 text-left md:grid-cols-[2rem_12rem_1fr_auto]"
+        >
+          <span className="font-mono text-xs text-slate-400">#</span>
+          <span className="font-display text-xl font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-2 dark:text-white">
+            Discord
+          </span>
+          <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{PROFILE.discord}</span>
+          {copied === 'discord' ? (
+            <Check className="h-4 w-4 text-emerald-500" />
+          ) : (
+            <Copy className="h-4 w-4 text-slate-400 group-hover:text-cyan-500" />
+          )}
+        </button>
       </div>
 
-      {/* Borderless Communication Lounge (Zero Card Enclosures) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        {/* Left Column: Instant Copy Conduits */}
-        <div className="lg:col-span-5 space-y-6">
-          <div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight transition-colors">
-              Direct Inboxes
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 font-light leading-relaxed">
-              Fastest response via email or Discord ping.
-            </p>
-          </div>
-
-          <div className="space-y-3 pt-2">
-            {/* Email Direct Conduit */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.07] hover:border-cyan-500/40 shadow-xs dark:shadow-none transition-all group">
-              <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 group-hover:scale-105 transition-transform">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block uppercase tracking-wider">Email</span>
-                  <a
-                    href="mailto:goyalraghav1289@gmail.com"
-                    className="text-sm font-semibold text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors"
-                  >
-                    goyalraghav1289@gmail.com
-                  </a>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleCopy('email', 'goyalraghav1289@gmail.com')}
-                className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 transition-colors"
-                title="Copy email to clipboard"
-              >
-                {copiedKey === 'email' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-
-            {/* Discord Direct Conduit */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.07] hover:border-indigo-500/40 shadow-xs dark:shadow-none transition-all group">
-              <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 group-hover:scale-105 transition-transform">
-                  <MessageSquare className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block uppercase tracking-wider">Discord</span>
-                  <span className="text-sm font-semibold font-mono text-slate-900 dark:text-white">
-                    @johnmaybesnow
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleCopy('discord', '@johnmaybesnow')}
-                className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 transition-colors"
-                title="Copy Discord handle"
-              >
-                {copiedKey === 'discord' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Outbound Social & Code Channels (Borderless Grid) */}
-        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[
-            {
-              id: 'github',
-              label: 'GitHub',
-              handle: '@raghavatgit',
-              href: 'https://github.com/raghavatgit',
-              desc: 'Open source implementations, Rust desktop tools & systems utilities',
-              icon: GithubIcon,
-              accent: '#00F0FF',
-            },
-            {
-              id: 'linkedin',
-              label: 'LinkedIn',
-              handle: 'raghav-goyal',
-              href: 'https://linkedin.com/in/raghav-goyal-216a913b4',
-              desc: 'Academic timeline, credentials & professional engineering network',
-              icon: LinkedinIcon,
-              accent: '#38BDF8',
-            },
-            {
-              id: 'youtube',
-              label: 'YouTube',
-              handle: '@socrates-anxious',
-              href: 'https://www.youtube.com/@socrates-anxious',
-              desc: 'Technical demonstrations, motion workflows & software walkthroughs',
-              icon: YoutubeIcon,
-              accent: '#EC4899',
-            },
-            {
-              id: 'instagram',
-              label: 'Instagram',
-              handle: '@ykraghv',
-              href: 'https://instagram.com/ykraghv',
-              desc: 'Personal channel, visual compositions & creative photography',
-              icon: InstagramIcon,
-              accent: '#FFA502',
-            },
-          ].map(({ id, label, handle, href, desc, icon: Icon, accent }) => (
-            <a
-              key={id}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.05] border border-slate-200 dark:border-white/[0.06] hover:border-slate-300 dark:hover:border-white/[0.18] shadow-xs dark:shadow-none transition-all duration-300"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <Icon
-                    className="w-5 h-5 transition-transform group-hover:scale-110"
-                    style={{ color: accent }}
-                  />
-                  <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
-                </div>
-                <span className="font-bold text-base text-slate-900 dark:text-white block mb-0.5">{label}</span>
-                <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 block mb-3 font-semibold">{handle}</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed">{desc}</p>
-            </a>
-          ))}
-        </div>
-      </div>
+      <p className="mt-8 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+        Also live at{' '}
+        <a href={PROFILE.site} target="_blank" rel="noopener noreferrer" className="border-b border-slate-400 text-slate-800 hover:text-cyan-600 dark:border-white/30 dark:text-slate-200 dark:hover:text-cyan-300">
+          crag.web.app
+        </a>{' '}
+        and{' '}
+        <a href={PROFILE.portal} target="_blank" rel="noopener noreferrer" className="border-b border-slate-400 text-slate-800 hover:text-cyan-600 dark:border-white/30 dark:text-slate-200 dark:hover:text-cyan-300">
+          contactraghav.web.app
+        </a>
+      </p>
     </section>
   )
 }

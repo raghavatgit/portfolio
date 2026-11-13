@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+/* Class based dark variant so the theme toggle (html.dark / html.light) drives every dark: utility */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Flowing accent bar (scroll progress, underlines) following the active color scheme */
+.bg-flow {
+  background: linear-gradient(90deg, #00f0ff, #8b5cf6, #ec4899, #ffb800, #00e676, #00f0ff);
+  background-size: 300% 100%;
+  animation: chromaticFlow 8s ease-in-out infinite;
+}
+[data-color-scheme="solar"] .bg-flow {
+  background: linear-gradient(90deg, #ffa502, #ff4757, #ec4899, #ffd000, #ffa502);
+  background-size: 300% 100%;
+}
+[data-color-scheme="aurora"] .bg-flow {
+  background: linear-gradient(90deg, #00e676, #00f0ff, #38bdf8, #10b981, #00e676);
+  background-size: 300% 100%;
+}
+[data-color-scheme="violet"] .bg-flow {
+  background: linear-gradient(90deg, #a855f7, #ec4899, #6366f1, #d946ef, #a855f7);
+  background-size: 300% 100%;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 @layer base {
   :root {
     --bg-primary: #06080e;
