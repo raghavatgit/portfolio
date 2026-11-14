@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { ArrowUpRight, Check, Copy } from 'lucide-react'
 import { InstagramIcon, GithubIcon, LinkedinIcon, YoutubeIcon } from '@/components/icons/SocialIcons'
 import { SectionHeader } from '@/components/SectionHeader'
@@ -20,24 +21,27 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <section id="contact" className="perspective-stage mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
       <SectionHeader
-        eyebrow="Communication"
+        eyebrow="Get in touch"
         lead="Direct"
         accent="Connections"
         note="say hello"
-        right={<span className="text-emerald-600 dark:text-emerald-400">Open to freelance and internships</span>}
+        right={<span className="text-emerald-600 dark:text-emerald-400">Open for freelance &amp; internships</span>}
       />
 
-      {/* Oversized email, the single call to action */}
-      <button
+      {/* Oversized email with subtle 3D perspective lift */}
+      <motion.button
         type="button"
         onClick={() => copy('email', PROFILE.email)}
+        whileHover={{ rotateX: 3, rotateY: -2, scale: 1.008 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+        style={{ transformPerspective: 900, transformOrigin: 'left center' }}
         className="group mb-14 block w-full text-left"
         data-cursor
       >
         <span className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-400">
-          {copied === 'email' ? 'Copied to clipboard' : 'Click to copy'}
+          {copied === 'email' ? 'Copied to clipboard' : 'Click to copy email'}
         </span>
         <span className="flex flex-wrap items-center gap-4">
           <span className="font-display text-3xl font-extrabold tracking-tight text-flow-chromatic sm:text-5xl lg:text-6xl">
@@ -49,7 +53,7 @@ export function ContactSection() {
             <Copy className="h-6 w-6 text-slate-400 transition-colors group-hover:text-cyan-500" />
           )}
         </span>
-      </button>
+      </motion.button>
 
       <div className="divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
         {CHANNELS.map(({ id, label, handle, href, icon: Icon }) => (
@@ -87,7 +91,7 @@ export function ContactSection() {
       </div>
 
       <p className="mt-8 font-mono text-[11px] text-slate-500 dark:text-slate-400">
-        Also live at{' '}
+        Also find me at{' '}
         <a href={PROFILE.site} target="_blank" rel="noopener noreferrer" className="border-b border-slate-400 text-slate-800 hover:text-cyan-600 dark:border-white/30 dark:text-slate-200 dark:hover:text-cyan-300">
           crag.web.app
         </a>{' '}

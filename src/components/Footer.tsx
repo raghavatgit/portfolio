@@ -15,11 +15,11 @@ export function Footer() {
           <span className="text-slate-300 dark:text-white/20">/</span>
           <span>&copy; 2026 Delhi, India</span>
           <span className="text-slate-300 dark:text-white/20">/</span>
-          <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-sm">systems &amp; motion</span>
+          <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-sm">3D web &amp; tools</span>
         </div>
 
         <div className="flex items-center gap-4 text-[11px]">
-          <span className="text-slate-500 dark:text-slate-400">Zero Runtime Bloat</span>
+          <span className="text-slate-500 dark:text-slate-400">Fast &amp; Lightweight</span>
           <button
             type="button"
             onClick={scrollToTop}

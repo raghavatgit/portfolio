@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 
 interface Props {
@@ -11,10 +12,17 @@ interface Props {
   sub?: string
 }
 
-/** Shared section header: hairline rule, mono eyebrow, serif italic flowing accent, cursive note. */
+/** Shared section header with subtle 3D scroll reveal, hairline rule, and flowing accent. */
 export function SectionHeader({ eyebrow, lead, accent, accentClass = 'text-flow-chromatic', note, right, sub }: Props) {
   return (
-    <div className="mb-12 flex flex-col gap-6 border-b border-slate-200 pb-8 transition-colors dark:border-white/[0.08] md:flex-row md:items-end md:justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 18, rotateX: 8 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      viewport={{ once: true, margin: '-8%' }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transformPerspective: 900, transformOrigin: 'bottom center' }}
+      className="mb-12 flex flex-col gap-6 border-b border-slate-200 pb-8 transition-colors dark:border-white/[0.08] md:flex-row md:items-end md:justify-between"
+    >
       <div>
         <div className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
           <Sparkles className="h-3.5 w-3.5" />
@@ -36,6 +44,6 @@ export function SectionHeader({ eyebrow, lead, accent, accentClass = 'text-flow-
         )}
       </div>
       {right && <div className="font-mono text-xs text-slate-500 dark:text-slate-400">{right}</div>}
-    </div>
+    </motion.div>
   )
 }

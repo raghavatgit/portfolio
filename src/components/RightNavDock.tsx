@@ -22,37 +22,37 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'projects',
     label: 'Projects',
-    subtitle: 'systems & tools',
+    subtitle: 'apps & builds',
     icon: Boxes,
-    color: '#00F0FF', // Cyan
+    color: '#00F0FF',
   },
   {
     id: 'sandbox',
-    label: 'Playground',
-    subtitle: 'live physics',
+    label: '3D Lab',
+    subtitle: 'try live demos',
     icon: Activity,
-    color: '#A855F7', // Violet
+    color: '#A855F7',
   },
   {
     id: 'stack',
     label: 'Skills',
-    subtitle: 'technical craft',
+    subtitle: '3D skill map',
     icon: Cpu,
-    color: '#10B981', // Emerald
+    color: '#10B981',
   },
   {
     id: 'about',
-    label: 'About Me',
-    subtitle: 'story & philosophy',
+    label: 'About',
+    subtitle: 'story & setup',
     icon: Compass,
-    color: '#F59E0B', // Amber
+    color: '#F59E0B',
   },
   {
     id: 'contact',
     label: 'Contact',
     subtitle: 'say hello',
     icon: Radio,
-    color: '#FF4757', // Coral
+    color: '#FF4757',
   },
 ]
 

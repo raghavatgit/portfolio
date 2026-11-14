@@ -228,6 +228,44 @@ export function LegoCube() {
     const particleCloud = new THREE.Points(particleGeo, particleMat)
     masterGroup.add(particleCloud)
 
+    // 3D Stage Pedestal: Grounded architectural compass rings beneath the floating cube
+    const stageGroup = new THREE.Group()
+    stageGroup.position.y = -2.05
+    scene.add(stageGroup)
+
+    const outerRingGeo = new THREE.RingGeometry(2.15, 2.18, 64)
+    outerRingGeo.rotateX(-Math.PI / 2)
+    const outerRingMat = new THREE.MeshBasicMaterial({
+      color: 0x00f5ff,
+      transparent: true,
+      opacity: 0.28,
+      side: THREE.DoubleSide,
+    })
+    const outerRingMesh = new THREE.Mesh(outerRingGeo, outerRingMat)
+    stageGroup.add(outerRingMesh)
+
+    const innerRingGeo = new THREE.RingGeometry(1.38, 1.40, 48)
+    innerRingGeo.rotateX(-Math.PI / 2)
+    const innerRingMat = new THREE.MeshBasicMaterial({
+      color: 0xff007f,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide,
+    })
+    const innerRingMesh = new THREE.Mesh(innerRingGeo, innerRingMat)
+    stageGroup.add(innerRingMesh)
+
+    const crosshairPts: number[] = []
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2
+      crosshairPts.push(Math.cos(a) * 1.4, 0, Math.sin(a) * 1.4, Math.cos(a) * 2.35, 0, Math.sin(a) * 2.35)
+    }
+    const stageTicksGeo = new THREE.BufferGeometry()
+    stageTicksGeo.setAttribute('position', new THREE.Float32BufferAttribute(crosshairPts, 3))
+    const stageTicksMat = new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.24 })
+    const stageTicks = new THREE.LineSegments(stageTicksGeo, stageTicksMat)
+    stageGroup.add(stageTicks)
+
     // Architectural Lego Brick Geometries with Rich Physical Detail
     const brickSize = 0.94
     const brickHeight = 0.76
@@ -490,6 +528,12 @@ export function LegoCube() {
         magentaRim.color.setHex(0xff007f)
       }
 
+      outerRingMat.color.copy(cyanRim.color)
+      innerRingMat.color.copy(magentaRim.color)
+      outerRingMat.opacity = themeRef.current === 'light' ? 0.34 : 0.24
+      innerRingMat.opacity = themeRef.current === 'light' ? 0.26 : 0.18
+      stageGroup.rotation.y = rotY * 0.35 + clockTime * 0.04
+
       // Orbiting Spark Swirl
       particleCloud.rotation.y -= 0.005
       particleCloud.rotation.z += 0.003
@@ -612,6 +656,12 @@ export function LegoCube() {
       haloGeo.dispose()
       particleGeo.dispose()
       lineGeo.dispose()
+      outerRingGeo.dispose()
+      outerRingMat.dispose()
+      innerRingGeo.dispose()
+      innerRingMat.dispose()
+      stageTicksGeo.dispose()
+      stageTicksMat.dispose()
       brickMaterials.forEach((m) => m.dispose())
       if (container.contains(dom)) {
         container.removeChild(dom)
@@ -625,16 +675,16 @@ export function LegoCube() {
       <div
         ref={mountRef}
         className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
-        title="Direct 3D Lego Physics: Click piece to recoil & chime · Drag to orbit · Double-click to explode CAD view · Right-click to twist layer"
+        title="Click a piece to bounce · Drag to spin · Double-click to open up · Right-click to twist top"
       />
 
-      {/* Clean Interaction Legend: No sloppy rounded boxes, no pulsating dots */}
+      {/* Clean Interaction Legend */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 text-[11px] font-mono text-slate-500 dark:text-slate-400 select-none pointer-events-none">
-        <span className="text-cyan-600 dark:text-cyan-300">Click piece to recoil</span>
+        <span className="text-cyan-600 dark:text-cyan-300">Click piece to bounce</span>
         <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Double-click to explode</span>
+        <span>Double-click to open</span>
         <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Drag to rotate</span>
+        <span>Drag to spin</span>
       </div>
     </div>
   )

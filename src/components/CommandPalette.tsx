@@ -28,9 +28,9 @@ export function CommandPalette() {
   const commands = useMemo<Command[]>(() => {
     const list: Command[] = [
       { id: 's-top', group: 'Go to', label: 'Home', run: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-      { id: 's-work', group: 'Go to', label: 'Work index', hint: 'projects', run: () => goTo('projects') },
-      { id: 's-lab', group: 'Go to', label: 'Systems lab', hint: 'simulations', run: () => goTo('sandbox') },
-      { id: 's-stack', group: 'Go to', label: 'Skill graph', hint: 'stack', run: () => goTo('stack') },
+      { id: 's-work', group: 'Go to', label: 'Projects', hint: 'apps & tools', run: () => goTo('projects') },
+      { id: 's-lab', group: 'Go to', label: 'Interactive 3D lab', hint: 'live demos', run: () => goTo('sandbox') },
+      { id: 's-stack', group: 'Go to', label: '3D skill map', hint: 'tools & stats', run: () => goTo('stack') },
       { id: 's-about', group: 'Go to', label: 'About', run: () => goTo('about') },
       { id: 's-contact', group: 'Go to', label: 'Contact', run: () => goTo('contact') },
       {

@@ -1,15 +1,21 @@
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { GraduationCap, MapPin, Quote } from 'lucide-react'
 import { SectionHeader } from '@/components/SectionHeader'
 import { PROFILE, SERVICES } from '@/data/profile'
 
 export function AboutSection() {
+  const px = useMotionValue(0)
+  const py = useMotionValue(0)
+  const rotY = useSpring(useTransform(px, [-0.5, 0.5], [-10, 10]), { stiffness: 180, damping: 22 })
+  const rotX = useSpring(useTransform(py, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 22 })
+
   return (
     <section id="about" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
       <SectionHeader
-        eyebrow="Origin and philosophy"
-        lead="Engineering"
-        accent="Perspective"
-        note="from the ground up"
+        eyebrow="About me"
+        lead="How I"
+        accent="Build Software"
+        note="simple & fast"
         right={
           <span className="flex items-center gap-2">
             <MapPin className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
@@ -22,12 +28,12 @@ export function AboutSection() {
         <div className="space-y-10 lg:col-span-7">
           <div>
             <h3 className="mb-5 font-serif text-3xl font-normal italic leading-snug text-slate-900 transition-colors dark:text-white sm:text-4xl">
-              Small resident memory, no borrowed frameworks, complexity I can prove.
+              Tiny file sizes, clean code, and tools you can count on.
             </h3>
             <p className="text-base font-light leading-relaxed text-slate-600 dark:text-slate-300">
               I study computer science at <strong className="font-bold text-slate-900 dark:text-white">South Asian University</strong>,
-              class of 2029. I would rather read the kernel docs than trust a black box, so my tools talk to the
-              compositor, the registry and the radio directly.
+              class of 2029. Instead of piling on heavy templates, I like understanding how Windows, sensors, and 3D
+              graphics work from the ground up so the final app runs quickly anywhere.
             </p>
           </div>
 
@@ -39,10 +45,10 @@ export function AboutSection() {
             <span className="h-3.5 w-px bg-slate-300 dark:bg-white/20" />
             <span>Smart India Hackathon 2026</span>
             <span className="h-3.5 w-px bg-slate-300 dark:bg-white/20" />
-            <span>Open for freelance</span>
+            <span>Open for freelance &amp; internships</span>
           </div>
 
-          {/* Services as a typographic ledger, not cards */}
+          {/* Services ledger */}
           <div className="divide-y divide-slate-200 dark:divide-white/[0.08]">
             {SERVICES.map((s) => (
               <div key={s.n} className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[2.5rem_11rem_1fr]">
@@ -75,20 +81,38 @@ export function AboutSection() {
           </div>
         </div>
 
-        <div className="space-y-6 lg:col-span-5">
-          <div className="group relative overflow-hidden border border-slate-200 dark:border-white/[0.08]">
-            <img
-              src="/assets/media/setup.jpg"
-              alt="Raghav's workspace"
-              className="h-80 w-full object-cover object-center opacity-95 transition-transform duration-700 group-hover:scale-[1.03] dark:opacity-90 sm:h-96"
-              loading="lazy"
-            />
+        {/* 3D Pointer-Tilted Workspace Plate */}
+        <div className="perspective-stage space-y-6 lg:col-span-5">
+          <motion.div
+            onMouseMove={(e) => {
+              const r = e.currentTarget.getBoundingClientRect()
+              px.set((e.clientX - r.left) / r.width - 0.5)
+              py.set((e.clientY - r.top) / r.height - 0.5)
+            }}
+            onMouseLeave={() => {
+              px.set(0)
+              py.set(0)
+            }}
+            style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
+            className="group relative border border-slate-200 bg-white/40 shadow-2xl shadow-black/15 transition-shadow hover:shadow-cyan-500/15 dark:border-white/[0.1] dark:bg-black/40 dark:shadow-black/60"
+          >
+            <div className="overflow-hidden">
+              <img
+                src="/assets/media/setup.jpg"
+                alt="Raghav's desk setup"
+                className="h-80 w-full object-cover object-center opacity-95 transition-transform duration-700 group-hover:scale-[1.04] dark:opacity-90 sm:h-96"
+                loading="lazy"
+              />
+            </div>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent dark:from-[#06080e]" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px]">
-              <span className="text-slate-900 dark:text-white">Work rig</span>
+            <div
+              className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px]"
+              style={{ transform: 'translateZ(26px)' }}
+            >
+              <span className="text-slate-900 dark:text-white">My desk setup</span>
               <span className="text-cyan-700 dark:text-cyan-300">28.5355 N, 77.2090 E</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -267,3 +267,20 @@ html.light .grain-overlay,
 .glass-panel:hover {
   border-color: var(--border-hover);
 }
+
+/* 3D Spatial Depth Helpers */
+.perspective-stage {
+  perspective: 1100px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.depth-layer-1 {
+  transform: translateZ(16px);
+}
+
+.depth-layer-2 {
+  transform: translateZ(34px);
+}

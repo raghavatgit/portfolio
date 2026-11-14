@@ -144,7 +144,7 @@ export function Navbar() {
               <VolumeX className="w-3.5 h-3.5 opacity-50" />
             )}
             <span className="hidden sm:inline text-[11px] uppercase tracking-wider">
-              {soundEnabled ? 'SFX' : 'MUTED'}
+              {soundEnabled ? 'Sound' : 'Muted'}
             </span>
           </button>
 

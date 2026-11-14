@@ -69,7 +69,7 @@ export function MascotCompanion() {
   } = useMascot()
 
   const [localExploded, setLocalExploded] = useState(false)
-  const [bubbleText, setBubbleText] = useState('Your 3D Lego Mascot ✨')
+  const [bubbleText, setBubbleText] = useState('3D Lego Cube')
   const [showControls, setShowControls] = useState(false)
 
   // Sync sound setting
@@ -80,26 +80,26 @@ export function MascotCompanion() {
   // Context-aware speech bubble text
   useEffect(() => {
     if (hoveredProject) {
-      setBubbleText(`Spotlighting ${hoveredProject} ✨`)
+      setBubbleText(`Highlighting ${hoveredProject}`)
     } else {
       switch (activeSection) {
         case 'projects':
-          setBubbleText('Interactive Project Core 🚀')
+          setBubbleText('Inspecting projects')
           break
         case 'sandbox':
-          setBubbleText('Testing motion physics 🌊')
+          setBubbleText('Trying 3D demos')
           break
         case 'stack':
-          setBubbleText('Skills blueprint exploded 📐')
+          setBubbleText('Spinning 3D skill map')
           break
         case 'about':
-          setBubbleText('Crafted in Delhi ☕')
+          setBubbleText('Built in Delhi')
           break
         case 'contact':
-          setBubbleText('Beacon open ~ say hello! 📡')
+          setBubbleText('Say hello')
           break
         default:
-          setBubbleText('Click to snap & play anywhere ✨')
+          setBubbleText('Click to open 3D cube')
           break
       }
     }
@@ -319,9 +319,11 @@ export function MascotCompanion() {
                       setMascotMode(localExploded ? 'assembled' : 'exploded')
                     }}
                     className={`p-2 rounded-full transition-colors ${
-                      localExploded ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-white/[0.06] text-slate-300 hover:text-white'
+                      localExploded
+                        ? 'bg-cyan-500 text-slate-950 font-bold'
+                        : 'bg-slate-100 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:text-white'
                     }`}
-                    title="Disassemble / Assemble"
+                    title="Open / Close 3D Cube"
                   >
                     <Layers className="w-3.5 h-3.5" />
                   </button>
@@ -330,8 +332,8 @@ export function MascotCompanion() {
                   <button
                     type="button"
                     onClick={handleScrollToTop}
-                    className="p-2 rounded-full bg-white/[0.06] hover:bg-white/[0.14] text-slate-300 hover:text-white transition-colors"
-                    title="Return to Hero Stage"
+                    className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
+                    title="Back to top"
                   >
                     <ArrowUp className="w-3.5 h-3.5" />
                   </button>
@@ -340,7 +342,7 @@ export function MascotCompanion() {
                   <button
                     type="button"
                     onClick={() => setSoundEnabled(!soundEnabled)}
-                    className="p-2 rounded-full bg-white/[0.06] hover:bg-white/[0.14] text-slate-300 hover:text-white transition-colors"
+                    className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
                     title={soundEnabled ? 'Mute' : 'Unmute'}
                   >
                     {soundEnabled ? (
