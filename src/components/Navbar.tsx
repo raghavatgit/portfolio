@@ -6,15 +6,20 @@ import { useTheme, COLOR_SCHEMES } from '@/context/ThemeContext'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [depthMeters, setDepthMeters] = useState('0.00')
   const [showPalettes, setShowPalettes] = useState(false)
   const { soundEnabled, setSoundEnabled } = useMascot()
   const { theme, toggleTheme, colorScheme, setColorScheme } = useTheme()
 
   useEffect(() => {
     function handleScroll() {
-      setScrolled(window.scrollY > 20)
+      const y = window.scrollY
+      setScrolled(y > 20)
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
+      setDepthMeters(((y / max) * 22).toFixed(2))
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -26,7 +31,7 @@ export function Navbar() {
           : 'bg-transparent py-5 border-b border-black/[0.03] dark:border-white/[0.04]'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:pr-20 xl:px-8 flex items-center justify-between">
         {/* Brand Title: ONLY the cursive name raghavgoyal. */}
         <a
           href="#"
@@ -38,8 +43,15 @@ export function Navbar() {
           </span>
         </a>
 
-        {/* Right Architectural Plate: Theme Toggle, Palette Selector & Conduits */}
-        <div className="flex items-center gap-5 text-xs font-mono">
+        {/* Right Architectural Plate: Live 3D Depth Readout, Search, Palette, Theme & Conduits */}
+        <div className="flex items-center gap-4 sm:gap-5 text-xs font-mono">
+          <span className="hidden lg:inline-flex items-center gap-1.5 text-[11px] tabular-nums text-slate-500 dark:text-slate-400">
+            <span className="text-cyan-600 dark:text-cyan-400">Z</span>
+            <span>-{depthMeters}m</span>
+          </span>
+
+          <span className="hidden lg:block w-px h-3.5 bg-black/[0.08] dark:bg-white/10" />
+
           {/* Command palette trigger */}
           <button
             type="button"

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, Rotate3d } from 'lucide-react'
 import { SectionHeader } from '@/components/SectionHeader'
+import { SpatialSection } from '@/components/SpatialSection'
 import { useTheme, type ColorScheme } from '@/context/ThemeContext'
 import type { LabId } from '@/data/profile'
 
@@ -1030,7 +1031,7 @@ export function SystemsLab() {
   }, [])
 
   return (
-    <section id="sandbox" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <SpatialSection id="sandbox" index="02 / 05">
       <SectionHeader
         eyebrow="Interactive demos"
         lead="Try the"
@@ -1066,6 +1067,6 @@ export function SystemsLab() {
         {tab === 'inertial' && <InertialSim pal={pal} />}
         {tab === 'cloak' && <CloakSim />}
       </div>
-    </section>
+    </SpatialSection>
   )
 }

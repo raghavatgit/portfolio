@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { animate, motion, useInView } from 'framer-motion'
 import { SectionHeader } from '@/components/SectionHeader'
+import { SpatialSection } from '@/components/SpatialSection'
 import { useMascot } from '@/context/MascotContext'
 import { useTheme } from '@/context/ThemeContext'
 import { useGithubPulse, timeAgo } from '@/hooks/useGithubPulse'
@@ -499,7 +500,7 @@ export function SkillGraph() {
   const active = LANGUAGES.find((l) => l.name === lang)
 
   return (
-    <section id="stack" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <SpatialSection id="stack" index="03 / 05">
       <SectionHeader
         eyebrow="Tools & tech"
         lead="Skills in"
@@ -543,10 +544,10 @@ export function SkillGraph() {
 
       <SkillGraphCanvas />
 
-      {/* GitHub milestones */}
-      <div className="mt-16 grid grid-cols-2 gap-y-10 border-t border-slate-200 pt-10 dark:border-white/[0.08] md:grid-cols-4">
-        {STATS.map((s) => (
-          <div key={s.label}>
+      {/* GitHub milestones in calibrated 4-column hairline grid */}
+      <div className="mt-16 grid grid-cols-2 divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08] md:grid-cols-4 md:divide-x md:divide-y-0">
+        {STATS.map((s, idx) => (
+          <div key={s.label} className={idx === 0 ? 'py-6 pr-6' : idx === 3 ? 'py-6 md:pl-6' : 'py-6 md:px-6'}>
             <div className="font-display text-5xl font-extrabold tracking-tight text-flow-chromatic sm:text-6xl">
               <CountUp to={s.value} suffix={s.suffix} />
             </div>
@@ -557,11 +558,11 @@ export function SkillGraph() {
         ))}
       </div>
       {pulse?.latest && (
-        <p className="mt-8 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+        <p className="mt-6 font-mono text-[11px] text-slate-500 dark:text-slate-400">
           Latest update: <span className="text-slate-800 dark:text-slate-200">{pulse.latest.name}</span>{' '}
           {timeAgo(pulse.latest.at)}
         </p>
       )}
-    </section>
+    </SpatialSection>
   )
 }

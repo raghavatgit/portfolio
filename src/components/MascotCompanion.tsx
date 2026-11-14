@@ -280,12 +280,12 @@ export function MascotCompanion() {
           onMouseLeave={() => setShowControls(false)}
           className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2.5 pointer-events-auto select-none"
         >
-          {/* Cursive Context-Aware Status Bubble */}
+          {/* Cursive Context-Aware Status Tag */}
           <motion.div
             key={bubbleText}
             initial={{ opacity: 0, y: 6, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="px-3.5 py-1.5 rounded-2xl bg-white/95 dark:bg-[#090d18]/95 border border-cyan-500/30 dark:border-cyan-400/40 backdrop-blur-xl shadow-lg dark:shadow-xl shadow-black/10 dark:shadow-black/80 flex items-center gap-2 transition-colors"
+            className="flex items-center gap-2 border border-cyan-500/35 bg-white/95 px-3 py-1 shadow-[3px_3px_0_rgba(0,240,255,0.18)] backdrop-blur-xl transition-colors dark:border-cyan-400/40 dark:bg-[#090d18]/95"
           >
             {activeSection === 'contact' ? (
               <Radio className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
@@ -300,7 +300,7 @@ export function MascotCompanion() {
           </motion.div>
 
           {/* Floating Mascot HUD Dock */}
-          <div className="flex items-center gap-2 p-2 rounded-full bg-white/90 dark:bg-[#080b16]/92 border border-slate-200 dark:border-white/[0.15] backdrop-blur-2xl shadow-xl dark:shadow-2xl shadow-black/10 dark:shadow-black/95 transition-colors">
+          <div className="flex items-center gap-2 border border-slate-300 bg-white/90 p-1.5 shadow-[4px_4px_0_rgba(0,240,255,0.15)] backdrop-blur-2xl transition-colors dark:border-white/[0.15] dark:bg-[#080b16]/92">
             {/* Expanded Controls on Hover */}
             <AnimatePresence>
               {showControls && (
@@ -318,7 +318,7 @@ export function MascotCompanion() {
                       setLocalExploded(!localExploded)
                       setMascotMode(localExploded ? 'assembled' : 'exploded')
                     }}
-                    className={`p-2 rounded-full transition-colors ${
+                    className={`p-2 transition-colors ${
                       localExploded
                         ? 'bg-cyan-500 text-slate-950 font-bold'
                         : 'bg-slate-100 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:text-white'
@@ -332,7 +332,7 @@ export function MascotCompanion() {
                   <button
                     type="button"
                     onClick={handleScrollToTop}
-                    className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
+                    className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
                     title="Back to top"
                   >
                     <ArrowUp className="w-3.5 h-3.5" />
@@ -342,7 +342,7 @@ export function MascotCompanion() {
                   <button
                     type="button"
                     onClick={() => setSoundEnabled(!soundEnabled)}
-                    className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
+                    className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 dark:bg-white/[0.06] dark:hover:bg-white/[0.14] dark:text-slate-300 dark:hover:text-white transition-colors"
                     title={soundEnabled ? 'Mute' : 'Unmute'}
                   >
                     {soundEnabled ? (
@@ -355,12 +355,12 @@ export function MascotCompanion() {
               )}
             </AnimatePresence>
 
-            {/* 3D Interactive Mascot Canvas Orb */}
+            {/* 3D Interactive Mascot Canvas Square Viewport */}
             <div
               ref={mountRef}
               onClick={handleClickMascot}
-              className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500/10 via-indigo-500/10 to-purple-500/10 border border-cyan-400/40 flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-transform shadow-[0_0_20px_rgba(0,240,255,0.25)] relative overflow-hidden"
-              title="Raghav's 3D Lego Mascot: Click to snap/explode or hover for controls"
+              className="relative flex h-12 w-12 cursor-pointer items-center justify-center overflow-hidden border border-cyan-500/45 bg-gradient-to-br from-cyan-500/10 via-indigo-500/10 to-purple-500/10 transition-transform hover:scale-105 active:scale-95"
+              title="Raghav's 3D Lego Mascot: Click to snap/open or hover for controls"
             />
           </div>
         </motion.div>

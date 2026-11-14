@@ -40,92 +40,124 @@ export function FlowingBackground() {
     host.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100)
-    camera.position.set(0, 1.4, 10)
+    const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 120)
+    camera.position.set(0, 1.2, 10)
 
     const worldGroup = new THREE.Group()
     scene.add(worldGroup)
 
-    // Architectural 3D floor & upper coordinate grid planes
-    const gridFloor = new THREE.GridHelper(46, 36, 0x00f0ff, 0x334155)
-    gridFloor.position.y = -5.2
+    // Calibrated architectural 3D floor & ceiling grids extending down Z-depth
+    const gridFloor = new THREE.GridHelper(64, 48, 0x00f0ff, 0x334155)
+    gridFloor.position.set(0, -5.2, -12)
     const floorMats = Array.isArray(gridFloor.material) ? gridFloor.material : [gridFloor.material]
     floorMats.forEach((m) => {
       m.transparent = true
-      m.opacity = 0.14
+      m.opacity = 0.16
     })
     worldGroup.add(gridFloor)
 
-    const gridRoof = new THREE.GridHelper(46, 24, 0x8b5cf6, 0x1e293b)
-    gridRoof.position.y = 7.4
+    const gridRoof = new THREE.GridHelper(64, 32, 0x8b5cf6, 0x1e293b)
+    gridRoof.position.set(0, 7.2, -12)
     const roofMats = Array.isArray(gridRoof.material) ? gridRoof.material : [gridRoof.material]
     roofMats.forEach((m) => {
       m.transparent = true
-      m.opacity = 0.08
+      m.opacity = 0.09
     })
     worldGroup.add(gridRoof)
 
-    // Floating sparse 3D architectural wireframes distributed across Z depth
-    const polyGeo = new THREE.OctahedronGeometry(0.85, 0)
-    const cubeGeo = new THREE.BoxGeometry(1.15, 1.15, 1.15)
-    const edgesPoly = new THREE.EdgesGeometry(polyGeo)
-    const edgesCube = new THREE.EdgesGeometry(cubeGeo)
+    // Precision vertical laser columns framing the corridor symmetrically on Left & Right rails
+    const pillarGeo = new THREE.BufferGeometry()
+    const pillarPts: number[] = []
+    const zStations = [-3, -9, -15, -21, -27, -33]
+    zStations.forEach((z) => {
+      pillarPts.push(-8.2, -5.2, z, -8.2, 7.2, z)
+      pillarPts.push(8.2, -5.2, z, 8.2, 7.2, z)
+    })
+    pillarGeo.setAttribute('position', new THREE.Float32BufferAttribute(pillarPts, 3))
+    const pillarMat = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.12 })
+    const pillars = new THREE.LineSegments(pillarGeo, pillarMat)
+    worldGroup.add(pillars)
 
-    interface Prop3D {
-      mesh: THREE.LineSegments
-      mat: THREE.LineBasicMaterial
+    // Shared sculptural geometries placed at exact symmetric corridor stations
+    const cubeEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.3, 1.3, 1.3))
+    const innerOctaEdges = new THREE.EdgesGeometry(new THREE.OctahedronGeometry(0.68, 0))
+    const ringGeo = new THREE.TorusGeometry(1.15, 0.014, 8, 48)
+
+    interface Assembly {
+      group: THREE.Group
+      ringA: THREE.Mesh
+      ringB: THREE.Mesh
+      core: THREE.LineSegments
+      shell: THREE.LineSegments
+      matA: THREE.LineBasicMaterial
+      matB: THREE.LineBasicMaterial
+      ringMatA: THREE.MeshBasicMaterial
+      ringMatB: THREE.MeshBasicMaterial
       baseY: number
-      speed: number
       phase: number
-      accentSlot: 0 | 1
+      side: -1 | 1
     }
-    const props: Prop3D[] = []
 
-    const layout: [number, number, number, number, 0 | 1, boolean][] = [
-      [-8.5, 2.2, -5, 1.2, 0, false],
-      [9.2, -1.8, -8, 1.5, 1, true],
-      [-6.8, -2.5, -13, 1.8, 1, true],
-      [7.4, 3.1, -15, 1.1, 0, false],
-      [-11.0, 0.4, -22, 2.1, 0, true],
-      [10.5, 1.2, -25, 1.9, 1, false],
-      [0.8, 4.4, -19, 1.3, 0, false],
+    const assemblies: Assembly[] = []
+    const placements: { x: number; y: number; z: number; s: number; side: -1 | 1 }[] = [
+      { x: -8.2, y: 1.5, z: -3, s: 1.05, side: -1 },
+      { x: 8.2, y: -1.1, z: -9, s: 1.2, side: 1 },
+      { x: -8.2, y: 0.2, z: -15, s: 1.35, side: -1 },
+      { x: 8.2, y: 2.0, z: -21, s: 1.25, side: 1 },
+      { x: -8.2, y: -0.9, z: -27, s: 1.4, side: -1 },
+      { x: 8.2, y: 1.0, z: -33, s: 1.3, side: 1 },
     ]
 
-    layout.forEach(([x, y, z, scale, accentSlot, useCube], i) => {
-      const mat = new THREE.LineBasicMaterial({
-        color: accentSlot === 0 ? 0x00f0ff : 0x8b5cf6,
-        transparent: true,
-        opacity: 0.22,
-      })
-      const mesh = new THREE.LineSegments(useCube ? edgesCube : edgesPoly, mat)
-      mesh.position.set(x, y, z)
-      mesh.scale.setScalar(scale)
-      worldGroup.add(mesh)
-      props.push({
-        mesh,
-        mat,
-        baseY: y,
-        speed: 0.16 + (i % 3) * 0.07,
-        phase: i * 1.1,
-        accentSlot,
+    placements.forEach((p, i) => {
+      const group = new THREE.Group()
+      group.position.set(p.x, p.y, p.z)
+      group.scale.setScalar(p.s)
+
+      const matA = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.28 })
+      const matB = new THREE.LineBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.34 })
+      const ringMatA = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.22 })
+      const ringMatB = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.18 })
+
+      const shell = new THREE.LineSegments(cubeEdges, matA)
+      const core = new THREE.LineSegments(innerOctaEdges, matB)
+      const ringA = new THREE.Mesh(ringGeo, ringMatA)
+      const ringB = new THREE.Mesh(ringGeo, ringMatB)
+      ringA.rotation.x = Math.PI / 3
+      ringB.rotation.y = Math.PI / 3
+
+      group.add(shell, core, ringA, ringB)
+      worldGroup.add(group)
+      assemblies.push({
+        group,
+        ringA,
+        ringB,
+        core,
+        shell,
+        matA,
+        matB,
+        ringMatA,
+        ringMatB,
+        baseY: p.y,
+        phase: i * 1.05,
+        side: p.side,
       })
     })
 
-    // Subtle 3D depth stars / survey markers
-    const ptCount = 120
+    // Depth survey particles down the corridor
+    const ptCount = 150
     const ptGeo = new THREE.BufferGeometry()
     const ptPositions = new Float32Array(ptCount * 3)
     for (let i = 0; i < ptCount; i++) {
-      ptPositions[i * 3] = (Math.random() - 0.5) * 32
+      ptPositions[i * 3] = (Math.random() - 0.5) * 34
       ptPositions[i * 3 + 1] = (Math.random() - 0.5) * 14
-      ptPositions[i * 3 + 2] = -Math.random() * 28
+      ptPositions[i * 3 + 2] = 6 - Math.random() * 44
     }
     ptGeo.setAttribute('position', new THREE.BufferAttribute(ptPositions, 3))
     const ptMat = new THREE.PointsMaterial({
-      size: 0.09,
+      size: 0.085,
       color: 0x00f0ff,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.34,
     })
     const points = new THREE.Points(ptGeo, ptMat)
     worldGroup.add(points)
@@ -134,7 +166,8 @@ export function FlowingBackground() {
     let targetMouseY = 0
     let smoothMouseX = 0
     let smoothMouseY = 0
-    let scrollRatio = 0
+    let targetScroll = 0
+    let smoothScroll = 0
 
     const onPointerMove = (e: PointerEvent) => {
       targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2
@@ -143,11 +176,12 @@ export function FlowingBackground() {
 
     const onScroll = () => {
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
-      scrollRatio = window.scrollY / maxScroll
+      targetScroll = window.scrollY / maxScroll
     }
 
     window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
 
     const onResize = () => {
       if (!host || !renderer) return
@@ -169,21 +203,27 @@ export function FlowingBackground() {
         if ('color' in m && m.color instanceof THREE.Color) {
           m.color.setHex(idx === 0 ? c1 : light ? 0x94a3b8 : 0x334155)
         }
-        m.opacity = light ? (idx === 0 ? 0.16 : 0.12) : idx === 0 ? 0.18 : 0.1
+        m.opacity = light ? (idx === 0 ? 0.16 : 0.11) : idx === 0 ? 0.19 : 0.1
       })
       roofMats.forEach((m, idx) => {
         if ('color' in m && m.color instanceof THREE.Color) {
           m.color.setHex(idx === 0 ? c2 : light ? 0xcbd5e1 : 0x1e293b)
         }
-        m.opacity = light ? 0.07 : 0.08
+        m.opacity = light ? 0.08 : 0.09
       })
 
+      pillarMat.color.setHex(c1)
+      pillarMat.opacity = light ? 0.12 : 0.11
       ptMat.color.setHex(c1)
-      ptMat.opacity = light ? 0.25 : 0.36
+      ptMat.opacity = light ? 0.24 : 0.36
 
-      props.forEach((p) => {
-        p.mat.color.setHex(p.accentSlot === 0 ? c1 : c2)
-        p.mat.opacity = light ? 0.22 : 0.24
+      assemblies.forEach((a) => {
+        a.matA.color.setHex(c1)
+        a.matB.color.setHex(c2)
+        a.ringMatA.color.setHex(c1)
+        a.ringMatB.color.setHex(c2)
+        a.matA.opacity = light ? 0.25 : 0.28
+        a.matB.opacity = light ? 0.28 : 0.34
       })
 
       renderer!.render(scene, camera)
@@ -194,21 +234,30 @@ export function FlowingBackground() {
     } else {
       const tick = () => {
         raf = requestAnimationFrame(tick)
-        t += 0.008
-        smoothMouseX += (targetMouseX - smoothMouseX) * 0.045
-        smoothMouseY += (targetMouseY - smoothMouseY) * 0.045
+        t += 0.007
+        smoothMouseX += (targetMouseX - smoothMouseX) * 0.05
+        smoothMouseY += (targetMouseY - smoothMouseY) * 0.05
+        smoothScroll += (targetScroll - smoothScroll) * 0.075
 
-        camera.position.x = smoothMouseX * 1.1
-        camera.position.y = 1.4 - smoothMouseY * 0.65 - scrollRatio * 1.1
-        camera.position.z = 10 - scrollRatio * 6.5
-        camera.lookAt(smoothMouseX * 0.25, -scrollRatio * 1.2, -8)
+        // Fly camera smoothly down the calibrated 3D Z corridor on scroll
+        const camZ = 10 - smoothScroll * 22
+        camera.position.x = smoothMouseX * 1.15
+        camera.position.y = 1.2 - smoothMouseY * 0.65 - smoothScroll * 0.6
+        camera.position.z = camZ
+        camera.lookAt(smoothMouseX * 0.25, -smoothScroll * 0.4, camZ - 14)
 
-        props.forEach((p) => {
-          p.mesh.rotation.x = t * p.speed + p.phase
-          p.mesh.rotation.y = t * p.speed * 1.25
-          p.mesh.position.y = p.baseY + Math.sin(t * 1.4 + p.phase) * 0.35
+        // Precision synchronized rotation driven cleanly by both time & scroll phase
+        const scrollAngle = smoothScroll * Math.PI * 2.5
+        assemblies.forEach((a) => {
+          a.group.position.y = a.baseY + Math.sin(t * 1.2 + a.phase) * 0.25
+          a.shell.rotation.y = a.side * (t * 0.32 + scrollAngle * 0.45) + a.phase
+          a.shell.rotation.x = t * 0.18 + scrollAngle * 0.25
+          a.core.rotation.y = -a.side * (t * 0.5 + scrollAngle * 0.65)
+          a.core.rotation.z = t * 0.24
+          a.ringA.rotation.z = scrollAngle * 0.8 + t * 0.4
+          a.ringB.rotation.x = -scrollAngle * 0.6 - t * 0.3
         })
-        points.rotation.y = t * 0.04 + smoothMouseX * 0.08
+        points.rotation.y = smoothMouseX * 0.06 + smoothScroll * 0.22
 
         syncColorsAndRender()
       }
@@ -220,13 +269,19 @@ export function FlowingBackground() {
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
-      polyGeo.dispose()
-      cubeGeo.dispose()
-      edgesPoly.dispose()
-      edgesCube.dispose()
+      cubeEdges.dispose()
+      innerOctaEdges.dispose()
+      ringGeo.dispose()
+      pillarGeo.dispose()
+      pillarMat.dispose()
       ptGeo.dispose()
       ptMat.dispose()
-      props.forEach((p) => p.mat.dispose())
+      assemblies.forEach((a) => {
+        a.matA.dispose()
+        a.matB.dispose()
+        a.ringMatA.dispose()
+        a.ringMatB.dispose()
+      })
       renderer?.dispose()
       if (renderer && host.contains(renderer.domElement)) {
         host.removeChild(renderer.domElement)
@@ -234,33 +289,32 @@ export function FlowingBackground() {
     }
   }, [])
 
-  // Soft ambient color nodes matching theme and color scheme
   const getNodeClasses = () => {
     switch (colorScheme) {
       case 'solar':
         return {
-          node1: isLight ? 'bg-amber-400/[0.16]' : 'bg-amber-500/[0.12]',
-          node2: isLight ? 'bg-rose-400/[0.14]' : 'bg-rose-600/[0.10]',
-          node3: isLight ? 'bg-orange-300/[0.16]' : 'bg-orange-500/[0.10]',
+          node1: isLight ? 'bg-amber-400/[0.15]' : 'bg-amber-500/[0.11]',
+          node2: isLight ? 'bg-rose-400/[0.13]' : 'bg-rose-600/[0.09]',
+          node3: isLight ? 'bg-orange-300/[0.14]' : 'bg-orange-500/[0.09]',
         }
       case 'aurora':
         return {
-          node1: isLight ? 'bg-emerald-400/[0.16]' : 'bg-emerald-500/[0.12]',
-          node2: isLight ? 'bg-cyan-400/[0.16]' : 'bg-cyan-500/[0.12]',
-          node3: isLight ? 'bg-teal-300/[0.14]' : 'bg-teal-500/[0.10]',
+          node1: isLight ? 'bg-emerald-400/[0.15]' : 'bg-emerald-500/[0.11]',
+          node2: isLight ? 'bg-cyan-400/[0.15]' : 'bg-cyan-500/[0.11]',
+          node3: isLight ? 'bg-teal-300/[0.13]' : 'bg-teal-500/[0.09]',
         }
       case 'violet':
         return {
-          node1: isLight ? 'bg-purple-400/[0.16]' : 'bg-purple-600/[0.12]',
-          node2: isLight ? 'bg-pink-400/[0.14]' : 'bg-pink-600/[0.10]',
-          node3: isLight ? 'bg-indigo-300/[0.14]' : 'bg-indigo-500/[0.10]',
+          node1: isLight ? 'bg-purple-400/[0.15]' : 'bg-purple-600/[0.11]',
+          node2: isLight ? 'bg-pink-400/[0.13]' : 'bg-pink-600/[0.09]',
+          node3: isLight ? 'bg-indigo-300/[0.13]' : 'bg-indigo-500/[0.09]',
         }
       case 'chromatic':
       default:
         return {
-          node1: isLight ? 'bg-cyan-400/[0.16]' : 'bg-cyan-500/[0.10]',
-          node2: isLight ? 'bg-indigo-400/[0.14]' : 'bg-indigo-600/[0.12]',
-          node3: isLight ? 'bg-emerald-400/[0.14]' : 'bg-emerald-500/[0.08]',
+          node1: isLight ? 'bg-cyan-400/[0.15]' : 'bg-cyan-500/[0.10]',
+          node2: isLight ? 'bg-indigo-400/[0.13]' : 'bg-indigo-600/[0.11]',
+          node3: isLight ? 'bg-emerald-400/[0.13]' : 'bg-emerald-500/[0.08]',
         }
     }
   }
@@ -272,24 +326,21 @@ export function FlowingBackground() {
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none transition-colors duration-700"
       aria-hidden="true"
     >
-      {/* Subtle 3D Color Atmosphere */}
       <div
-        className={`absolute -top-[15%] left-[10%] h-[50vw] w-[50vw] max-w-[660px] max-h-[660px] rounded-full blur-[150px] animate-flow-1 transition-colors duration-700 ${nodes.node1}`}
+        className={`animate-flow-1 absolute -top-[15%] left-[10%] h-[50vw] w-[50vw] max-h-[640px] max-w-[640px] rounded-full blur-[150px] transition-colors duration-700 ${nodes.node1}`}
       />
       <div
-        className={`absolute top-[35%] -right-[10%] h-[55vw] w-[55vw] max-w-[700px] max-h-[700px] rounded-full blur-[160px] animate-flow-2 transition-colors duration-700 ${nodes.node2}`}
+        className={`animate-flow-2 absolute top-[35%] -right-[10%] h-[55vw] w-[55vw] max-h-[680px] max-w-[680px] rounded-full blur-[160px] transition-colors duration-700 ${nodes.node2}`}
       />
       <div
-        className={`absolute -bottom-[20%] left-[25%] h-[48vw] w-[48vw] max-w-[620px] max-h-[620px] rounded-full blur-[150px] animate-flow-3 transition-colors duration-700 ${nodes.node3}`}
+        className={`animate-flow-3 absolute -bottom-[20%] left-[25%] h-[48vw] w-[48vw] max-h-[600px] max-w-[600px] rounded-full blur-[150px] transition-colors duration-700 ${nodes.node3}`}
       />
 
-      {/* Interactive 3D Perspective Grid & Spatial Wireframes */}
       <div ref={canvasHostRef} className="absolute inset-0" />
 
-      {/* Atmospheric Vignette for crisp legibility */}
       <div
         className={`absolute inset-0 transition-colors duration-700 ${
-          isLight ? 'bg-slate-50/45' : 'bg-[#06080e]/35'
+          isLight ? 'bg-slate-50/40' : 'bg-[#06080e]/30'
         }`}
       />
     </div>

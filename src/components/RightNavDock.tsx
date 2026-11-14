@@ -128,10 +128,10 @@ export function RightNavDock() {
   return (
     <aside
       aria-label="Vertical Section Navigation"
-      className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 select-none pointer-events-auto"
+      className="perspective-stage pointer-events-auto fixed right-3 top-1/2 z-40 hidden -translate-y-1/2 select-none sm:right-5 md:block"
     >
-      {/* Vertical Dock Capsule */}
-      <nav className="relative flex flex-col items-center gap-2 p-2 rounded-full bg-white/85 dark:bg-[#080b16]/90 border border-slate-200 dark:border-white/[0.12] backdrop-blur-2xl shadow-xl dark:shadow-2xl shadow-black/10 dark:shadow-black/90 transition-colors">
+      {/* Precision Machined Architectural Rail (no rounded pills) */}
+      <nav className="preserve-3d relative flex flex-col items-center gap-1.5 border border-slate-300/90 bg-white/85 p-1.5 shadow-[4px_4px_0_rgba(15,23,42,0.08)] backdrop-blur-2xl transition-colors dark:border-white/[0.14] dark:bg-[#080b16]/90 dark:shadow-[4px_4px_0_rgba(0,240,255,0.12)]">
         {NAV_ITEMS.map((item, idx) => {
           const Icon = item.icon
           const isActive = activeSection === item.id
@@ -139,25 +139,26 @@ export function RightNavDock() {
 
           return (
             <div key={item.id} className="relative flex items-center justify-center">
-              {/* Sliding Cursive Tooltip to the Left on Hover */}
+              {/* Sliding 3D Tooltips */}
               <AnimatePresence>
                 {isHovered && (
                   <motion.div
-                    initial={{ opacity: 0, x: 12, scale: 0.9 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: 8, scale: 0.9 }}
+                    initial={{ opacity: 0, x: 14, rotateY: -14 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    exit={{ opacity: 0, x: 8, rotateY: -8 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    className="absolute right-full mr-3.5 px-3 py-1.5 rounded-xl bg-white/95 dark:bg-[#090d18]/95 border border-slate-200 dark:border-white/[0.15] backdrop-blur-2xl shadow-xl shadow-black/10 dark:shadow-black/80 flex items-center gap-2 whitespace-nowrap pointer-events-none z-50 transition-colors"
+                    style={{ transformOrigin: 'right center' }}
+                    className="pointer-events-none absolute right-full z-50 mr-3 flex items-center gap-2.5 whitespace-nowrap border border-slate-300 bg-white/95 px-3 py-1.5 shadow-xl shadow-black/10 backdrop-blur-2xl transition-colors dark:border-white/[0.16] dark:bg-[#090d18]/95 dark:shadow-black/80"
                   >
                     <span
-                      className="w-1.5 h-1.5 rounded-full"
+                      className="h-2 w-2"
                       style={{ backgroundColor: item.color }}
                     />
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wide">
+                      <span className="text-xs font-bold tracking-wide text-slate-900 dark:text-white">
                         {item.label}
                       </span>
-                      <span className="font-cursive text-cyan-600 dark:text-cyan-300 text-sm leading-none mt-0.5">
+                      <span className="mt-0.5 font-cursive text-sm leading-none text-cyan-600 dark:text-cyan-300">
                         {item.subtitle}
                       </span>
                     </div>
@@ -165,7 +166,6 @@ export function RightNavDock() {
                 )}
               </AnimatePresence>
 
-              {/* Improvised Logo Button */}
               <a
                 href={`#${item.id}`}
                 onClick={() => {
@@ -177,40 +177,38 @@ export function RightNavDock() {
                   dockSfx.playTick(1200)
                 }}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`relative flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 group ${
+                className={`group relative flex h-10 w-10 items-center justify-center transition-all duration-300 ${
                   isActive
-                    ? 'text-slate-900 dark:text-white font-bold'
-                    : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/[0.08]'
+                    ? 'font-bold text-slate-900 dark:text-white'
+                    : 'text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/[0.08] dark:hover:text-white'
                 }`}
                 aria-label={`Jump to ${item.label}`}
               >
-                {/* Active Indicator Spring Background */}
                 {isActive && (
                   <motion.div
                     layoutId="active-dock-glow"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    className="absolute inset-0 rounded-full"
+                    className="absolute inset-0"
                     style={{
-                      backgroundColor: `${item.color}25`,
+                      backgroundColor: `${item.color}1e`,
                       border: `1.5px solid ${item.color}`,
-                      boxShadow: `0 0 16px ${item.color}60`,
+                      boxShadow: `0 0 14px ${item.color}45`,
                     }}
                   />
                 )}
 
-                {/* Animated Improvised Logo Icon */}
-                <div className="relative z-10 transition-transform duration-300 group-hover:scale-125">
+                <div className="relative z-10 transition-transform duration-300 group-hover:scale-115">
                   <Icon
-                    className="w-5 h-5 transition-colors duration-200"
+                    className="h-4 w-4 transition-colors duration-200"
                     style={{
                       color: isActive || isHovered ? item.color : undefined,
                     }}
                   />
                 </div>
 
-                {/* Subtle Stud Marker matching the Lego Motif */}
+                {/* Square Lego stud registration marker */}
                 <span
-                  className={`absolute -top-0.5 right-1.5 w-1.5 h-1.5 rounded-full transition-opacity ${
+                  className={`absolute right-1 top-1 h-1 w-1 transition-opacity ${
                     isActive ? 'opacity-100' : 'opacity-0'
                   }`}
                   style={{ backgroundColor: item.color }}
@@ -220,9 +218,8 @@ export function RightNavDock() {
           )
         })}
 
-        {/* Bottom Sparkle Marker */}
-        <div className="pt-1 text-white/30 hover:text-cyan-400 transition-colors">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="pt-1 text-slate-400 transition-colors hover:text-cyan-500 dark:text-white/30">
+          <Sparkles className="h-3.5 w-3.5" />
         </div>
       </nav>
     </aside>

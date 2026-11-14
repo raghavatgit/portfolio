@@ -6,7 +6,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-slate-200 dark:border-white/[0.06] py-12 px-4 sm:px-8 max-w-7xl mx-auto transition-colors">
+    <footer className="mx-auto max-w-7xl border-t border-slate-200 px-4 py-12 transition-colors dark:border-white/[0.06] sm:px-8 lg:pr-20 xl:px-8">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
         <div className="flex items-center gap-3">
           <span className="font-brush text-3xl text-flow-chromatic select-none drop-shadow-[0_2px_10px_rgba(0,240,255,0.2)]">

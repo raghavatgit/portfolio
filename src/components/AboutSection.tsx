@@ -1,16 +1,28 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { GraduationCap, MapPin, Quote } from 'lucide-react'
 import { SectionHeader } from '@/components/SectionHeader'
+import { ExtrudedSlab, SpatialSection } from '@/components/SpatialSection'
 import { PROFILE, SERVICES } from '@/data/profile'
 
 export function AboutSection() {
+  const photoRef = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+
+  const { scrollYProgress } = useScroll({
+    target: photoRef,
+    offset: ['start end', 'end start'],
+  })
+  const scrollPanY = useSpring(useTransform(scrollYProgress, [0, 0.5, 1], [-8, 0, 8]), { stiffness: 120, damping: 22 })
+  const scrollLift = useSpring(useTransform(scrollYProgress, [0, 0.5, 1], [18, 0, -18]), { stiffness: 120, damping: 22 })
+
   const px = useMotionValue(0)
   const py = useMotionValue(0)
-  const rotY = useSpring(useTransform(px, [-0.5, 0.5], [-10, 10]), { stiffness: 180, damping: 22 })
-  const rotX = useSpring(useTransform(py, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 22 })
+  const hoverRotY = useSpring(useTransform(px, [-0.5, 0.5], [-10, 10]), { stiffness: 180, damping: 22 })
+  const hoverRotX = useSpring(useTransform(py, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 22 })
 
   return (
-    <section id="about" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <SpatialSection id="about" index="04 / 05">
       <SectionHeader
         eyebrow="About me"
         lead="How I"
@@ -48,11 +60,13 @@ export function AboutSection() {
             <span>Open for freelance &amp; internships</span>
           </div>
 
-          {/* Services ledger */}
           <div className="divide-y divide-slate-200 dark:divide-white/[0.08]">
             {SERVICES.map((s) => (
-              <div key={s.n} className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[2.5rem_11rem_1fr]">
-                <span className="font-mono text-xs text-slate-400">{s.n}</span>
+              <div
+                key={s.n}
+                className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[2.5rem_11rem_1fr]"
+              >
+                <span className="font-mono text-xs tabular-nums text-slate-400">{s.n}</span>
                 <span className="font-display text-lg font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-1 dark:text-white">
                   {s.title}
                 </span>
@@ -81,8 +95,8 @@ export function AboutSection() {
           </div>
         </div>
 
-        {/* 3D Pointer-Tilted Workspace Plate */}
-        <div className="perspective-stage space-y-6 lg:col-span-5">
+        {/* Scroll-animated & pointer-tilted 3D extruded workspace slab */}
+        <div ref={photoRef} className="perspective-stage pr-3 pt-2 lg:col-span-5">
           <motion.div
             onMouseMove={(e) => {
               const r = e.currentTarget.getBoundingClientRect()
@@ -93,28 +107,42 @@ export function AboutSection() {
               px.set(0)
               py.set(0)
             }}
-            style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
-            className="group relative border border-slate-200 bg-white/40 shadow-2xl shadow-black/15 transition-shadow hover:shadow-cyan-500/15 dark:border-white/[0.1] dark:bg-black/40 dark:shadow-black/60"
+            style={
+              reduce
+                ? { transformStyle: 'preserve-3d' }
+                : {
+                    y: scrollLift,
+                    rotateX: hoverRotX,
+                    rotateY: hoverRotY,
+                    transformStyle: 'preserve-3d',
+                  }
+            }
           >
-            <div className="overflow-hidden">
-              <img
-                src="/assets/media/setup.jpg"
-                alt="Raghav's desk setup"
-                className="h-80 w-full object-cover object-center opacity-95 transition-transform duration-700 group-hover:scale-[1.04] dark:opacity-90 sm:h-96"
-                loading="lazy"
-              />
-            </div>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent dark:from-[#06080e]" />
-            <div
-              className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px]"
-              style={{ transform: 'translateZ(26px)' }}
-            >
-              <span className="text-slate-900 dark:text-white">My desk setup</span>
-              <span className="text-cyan-700 dark:text-cyan-300">28.5355 N, 77.2090 E</span>
-            </div>
+            <motion.div style={reduce ? { transformStyle: 'preserve-3d' } : { rotateY: scrollPanY, transformStyle: 'preserve-3d' }}>
+              <ExtrudedSlab accentColor="#00F0FF" depth={14}>
+                <div className="group relative border border-slate-200 bg-white/40 shadow-2xl shadow-black/20 dark:border-white/[0.14] dark:bg-black/40 dark:shadow-black/70">
+                  <div className="overflow-hidden">
+                    <img
+                      src="/assets/media/setup.jpg"
+                      alt="Raghav's desk setup"
+                      className="h-80 w-full object-cover object-center opacity-95 transition-transform duration-700 group-hover:scale-[1.04] dark:opacity-90 sm:h-96"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent dark:from-[#06080e]" />
+                  <div
+                    className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px]"
+                    style={{ transform: 'translateZ(26px)' }}
+                  >
+                    <span className="text-slate-900 dark:text-white">My desk setup</span>
+                    <span className="text-cyan-700 dark:text-cyan-300">28.5355 N, 77.2090 E</span>
+                  </div>
+                </div>
+              </ExtrudedSlab>
+            </motion.div>
           </motion.div>
         </div>
       </div>
-    </section>
+    </SpatialSection>
   )
 }

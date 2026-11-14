@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, Check, Copy } from 'lucide-react'
 import { InstagramIcon, GithubIcon, LinkedinIcon, YoutubeIcon } from '@/components/icons/SocialIcons'
 import { SectionHeader } from '@/components/SectionHeader'
+import { SpatialSection } from '@/components/SpatialSection'
 import { PROFILE } from '@/data/profile'
 
 const CHANNELS = [
@@ -21,7 +22,7 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="perspective-stage mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <SpatialSection id="contact" index="05 / 05">
       <SectionHeader
         eyebrow="Get in touch"
         lead="Direct"
@@ -30,13 +31,13 @@ export function ContactSection() {
         right={<span className="text-emerald-600 dark:text-emerald-400">Open for freelance &amp; internships</span>}
       />
 
-      {/* Oversized email with subtle 3D perspective lift */}
+      {/* Oversized email with crisp 3D perspective lift */}
       <motion.button
         type="button"
         onClick={() => copy('email', PROFILE.email)}
-        whileHover={{ rotateX: 3, rotateY: -2, scale: 1.008 }}
+        whileHover={{ rotateX: 3, rotateY: -2, z: 16, scale: 1.008 }}
         transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-        style={{ transformPerspective: 900, transformOrigin: 'left center' }}
+        style={{ transformPerspective: 900, transformOrigin: 'left center', transformStyle: 'preserve-3d' }}
         className="group mb-14 block w-full text-left"
         data-cursor
       >
@@ -100,6 +101,6 @@ export function ContactSection() {
           contactraghav.web.app
         </a>
       </p>
-    </section>
+    </SpatialSection>
   )
 }

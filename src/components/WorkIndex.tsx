@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react'
-import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowUpRight, Plus } from 'lucide-react'
 import { SectionHeader } from '@/components/SectionHeader'
+import { ExtrudedSlab, SpatialSection } from '@/components/SpatialSection'
 import { useMascot } from '@/context/MascotContext'
 import { SKILLS, WORKS, type Work } from '@/data/profile'
 
@@ -27,14 +29,12 @@ function Plate({ work }: { work: Work }) {
       <rect width="260" height="170" fill="#05070d" />
       <rect width="260" height="170" fill={`url(#g-${work.id})`} />
       <rect width="260" height="170" fill={`url(#f-${work.id})`} />
-      {/* Receding 3D perspective floor lines */}
       <path
         d="M10 155 L92 105 M250 155 L168 105 M55 155 L110 105 M205 155 L150 105 M45 135 H215 M75 118 H185"
         stroke={work.color}
         strokeOpacity="0.28"
         strokeWidth="0.7"
       />
-      {/* Back wireframe isometric cube faces */}
       <polygon
         points="130,32 172,56 172,102 130,126 88,102 88,56"
         fill={work.color}
@@ -43,7 +43,6 @@ function Plate({ work }: { work: Work }) {
         strokeOpacity="0.85"
         strokeWidth="1.2"
       />
-      {/* Top face */}
       <polygon
         points="130,32 172,56 130,80 88,56"
         fill={work.color}
@@ -52,7 +51,6 @@ function Plate({ work }: { work: Work }) {
         strokeOpacity="0.95"
         strokeWidth="1"
       />
-      {/* Vertical center ridge + inner cube */}
       <path d="M130 80V126 M130 32V80" stroke={work.color} strokeOpacity="0.65" strokeWidth="0.9" />
       <polygon
         points="130,54 148,64 148,84 130,94 112,84 112,64"
@@ -68,24 +66,56 @@ function Plate({ work }: { work: Work }) {
   )
 }
 
-function Preview({ work }: { work: Work }) {
+function PreviewFace({ work }: { work: Work }) {
+  return (
+    <ExtrudedSlab accentColor={work.color} depth={11} className="h-full w-full">
+      <div
+        className="preserve-3d relative h-full w-full overflow-hidden border border-white/25 bg-[#05070d]"
+        style={{ boxShadow: `0 22px 44px -14px rgba(0,0,0,0.65), 0 0 22px -6px ${work.color}38` }}
+      >
+        {work.image ? (
+          <img src={work.image} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <Plate work={work} />
+        )}
+        <div
+          className="pointer-events-none absolute right-2.5 top-2.5 border border-white/25 bg-black/70 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-200 backdrop-blur-sm"
+          style={{ transform: 'translateZ(20px)' }}
+        >
+          {work.year}
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: work.color }} />
+      </div>
+    </ExtrudedSlab>
+  )
+}
+
+/** Interactive 3D tiltable slab inside an expanded project row. */
+function InlineWorkSlab({ work }: { work: Work }) {
+  const px = useMotionValue(0)
+  const py = useMotionValue(0)
+  const rotY = useSpring(useTransform(px, [-0.5, 0.5], [-12, 12]), { stiffness: 180, damping: 20 })
+  const rotX = useSpring(useTransform(py, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 20 })
+
   return (
     <div
-      className="preserve-3d relative h-full w-full overflow-hidden border border-white/25 bg-[#05070d] shadow-2xl shadow-black/60"
-      style={{ boxShadow: `0 24px 48px -14px rgba(0,0,0,0.65), 0 0 24px -6px ${work.color}40` }}
+      className="perspective-stage py-2 pr-3"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        px.set((e.clientX - r.left) / r.width - 0.5)
+        py.set((e.clientY - r.top) / r.height - 0.5)
+      }}
+      onMouseLeave={() => {
+        px.set(0)
+        py.set(0)
+      }}
     >
-      {work.image ? (
-        <img src={work.image} alt="" className="h-full w-full object-cover" />
-      ) : (
-        <Plate work={work} />
-      )}
-      <div
-        className="pointer-events-none absolute right-2.5 top-2.5 border border-white/20 bg-black/65 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-200 backdrop-blur-sm"
-        style={{ transform: 'translateZ(20px)' }}
+      <motion.div
+        style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
+        className="h-44 w-full max-w-[300px]"
       >
-        {work.year}
-      </div>
-      <div className="absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: work.color }} />
+        <PreviewFace work={work} />
+      </motion.div>
     </div>
   )
 }
@@ -93,8 +123,13 @@ function Preview({ work }: { work: Work }) {
 export function WorkIndex() {
   const [open, setOpen] = useState<string | null>('streamshield')
   const [hover, setHover] = useState<Work | null>(null)
+  const [mounted, setMounted] = useState(false)
   const { setHighlightedBrickIndex } = useMascot()
   const resetTimer = useRef<number>(0)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -112,7 +147,7 @@ export function WorkIndex() {
   }
 
   return (
-    <section id="projects" className="perspective-stage mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8">
+    <SpatialSection id="projects" index="01 / 05">
       <SectionHeader
         eyebrow="Projects"
         lead="Selected"
@@ -123,11 +158,11 @@ export function WorkIndex() {
 
       <div
         onMouseMove={(e) => {
-          mx.set(e.clientX + 34)
-          my.set(e.clientY - 96)
+          mx.set(e.clientX + 36)
+          my.set(e.clientY - 98)
           const clamp = (v: number, lim: number) => Math.max(-lim, Math.min(lim, v))
-          vx.set(clamp(e.movementX * 1.1, 22))
-          vy.set(clamp(-e.movementY * 1.1, 18))
+          vx.set(clamp(e.movementX * 1.1, 24))
+          vy.set(clamp(-e.movementY * 1.1, 20))
           window.clearTimeout(resetTimer.current)
           resetTimer.current = window.setTimeout(() => {
             vx.set(0)
@@ -156,7 +191,9 @@ export function WorkIndex() {
                 aria-expanded={isOpen}
                 className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-4 py-5 text-left md:grid-cols-[3.5rem_1.4fr_1fr_5rem_2rem]"
               >
-                <span className="font-mono text-xs text-slate-400">{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-mono text-xs tabular-nums text-slate-400">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <span
                   className={`font-display text-2xl font-bold tracking-tight transition-transform duration-300 group-hover:translate-x-2 md:text-4xl ${
                     isOpen ? 'text-flow-vibrant' : 'text-slate-900 dark:text-white'
@@ -165,7 +202,7 @@ export function WorkIndex() {
                   {w.title}
                 </span>
                 <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{w.kind}</span>
-                <span className="hidden font-mono text-xs text-slate-400 md:block">{w.year}</span>
+                <span className="hidden font-mono text-xs tabular-nums text-slate-400 md:block">{w.year}</span>
                 <Plus
                   className={`h-4 w-4 text-slate-400 transition-transform duration-300 group-hover:text-cyan-500 ${
                     isOpen ? 'rotate-45' : ''
@@ -176,14 +213,14 @@ export function WorkIndex() {
               <AnimatePresence initial={false}>
                 {isOpen && (
                   <motion.div
-                    initial={{ height: 0, opacity: 0, rotateX: -6 }}
+                    initial={{ height: 0, opacity: 0, rotateX: -7 }}
                     animate={{ height: 'auto', opacity: 1, rotateX: 0 }}
-                    exit={{ height: 0, opacity: 0, rotateX: -4 }}
+                    exit={{ height: 0, opacity: 0, rotateX: -5 }}
                     transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                     style={{ transformOrigin: 'top center', transformPerspective: 1000 }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-1 gap-8 pb-10 pl-0 md:grid-cols-12 md:pl-[3.5rem]">
+                    <div className="grid grid-cols-1 items-start gap-8 pb-10 pl-0 md:grid-cols-12 md:pl-[3.5rem]">
                       <div className="md:col-span-6">
                         <p className="font-serif text-2xl italic leading-snug text-slate-900 dark:text-white sm:text-3xl">
                           {w.line}
@@ -199,18 +236,10 @@ export function WorkIndex() {
                             </li>
                           ))}
                         </ul>
-                      </div>
-
-                      <div className="flex flex-col justify-between gap-6 md:col-span-6">
-                        {w.image && (
-                          <div className="h-44 w-full border border-slate-200 dark:border-white/[0.1] md:hidden">
-                            <img src={w.image} alt={`${w.title} preview`} className="h-full w-full object-cover" />
-                          </div>
-                        )}
-                        <p className="font-mono text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                        <p className="mt-6 font-mono text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                           {w.skills.map((s) => SKILL_LABEL[s]).join('  /  ')}
                         </p>
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs">
+                        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs">
                           {w.repo && (
                             <a
                               href={w.repo}
@@ -242,6 +271,10 @@ export function WorkIndex() {
                           )}
                         </div>
                       </div>
+
+                      <div className="flex justify-start md:col-span-6 md:justify-end">
+                        <InlineWorkSlab work={w} />
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -251,34 +284,38 @@ export function WorkIndex() {
         })}
       </div>
 
-      {/* 3D Velocity-Tilted Cursor Preview Plate */}
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[55] hidden h-[175px] w-[268px] md:block"
-        style={{
-          x: sx,
-          y: sy,
-          rotateY: sRotY,
-          rotateX: sRotX,
-          transformPerspective: 850,
-          transformStyle: 'preserve-3d',
-        }}
-      >
-        <AnimatePresence mode="wait">
-          {hover && (
-            <motion.div
-              key={hover.id}
-              className="preserve-3d h-full w-full"
-              initial={{ opacity: 0, scale: 0.88, translateZ: -30 }}
-              animate={{ opacity: 1, scale: 1, translateZ: 0 }}
-              exit={{ opacity: 0, scale: 0.9, translateZ: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Preview work={hover} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </section>
+      {/* Portal-mounted 3D Velocity-Tilted Cursor Preview Slab */}
+      {mounted &&
+        createPortal(
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none fixed left-0 top-0 z-[55] hidden h-[175px] w-[268px] md:block"
+            style={{
+              x: sx,
+              y: sy,
+              rotateY: sRotY,
+              rotateX: sRotX,
+              transformPerspective: 850,
+              transformStyle: 'preserve-3d',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {hover && (
+                <motion.div
+                  key={hover.id}
+                  className="preserve-3d h-full w-full"
+                  initial={{ opacity: 0, scale: 0.88, z: -30 }}
+                  animate={{ opacity: 1, scale: 1, z: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, z: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <PreviewFace work={hover} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>,
+          document.body
+        )}
+    </SpatialSection>
   )
 }

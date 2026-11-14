@@ -487,21 +487,27 @@ export function LegoCube() {
     // Animation & Physics Engine Loop
     let frameId: number
     let clockTime = 0
+    let scrollFactor = 0
 
     const animate = () => {
       frameId = requestAnimationFrame(animate)
       clockTime += 0.024
 
-      // Master Rotation Damping
+      const rawScroll = Math.min(1, Math.max(0, window.scrollY / 620))
+      scrollFactor = THREE.MathUtils.lerp(scrollFactor, rawScroll, 0.085)
+
+      // Master Rotation Damping + Scroll Choreography
       rotX = THREE.MathUtils.lerp(rotX, targetRotX, 0.08)
       rotY = THREE.MathUtils.lerp(rotY, targetRotY, 0.08)
-      masterGroup.rotation.x = rotX
-      masterGroup.rotation.y = rotY
+      masterGroup.rotation.x = rotX + scrollFactor * 0.22
+      masterGroup.rotation.y = rotY + scrollFactor * 0.85
+      camera.position.y = 3.8 + scrollFactor * 0.95
+      camera.lookAt(0, -scrollFactor * 0.15, 0)
 
-      // Top Layer Twist Interpolation
+      // Top Layer Twist Interpolation (manual right-click + scroll spin)
       topTwistRef.current = THREE.MathUtils.lerp(
         topTwistRef.current,
-        targetTopTwistRef.current,
+        targetTopTwistRef.current + scrollFactor * (Math.PI * 0.5),
         0.14
       )
       topLayerGroup.rotation.y = topTwistRef.current
@@ -573,6 +579,10 @@ export function LegoCube() {
           target.add(explodeDir)
           target.y += Math.sin(clockTime * 2.2 + idx) * 0.045
         } else {
+          // Scroll expands bricks smoothly apart in 3D space even before manual click
+          if (scrollFactor > 0.01) {
+            target.add(explodeDir.clone().multiplyScalar(scrollFactor * 0.85))
+          }
           // Subtle zero-gravity kinetic floating
           target.y += Math.sin(clockTime * 1.8 + idx * 0.7) * 0.035
         }
@@ -615,8 +625,8 @@ export function LegoCube() {
         }
       })
 
-      // Update Laser Lines
-      const targetLineOpacity = isExploded ? 0.55 : 0
+      // Update Laser Lines (visible when opened manually OR during scroll disassembly)
+      const targetLineOpacity = isExploded ? 0.55 : Math.min(0.45, scrollFactor * 0.65)
       lineMat.opacity = THREE.MathUtils.lerp(lineMat.opacity, targetLineOpacity, 0.12)
       linePosAttr.needsUpdate = true
 
@@ -670,21 +680,29 @@ export function LegoCube() {
   }, [])
 
   return (
-    <div className="relative w-full h-[520px] sm:h-[580px] flex items-center justify-center select-none overflow-hidden">
+    <div className="relative flex h-[520px] w-full select-none items-center justify-center overflow-hidden sm:h-[580px]">
+      {/* Precision corner alignment brackets around 3D stage */}
+      <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 h-3.5 w-3.5 border-l border-t border-slate-300 dark:border-white/20" />
+      <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 h-3.5 w-3.5 border-r border-t border-slate-300 dark:border-white/20" />
+      <span aria-hidden="true" className="pointer-events-none absolute bottom-2 left-2 h-3.5 w-3.5 border-b border-l border-slate-300 dark:border-white/20" />
+      <span aria-hidden="true" className="pointer-events-none absolute bottom-2 right-2 h-3.5 w-3.5 border-b border-r border-slate-300 dark:border-white/20" />
+
       {/* 3D WebGL Canvas */}
       <div
         ref={mountRef}
-        className="w-full h-full cursor-grab active:cursor-grabbing relative z-10"
-        title="Click a piece to bounce · Drag to spin · Double-click to open up · Right-click to twist top"
+        className="relative z-10 h-full w-full cursor-grab active:cursor-grabbing"
+        title="Click a piece to bounce · Drag to spin · Double-click to open up · Right-click to twist · Scroll to expand"
       />
 
       {/* Clean Interaction Legend */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 text-[11px] font-mono text-slate-500 dark:text-slate-400 select-none pointer-events-none">
-        <span className="text-cyan-600 dark:text-cyan-300">Click piece to bounce</span>
+      <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 select-none items-center gap-3 whitespace-nowrap font-mono text-[11px] text-slate-500 dark:text-slate-400">
+        <span className="text-cyan-600 dark:text-cyan-300">Click piece</span>
         <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Double-click to open</span>
+        <span>Double-click</span>
         <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Drag to spin</span>
+        <span>Drag</span>
+        <span className="text-slate-300 dark:text-white/20">/</span>
+        <span>Scroll</span>
       </div>
     </div>
   )
