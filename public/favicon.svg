@@ -13,7 +13,7 @@
     </linearGradient>
   </defs>
 
-  <!-- Outer ring (3px) — matches avatar-ring colour -->
+  <!-- Outer ring (3px), matches avatar-ring colour -->
   <circle cx="50" cy="50" r="49" fill="none" stroke="url(#ringAccent)" stroke-width="3" opacity="0.7" />
 
   <!-- Avatar circle -->
@@ -24,7 +24,7 @@
     stroke="rgba(255,255,255,0.10)" stroke-width="1"
     stroke-dasharray="100 200" stroke-dashoffset="-30" />
 
-  <!-- "RG" — white, bold, matching avatar-initials: font-weight 700, letter-spacing -0.03em -->
+  <!-- "RG", white, bold, matching avatar-initials: font-weight 700, letter-spacing -0.03em -->
   <text
     x="50" y="66"
     font-family="'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif"
