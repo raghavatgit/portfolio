@@ -1,13 +1,15 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { GraduationCap, MapPin, Quote } from 'lucide-react'
 import { SectionHeader } from '@/components/SectionHeader'
 import { ExtrudedSlab, SpatialSection } from '@/components/SpatialSection'
 import { PROFILE, SERVICES } from '@/data/profile'
+import { sfx } from '@/utils/sfx'
 
 export function AboutSection() {
   const photoRef = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
   const { scrollYProgress } = useScroll({
     target: photoRef,
@@ -60,21 +62,38 @@ export function AboutSection() {
             <span>Open for freelance &amp; internships</span>
           </div>
 
-          <div className="divide-y divide-slate-200 dark:divide-white/[0.08]">
-            {SERVICES.map((s) => (
-              <div
-                key={s.n}
-                className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[2.5rem_11rem_1fr]"
-              >
-                <span className="font-mono text-xs tabular-nums text-slate-400">{s.n}</span>
-                <span className="font-display text-lg font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-1 dark:text-white">
-                  {s.title}
-                </span>
-                <span className="col-start-2 text-sm font-light text-slate-600 dark:text-slate-400 md:col-start-auto">
-                  {s.line}
-                </span>
-              </div>
-            ))}
+          <div
+            className="perspective-stage preserve-3d divide-y divide-slate-200 dark:divide-white/[0.08]"
+            onMouseLeave={() => setHoverIdx(null)}
+          >
+            {SERVICES.map((s, idx) => {
+              const d = hoverIdx === null ? 99 : Math.abs(hoverIdx - idx)
+              const wave =
+                d === 0
+                  ? 'translateZ(18px) translateX(5px)'
+                  : d === 1
+                    ? 'translateZ(7px) translateX(2px)'
+                    : 'translateZ(0px)'
+              return (
+                <div
+                  key={s.n}
+                  onMouseEnter={() => {
+                    setHoverIdx(idx)
+                    sfx.playTick(2050 + idx * 140)
+                  }}
+                  style={{ transform: wave, opacity: hoverIdx === null || d <= 1 ? 1 : 0.6 }}
+                  className="row-3d group grid grid-cols-[2.5rem_1fr] items-baseline gap-4 py-4 md:grid-cols-[2.5rem_11rem_1fr]"
+                >
+                  <span className="font-mono text-xs tabular-nums text-slate-400">{s.n}</span>
+                  <span className="font-display text-lg font-bold text-slate-900 dark:text-white">
+                    {s.title}
+                  </span>
+                  <span className="col-start-2 text-sm font-light text-slate-600 dark:text-slate-400 md:col-start-auto">
+                    {s.line}
+                  </span>
+                </div>
+              )
+            })}
           </div>
 
           <div className="flex items-start gap-4">

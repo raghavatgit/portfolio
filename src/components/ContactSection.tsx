@@ -5,6 +5,7 @@ import { InstagramIcon, GithubIcon, LinkedinIcon, YoutubeIcon } from '@/componen
 import { SectionHeader } from '@/components/SectionHeader'
 import { SpatialSection } from '@/components/SpatialSection'
 import { PROFILE } from '@/data/profile'
+import { sfx } from '@/utils/sfx'
 
 const CHANNELS = [
   { id: 'github', label: 'GitHub', handle: `@${PROFILE.handle}`, href: PROFILE.github, icon: GithubIcon },
@@ -15,7 +16,9 @@ const CHANNELS = [
 
 export function ContactSection() {
   const [copied, setCopied] = useState<string | null>(null)
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const copy = (key: string, text: string) => {
+    sfx.playSnap(2150)
     void navigator.clipboard.writeText(text)
     setCopied(key)
     setTimeout(() => setCopied(null), 1800)
@@ -56,39 +59,74 @@ export function ContactSection() {
         </span>
       </motion.button>
 
-      <div className="divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
-        {CHANNELS.map(({ id, label, handle, href, icon: Icon }) => (
-          <a
-            key={id}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group grid grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 md:grid-cols-[2rem_12rem_1fr_auto]"
-          >
-            <Icon className="h-4 w-4 text-slate-400 transition-colors group-hover:text-cyan-500" />
-            <span className="font-display text-xl font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-2 dark:text-white">
-              {label}
-            </span>
-            <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{handle}</span>
-            <ArrowUpRight className="h-4 w-4 text-slate-400 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-500" />
-          </a>
-        ))}
-        <button
-          type="button"
-          onClick={() => copy('discord', PROFILE.discord)}
-          className="group grid w-full grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 text-left md:grid-cols-[2rem_12rem_1fr_auto]"
-        >
-          <span className="font-mono text-xs text-slate-400">#</span>
-          <span className="font-display text-xl font-bold text-slate-900 transition-transform duration-300 group-hover:translate-x-2 dark:text-white">
-            Discord
-          </span>
-          <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{PROFILE.discord}</span>
-          {copied === 'discord' ? (
-            <Check className="h-4 w-4 text-emerald-500" />
-          ) : (
-            <Copy className="h-4 w-4 text-slate-400 group-hover:text-cyan-500" />
-          )}
-        </button>
+      <div
+        className="perspective-stage preserve-3d divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08]"
+        onMouseLeave={() => setHoverIdx(null)}
+      >
+        {CHANNELS.map(({ id, label, handle, href, icon: Icon }, idx) => {
+          const d = hoverIdx === null ? 99 : Math.abs(hoverIdx - idx)
+          const wave =
+            d === 0
+              ? 'translateZ(18px) translateX(6px)'
+              : d === 1
+                ? 'translateZ(7px) translateX(2px)'
+                : 'translateZ(0px)'
+          return (
+            <a
+              key={id}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => {
+                setHoverIdx(idx)
+                sfx.playTick(2000 + idx * 120)
+              }}
+              onClick={() => sfx.playSnap(1850)}
+              style={{ transform: wave, opacity: hoverIdx === null || d <= 1 ? 1 : 0.6 }}
+              className="row-3d group grid grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 md:grid-cols-[2rem_12rem_1fr_auto]"
+            >
+              <Icon className="h-4 w-4 text-slate-400 transition-colors group-hover:text-cyan-500" />
+              <span className="font-display text-xl font-bold text-slate-900 dark:text-white">
+                {label}
+              </span>
+              <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{handle}</span>
+              <ArrowUpRight className="h-4 w-4 text-slate-400 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-500" />
+            </a>
+          )
+        })}
+        {(() => {
+          const idx = CHANNELS.length
+          const d = hoverIdx === null ? 99 : Math.abs(hoverIdx - idx)
+          const wave =
+            d === 0
+              ? 'translateZ(18px) translateX(6px)'
+              : d === 1
+                ? 'translateZ(7px) translateX(2px)'
+                : 'translateZ(0px)'
+          return (
+            <button
+              type="button"
+              onMouseEnter={() => {
+                setHoverIdx(idx)
+                sfx.playTick(2000 + idx * 120)
+              }}
+              onClick={() => copy('discord', PROFILE.discord)}
+              style={{ transform: wave, opacity: hoverIdx === null || d <= 1 ? 1 : 0.6 }}
+              className="row-3d group grid w-full grid-cols-[2rem_1fr_auto] items-center gap-4 py-5 text-left md:grid-cols-[2rem_12rem_1fr_auto]"
+            >
+              <span className="font-mono text-xs text-slate-400">#</span>
+              <span className="font-display text-xl font-bold text-slate-900 dark:text-white">
+                Discord
+              </span>
+              <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{PROFILE.discord}</span>
+              {copied === 'discord' ? (
+                <Check className="h-4 w-4 text-emerald-500" />
+              ) : (
+                <Copy className="h-4 w-4 text-slate-400 group-hover:text-cyan-500" />
+              )}
+            </button>
+          )
+        })()}
       </div>
 
       <p className="mt-8 font-mono text-[11px] text-slate-500 dark:text-slate-400">

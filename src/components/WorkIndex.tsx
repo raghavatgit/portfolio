@@ -6,6 +6,7 @@ import { SectionHeader } from '@/components/SectionHeader'
 import { ExtrudedSlab, SpatialSection } from '@/components/SpatialSection'
 import { useMascot } from '@/context/MascotContext'
 import { SKILLS, WORKS, type Work } from '@/data/profile'
+import { sfx } from '@/utils/sfx'
 
 const SKILL_LABEL = Object.fromEntries(SKILLS.map((s) => [s.id, s.label]))
 
@@ -123,6 +124,7 @@ function InlineWorkSlab({ work }: { work: Work }) {
 export function WorkIndex() {
   const [open, setOpen] = useState<string | null>('streamshield')
   const [hover, setHover] = useState<Work | null>(null)
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
   const { setHighlightedBrickIndex } = useMascot()
   const resetTimer = useRef<number>(0)
@@ -171,21 +173,40 @@ export function WorkIndex() {
         }}
         onMouseLeave={() => {
           setHover(null)
+          setHoverIdx(null)
           setHighlightedBrickIndex(null)
           vx.set(0)
           vy.set(0)
         }}
+        className="preserve-3d"
       >
         {WORKS.map((w, i) => {
           const isOpen = open === w.id
+          const d = hoverIdx === null ? 99 : Math.abs(hoverIdx - i)
+          const rowTransform =
+            d === 0
+              ? 'translateZ(22px) translateX(6px)'
+              : d === 1
+                ? `translateZ(9px) translateX(2px) rotateX(${hoverIdx! > i ? 1.5 : -1.5}deg)`
+                : 'translateZ(0px)'
+          const lit = d === 0 || isOpen
           return (
-            <div key={w.id} className="border-b border-slate-200 transition-colors dark:border-white/[0.08]">
+            <div
+              key={w.id}
+              className="row-3d border-b border-slate-200 dark:border-white/[0.08]"
+              style={{ transform: rowTransform, opacity: hoverIdx === null || d <= 1 || isOpen ? 1 : 0.55 }}
+            >
               <button
                 type="button"
-                onClick={() => setOpen(isOpen ? null : w.id)}
+                onClick={() => {
+                  sfx.playSnap(isOpen ? 1450 : 1900)
+                  setOpen(isOpen ? null : w.id)
+                }}
                 onMouseEnter={() => {
                   setHover(w)
+                  setHoverIdx(i)
                   setHighlightedBrickIndex(w.brick)
+                  sfx.playTick(1950 + i * 65)
                 }}
                 onMouseLeave={() => setHover(null)}
                 aria-expanded={isOpen}
@@ -194,12 +215,27 @@ export function WorkIndex() {
                 <span className="font-mono text-xs tabular-nums text-slate-400">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span
-                  className={`font-display text-2xl font-bold tracking-tight transition-transform duration-300 group-hover:translate-x-2 md:text-4xl ${
-                    isOpen ? 'text-flow-vibrant' : 'text-slate-900 dark:text-white'
-                  }`}
-                >
-                  {w.title}
+                <span className="flex items-center gap-4">
+                  {/* Isometric prism mark that turns in 3D */}
+                  <span
+                    aria-hidden="true"
+                    className="row-3d hidden h-2.5 w-2.5 shrink-0 md:block"
+                    style={{
+                      backgroundColor: lit ? w.color : 'transparent',
+                      border: `1px solid ${w.color}`,
+                      transform: lit
+                        ? 'rotateX(35deg) rotateY(45deg) rotateZ(45deg) scale(1.25)'
+                        : 'rotateZ(45deg) scale(0.85)',
+                      boxShadow: lit ? `0 0 12px ${w.color}80` : 'none',
+                    }}
+                  />
+                  <span
+                    className={`font-display text-2xl font-bold tracking-tight md:text-4xl ${
+                      isOpen ? 'text-flow-vibrant' : 'text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {w.title}
+                  </span>
                 </span>
                 <span className="hidden font-mono text-xs text-slate-500 dark:text-slate-400 md:block">{w.kind}</span>
                 <span className="hidden font-mono text-xs tabular-nums text-slate-400 md:block">{w.year}</span>

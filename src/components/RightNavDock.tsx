@@ -6,9 +6,9 @@ import {
   Cpu,
   Compass,
   Radio,
-  Sparkles,
 } from 'lucide-react'
 import { useMascot, type SectionId } from '@/context/MascotContext'
+import { sfx } from '@/utils/sfx'
 
 interface NavItem {
   id: SectionId
@@ -56,50 +56,9 @@ const NAV_ITEMS: NavItem[] = [
   },
 ]
 
-// Soft audio feedback
-class DockSFX {
-  private ctx: AudioContext | null = null
-  public enabled = true
-
-  private init() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-      if (AudioCtx) this.ctx = new AudioCtx()
-    }
-    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume()
-  }
-
-  playTick(freq = 1200) {
-    if (!this.enabled) return
-    try {
-      this.init()
-      if (!this.ctx) return
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.03)
-      gain.gain.setValueAtTime(0.06, this.ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start()
-      osc.stop(this.ctx.currentTime + 0.03)
-    } catch {}
-  }
-}
-
-const dockSfx = new DockSFX()
-
 export function RightNavDock() {
-  const { activeSection, setActiveSection, soundEnabled } = useMascot()
+  const { activeSection, setActiveSection } = useMascot()
   const [hoveredId, setHoveredId] = useState<SectionId | null>(null)
-
-  useEffect(() => {
-    dockSfx.enabled = soundEnabled
-  }, [soundEnabled])
 
   // Track sections intersecting viewport
   useEffect(() => {
@@ -131,14 +90,22 @@ export function RightNavDock() {
       className="perspective-stage pointer-events-auto fixed right-3 top-1/2 z-40 hidden -translate-y-1/2 select-none sm:right-5 md:block"
     >
       {/* Precision Machined Architectural Rail (no rounded pills) */}
-      <nav className="preserve-3d relative flex flex-col items-center gap-1.5 border border-slate-300/90 bg-white/85 p-1.5 shadow-[4px_4px_0_rgba(15,23,42,0.08)] backdrop-blur-2xl transition-colors dark:border-white/[0.14] dark:bg-[#080b16]/90 dark:shadow-[4px_4px_0_rgba(0,240,255,0.12)]">
+      <nav className="preserve-3d relative flex flex-col items-center gap-1.5 border border-slate-200 bg-white/85 p-1.5 shadow-2xl shadow-black/10 backdrop-blur-2xl transition-colors dark:border-white/[0.12] dark:bg-[#080b16]/90 dark:shadow-black/80">
         {NAV_ITEMS.map((item, idx) => {
           const Icon = item.icon
           const isActive = activeSection === item.id
           const isHovered = hoveredId === item.id
+          const hIdx = NAV_ITEMS.findIndex((n) => n.id === hoveredId)
+          const d = hIdx < 0 ? 99 : Math.abs(hIdx - idx)
+          const wave =
+            d === 0
+              ? 'translateZ(18px) translateX(-3px) scale(1.12)'
+              : d === 1
+                ? 'translateZ(8px) translateX(-1.5px) scale(1.04)'
+                : 'translateZ(0px)'
 
           return (
-            <div key={item.id} className="relative flex items-center justify-center">
+            <div key={item.id} className="row-3d relative flex items-center justify-center" style={{ transform: wave }}>
               {/* Sliding 3D Tooltips */}
               <AnimatePresence>
                 {isHovered && (
@@ -169,12 +136,12 @@ export function RightNavDock() {
               <a
                 href={`#${item.id}`}
                 onClick={() => {
-                  dockSfx.playTick(800 + idx * 100)
+                  sfx.playSnap(1600 + idx * 140)
                   setActiveSection(item.id)
                 }}
                 onMouseEnter={() => {
                   setHoveredId(item.id)
-                  dockSfx.playTick(1200)
+                  sfx.playTick(2100 + idx * 110)
                 }}
                 onMouseLeave={() => setHoveredId(null)}
                 className={`group relative flex h-10 w-10 items-center justify-center transition-all duration-300 ${
@@ -217,10 +184,6 @@ export function RightNavDock() {
             </div>
           )
         })}
-
-        <div className="pt-1 text-slate-400 transition-colors hover:text-cyan-500 dark:text-white/30">
-          <Sparkles className="h-3.5 w-3.5" />
-        </div>
       </nav>
     </aside>
   )

@@ -518,19 +518,40 @@ export function SkillGraph() {
             {active ? `${active.name} (${active.pct}% of code)` : 'Hover any color bar to see % share'}
           </span>
         </div>
-        <div className="flex h-3 w-full overflow-hidden" onMouseLeave={() => setLang(null)}>
-          {LANGUAGES.map((l, i) => (
-            <motion.div
-              key={l.name}
-              onMouseEnter={() => setLang(l.name)}
-              initial={{ width: 0 }}
-              whileInView={{ width: `${(l.pct / total) * 100}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.1, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-              className="h-full cursor-crosshair transition-opacity"
-              style={{ backgroundColor: l.color, opacity: lang && lang !== l.name ? 0.25 : 1 }}
-            />
-          ))}
+        <div className="perspective-stage">
+          <div
+            className="preserve-3d flex h-3 w-full"
+            style={{ transform: 'rotateX(28deg)' }}
+            onMouseLeave={() => setLang(null)}
+          >
+            {LANGUAGES.map((l, i) => {
+              const hi = LANGUAGES.findIndex((x) => x.name === lang)
+              const d = hi < 0 ? 99 : Math.abs(hi - i)
+              const t =
+                d === 0 ? 'translateZ(18px) scaleY(1.6)' : d === 1 ? 'translateZ(8px) scaleY(1.25)' : 'translateZ(0px)'
+              return (
+                <motion.div
+                  key={l.name}
+                  onMouseEnter={() => setLang(l.name)}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${(l.pct / total) * 100}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.1, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                  className="preserve-3d h-full cursor-crosshair"
+                >
+                  <div
+                    className="row-3d h-full w-full"
+                    style={{
+                      backgroundColor: l.color,
+                      transform: t,
+                      opacity: hi >= 0 && d > 1 ? 0.3 : 1,
+                      boxShadow: d === 0 ? `0 10px 24px -6px ${l.color}` : 'none',
+                    }}
+                  />
+                </motion.div>
+              )
+            })}
+          </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[11px] text-slate-500 dark:text-slate-400">
           {LANGUAGES.slice(0, 8).map((l) => (
@@ -545,16 +566,28 @@ export function SkillGraph() {
       <SkillGraphCanvas />
 
       {/* GitHub milestones in calibrated 4-column hairline grid */}
-      <div className="mt-16 grid grid-cols-2 divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08] md:grid-cols-4 md:divide-x md:divide-y-0">
+      <div className="perspective-stage mt-16 grid grid-cols-2 divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/[0.08] dark:border-white/[0.08] md:grid-cols-4 md:divide-x md:divide-y-0">
         {STATS.map((s, idx) => (
-          <div key={s.label} className={idx === 0 ? 'py-6 pr-6' : idx === 3 ? 'py-6 md:pl-6' : 'py-6 md:px-6'}>
-            <div className="font-display text-5xl font-extrabold tracking-tight text-flow-chromatic sm:text-6xl">
+          <motion.div
+            key={s.label}
+            whileHover={{ rotateX: 8, rotateY: -6 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+            style={{ transformStyle: 'preserve-3d' }}
+            className={idx === 0 ? 'py-6 pr-6' : idx === 3 ? 'py-6 md:pl-6' : 'py-6 md:px-6'}
+          >
+            <div
+              style={{ transform: 'translateZ(20px)' }}
+              className="font-display text-5xl font-extrabold tabular-nums tracking-tight text-flow-chromatic sm:text-6xl"
+            >
               <CountUp to={s.value} suffix={s.suffix} />
             </div>
-            <div className="mt-2 font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            <div
+              style={{ transform: 'translateZ(8px)' }}
+              className="mt-2 font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-400"
+            >
               {s.label}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
       {pulse?.latest && (

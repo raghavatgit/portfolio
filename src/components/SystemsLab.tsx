@@ -132,6 +132,51 @@ function draw3DFloorGrid(
   }
 }
 
+/** Live X / Y / Z orientation triad in the top-right corner, rotating with the view. */
+function draw3DGizmo(ctx: CanvasRenderingContext2D, w: number, yaw: number, pitch: number, pal: Palette) {
+  const cx = w - 44
+  const cy = 42
+  const L = 20
+  const cosY = Math.cos(yaw)
+  const sinY = Math.sin(yaw)
+  const cosP = Math.cos(pitch)
+  const sinP = Math.sin(pitch)
+  const proj = (x: number, y: number, z: number) => {
+    const rx = x * cosY - z * sinY
+    const rz = x * sinY + z * cosY
+    const ry = y * cosP - rz * sinP
+    const depth = y * sinP + rz * cosP
+    return { x: cx + rx * L, y: cy - ry * L, depth }
+  }
+  const axes = [
+    { v: proj(1, 0, 0), label: 'X', color: pal.warn },
+    { v: proj(0, 1, 0), label: 'Y', color: pal.light ? '#047857' : '#00E676' },
+    { v: proj(0, 0, 1), label: 'Z', color: pal.accent },
+  ].sort((a, b) => a.v.depth - b.v.depth)
+
+  ctx.save()
+  ctx.font = '10px "JetBrains Mono", ui-monospace, monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  for (const a of axes) {
+    ctx.globalAlpha = 0.45 + 0.45 * Math.max(0, Math.min(1, (a.v.depth + 1) / 2))
+    ctx.strokeStyle = a.color
+    ctx.lineWidth = 1.4
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(a.v.x, a.v.y)
+    ctx.stroke()
+    ctx.fillStyle = a.color
+    const lx = cx + (a.v.x - cx) * 1.4
+    const ly = cy + (a.v.y - cy) * 1.4
+    ctx.fillText(a.label, lx, ly)
+  }
+  ctx.globalAlpha = 1
+  ctx.fillStyle = pal.dim
+  ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3)
+  ctx.restore()
+}
+
 /* ------------------------------------------------------------------ */
 /* 1. Aegis-Raksha: 3D Offline Emergency Radio Mesh                   */
 /* ------------------------------------------------------------------ */
@@ -347,6 +392,7 @@ function MeshSim({ pal }: { pal: PaletteRef }) {
 
       ctx.clearRect(0, 0, size.w, size.h)
       draw3DFloorGrid(ctx, size.w, size.h, yaw, pitch, p)
+      draw3DGizmo(ctx, size.w, yaw, pitch, p)
 
       // Elevated 3D radio links between antenna tips in range
       ctx.lineWidth = 1
@@ -699,6 +745,7 @@ function InertialSim({ pal }: { pal: PaletteRef }) {
 
       ctx.clearRect(0, 0, size.w, size.h)
       draw3DFloorGrid(ctx, size.w, size.h, yaw, pitch, p)
+      draw3DGizmo(ctx, size.w, yaw, pitch, p)
 
       const stroke3D = (pts: V[], elev: number, color: string, width: number) => {
         ctx.lineWidth = width
@@ -995,7 +1042,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-28 accent-cyan-500"
+        className="slider-elite w-28"
       />
       <span className="w-9 text-slate-900 dark:text-white">{fmt(value)}</span>
     </label>

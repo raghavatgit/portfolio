@@ -3,46 +3,7 @@ import * as THREE from 'three'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Layers, Volume2, VolumeX, ArrowUp, Sparkles, Activity, Radio } from 'lucide-react'
 import { useMascot } from '@/context/MascotContext'
-
-// Procedural audio synth for companion
-class CompanionSFX {
-  private ctx: AudioContext | null = null
-  public enabled = true
-
-  private init() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-      if (AudioCtx) {
-        this.ctx = new AudioCtx()
-      }
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume()
-    }
-  }
-
-  playNote(freq = 659.25) {
-    if (!this.enabled) return
-    try {
-      this.init()
-      if (!this.ctx) return
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = 'triangle'
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
-      gain.gain.setValueAtTime(0.12, this.ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start()
-      osc.stop(this.ctx.currentTime + 0.3)
-    } catch {}
-  }
-}
-
-const miniSfx = new CompanionSFX()
+import { sfx } from '@/utils/sfx'
 
 const MASCOT_COLORS = [
   '#FF3366', // 0: Coral (StreamShield)
@@ -71,11 +32,6 @@ export function MascotCompanion() {
   const [localExploded, setLocalExploded] = useState(false)
   const [bubbleText, setBubbleText] = useState('3D Lego Cube')
   const [showControls, setShowControls] = useState(false)
-
-  // Sync sound setting
-  useEffect(() => {
-    miniSfx.enabled = soundEnabled
-  }, [soundEnabled])
 
   // Context-aware speech bubble text
   useEffect(() => {
@@ -259,12 +215,15 @@ export function MascotCompanion() {
   }, [isDocked, localExploded, mascotMode, highlightedBrickIndex])
 
   const handleClickMascot = () => {
-    miniSfx.playNote(783.99)
-    setLocalExploded((prev) => !prev)
+    setLocalExploded((prev) => {
+      const next = !prev
+      sfx.playExplode(next)
+      return next
+    })
   }
 
   const handleScrollToTop = () => {
-    miniSfx.playNote(1046.5)
+    sfx.playSnap(2100)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -285,7 +244,7 @@ export function MascotCompanion() {
             key={bubbleText}
             initial={{ opacity: 0, y: 6, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="flex items-center gap-2 border border-cyan-500/35 bg-white/95 px-3 py-1 shadow-[3px_3px_0_rgba(0,240,255,0.18)] backdrop-blur-xl transition-colors dark:border-cyan-400/40 dark:bg-[#090d18]/95"
+            className="flex items-center gap-2 border border-cyan-500/35 bg-white/95 px-3 py-1 shadow-xl shadow-black/10 backdrop-blur-xl transition-colors dark:border-cyan-400/40 dark:bg-[#090d18]/95 dark:shadow-black/70"
           >
             {activeSection === 'contact' ? (
               <Radio className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
@@ -300,7 +259,7 @@ export function MascotCompanion() {
           </motion.div>
 
           {/* Floating Mascot HUD Dock */}
-          <div className="flex items-center gap-2 border border-slate-300 bg-white/90 p-1.5 shadow-[4px_4px_0_rgba(0,240,255,0.15)] backdrop-blur-2xl transition-colors dark:border-white/[0.15] dark:bg-[#080b16]/92">
+          <div className="flex items-center gap-2 border border-slate-300 bg-white/90 p-1.5 shadow-2xl shadow-black/15 backdrop-blur-2xl transition-colors dark:border-white/[0.15] dark:bg-[#080b16]/92 dark:shadow-black/80">
             {/* Expanded Controls on Hover */}
             <AnimatePresence>
               {showControls && (
@@ -314,9 +273,10 @@ export function MascotCompanion() {
                   <button
                     type="button"
                     onClick={() => {
-                      miniSfx.playNote(523.25)
-                      setLocalExploded(!localExploded)
-                      setMascotMode(localExploded ? 'assembled' : 'exploded')
+                      const next = !localExploded
+                      sfx.playExplode(next)
+                      setLocalExploded(next)
+                      setMascotMode(next ? 'exploded' : 'assembled')
                     }}
                     className={`p-2 transition-colors ${
                       localExploded

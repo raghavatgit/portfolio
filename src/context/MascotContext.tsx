@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { sfx } from '@/utils/sfx'
 
 export type SectionId = 'hero' | 'projects' | 'sandbox' | 'stack' | 'about' | 'contact'
 
@@ -38,6 +39,10 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
   const [mascotMode, setMascotMode] = useState<'assembled' | 'exploded' | 'wave' | 'beacon'>('assembled')
   const [highlightedBrickIndex, setHighlightedBrickIndex] = useState<number | null>(null)
   const [isDocked, setIsDocked] = useState(false)
+
+  useEffect(() => {
+    sfx.enabled = soundEnabled
+  }, [soundEnabled])
 
   // Track scroll position to determine scroll-docking state
   useEffect(() => {

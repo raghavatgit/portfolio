@@ -12,7 +12,7 @@ interface SpatialSectionProps {
  * Scroll-choreographed 3D viewport section with precision CAD corner registration marks.
  * Uses GPU-composited perspective transforms tied directly to smoothed vertical scroll progress.
  */
-export function SpatialSection({ id, index, children, className = '' }: SpatialSectionProps) {
+export function SpatialSection({ id, children, className = '' }: SpatialSectionProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
 
@@ -21,36 +21,23 @@ export function SpatialSection({ id, index, children, className = '' }: SpatialS
     offset: ['start end', 'end start'],
   })
 
-  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.45 })
+  const smooth = useSpring(scrollYProgress, { stiffness: 110, damping: 26, mass: 0.5 })
 
-  const rotateX = useTransform(smooth, [0, 0.24, 0.76, 1], [8, 0, 0, -6])
-  const translateZ = useTransform(smooth, [0, 0.24, 0.76, 1], [-85, 0, 0, -55])
-  const translateY = useTransform(smooth, [0, 0.24, 0.76, 1], [32, 0, 0, -24])
-  const scale = useTransform(smooth, [0, 0.24, 0.76, 1], [0.96, 1, 1, 0.97])
-  const opacity = useTransform(smooth, [0, 0.16, 0.84, 1], [0.35, 1, 1, 0.45])
+  const rotateX = useTransform(smooth, [0, 0.25, 0.75, 1], [5, 0, 0, -4])
+  const translateZ = useTransform(smooth, [0, 0.25, 0.75, 1], [-60, 0, 0, -40])
+  const translateY = useTransform(smooth, [0, 0.25, 0.75, 1], [24, 0, 0, -18])
+  const opacity = useTransform(smooth, [0, 0.15, 0.85, 1], [0.4, 1, 1, 0.5])
 
   return (
     <section
       ref={hostRef}
       id={id}
-      className={`relative mx-auto max-w-7xl scroll-mt-24 px-4 py-24 sm:px-8 lg:pr-20 xl:px-8 ${className}`}
-      style={{ perspective: '1400px' }}
+      className={`relative mx-auto max-w-7xl scroll-mt-24 px-4 py-28 sm:px-8 lg:pr-20 xl:px-8 ${className}`}
+      style={{ perspective: '1600px' }}
     >
-      {/* Calibrated architectural alignment marks */}
-      <div className="pointer-events-none relative">
-        <span
-          aria-hidden="true"
-          className="absolute -left-2 -top-4 select-none font-mono text-[10px] tracking-widest text-slate-400/70 dark:text-white/20"
-        >
-          + {index}
-        </span>
-        <span
-          aria-hidden="true"
-          className="absolute -right-2 -top-4 select-none font-mono text-[10px] tracking-widest text-slate-400/70 dark:text-white/20"
-        >
-          0.00 Z +
-        </span>
-      </div>
+      {/* Silent datum ticks */}
+      <span aria-hidden="true" className="pointer-events-none absolute left-4 top-16 h-2 w-2 border-l border-t border-slate-300 dark:border-white/20 sm:left-8" />
+      <span aria-hidden="true" className="pointer-events-none absolute right-4 top-16 h-2 w-2 border-r border-t border-slate-300 dark:border-white/20 sm:right-8 lg:right-20 xl:right-8" />
 
       <motion.div
         style={
@@ -60,30 +47,14 @@ export function SpatialSection({ id, index, children, className = '' }: SpatialS
                 rotateX,
                 z: translateZ,
                 y: translateY,
-                scale,
                 opacity,
                 transformStyle: 'preserve-3d',
-                transformOrigin: 'center center',
+                transformOrigin: 'center top',
               }
         }
       >
         {children}
       </motion.div>
-
-      <div className="pointer-events-none relative">
-        <span
-          aria-hidden="true"
-          className="absolute -bottom-6 -left-2 select-none font-mono text-[10px] text-slate-400/50 dark:text-white/15"
-        >
-          +
-        </span>
-        <span
-          aria-hidden="true"
-          className="absolute -bottom-6 -right-2 select-none font-mono text-[10px] text-slate-400/50 dark:text-white/15"
-        >
-          +
-        </span>
-      </div>
     </section>
   )
 }

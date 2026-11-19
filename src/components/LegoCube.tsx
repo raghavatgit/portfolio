@@ -1,85 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useTheme } from '@/context/ThemeContext'
-
-// Procedural Audio Synthesizer for Tactile Physics
-class SoundEngine {
-  private ctx: AudioContext | null = null
-  public enabled = true
-
-  private init() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-      if (AudioCtx) this.ctx = new AudioCtx()
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume()
-    }
-  }
-
-  playTick(freq = 1400) {
-    if (!this.enabled) return
-    try {
-      this.init()
-      if (!this.ctx) return
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.02)
-      gain.gain.setValueAtTime(0.04, this.ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.02)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start()
-      osc.stop(this.ctx.currentTime + 0.02)
-    } catch {}
-  }
-
-  playChime(noteIdx = 0) {
-    if (!this.enabled) return
-    try {
-      this.init()
-      if (!this.ctx) return
-      // Pentatonic harmony across 8 Lego pieces: C5, D5, E5, G5, A5, C6, D6, E6
-      const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51]
-      const freq = notes[noteIdx % notes.length]
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = 'triangle'
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
-      gain.gain.setValueAtTime(0.12, this.ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start()
-      osc.stop(this.ctx.currentTime + 0.35)
-    } catch {}
-  }
-
-  playExplode() {
-    if (!this.enabled) return
-    try {
-      this.init()
-      if (!this.ctx) return
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = 'sawtooth'
-      osc.frequency.setValueAtTime(800, this.ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.14)
-      gain.gain.setValueAtTime(0.1, this.ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.14)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start()
-      osc.stop(this.ctx.currentTime + 0.14)
-    } catch {}
-  }
-}
-
-const sfx = new SoundEngine()
+import { sfx } from '@/utils/sfx'
 
 // 8 Hyper-Vibrant Neon Cyber Colors for the 8 Lego Bricks
 const VIBRANT_BRICK_COLORS = [
@@ -98,6 +20,12 @@ export function LegoCube() {
   const isExplodedRef = useRef(false)
   const topTwistRef = useRef(0)
   const targetTopTwistRef = useRef(0)
+  const propagateRef = useRef<(idx: number) => void>(() => {})
+  const actionsRef = useRef<{ explode: () => void; twist: () => void; wave: () => void }>({
+    explode: () => {},
+    twist: () => {},
+    wave: () => {},
+  })
   const { colorScheme, theme } = useTheme()
   const colorSchemeRef = useRef(colorScheme)
   colorSchemeRef.current = colorScheme
@@ -448,6 +376,7 @@ export function LegoCube() {
           )
           hitGroup.userData.spinVelocity = 0.45
           sfx.playChime(idx)
+          propagateRef.current(idx)
         }
       } else {
         // Subtle background tick
@@ -458,21 +387,55 @@ export function LegoCube() {
     // Double-Click: Toggle CAD Exploded View
     const onDoubleClick = () => {
       isExplodedRef.current = !isExplodedRef.current
-      sfx.playExplode()
+      sfx.playExplode(isExplodedRef.current)
     }
 
     // Context Menu (Right Click): Twist Top Layer 90° with ratchet feel
     const onContextMenu = (e: MouseEvent) => {
       e.preventDefault()
       targetTopTwistRef.current += Math.PI / 2
-      sfx.playChime(4)
+      sfx.playSnap(1950)
     }
 
-    // Mouse Wheel: Dynamic Perspective Zoom
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      camera.position.z = THREE.MathUtils.clamp(camera.position.z + e.deltaY * 0.003, 3.2, 7.5)
-      camera.position.x = camera.position.z
+    // 3D wave propagation: impulse travels to bricks sharing a face (differ on exactly one axis)
+    const neighborsOf = (idx: number) => {
+      const a = brickGroups[idx].userData.basePos as THREE.Vector3
+      return brickGroups.filter((g, j) => {
+        if (j === idx) return false
+        const b = g.userData.basePos as THREE.Vector3
+        const diff = Number(Math.sign(a.x) !== Math.sign(b.x)) + Number(Math.sign(a.y) !== Math.sign(b.y)) + Number(Math.sign(a.z) !== Math.sign(b.z))
+        return diff === 1
+      })
+    }
+    const timers: number[] = []
+    const kick = (g: THREE.Group, s: number) => {
+      g.userData.elasticVelocity.add((g.userData.explodeDir as THREE.Vector3).clone().multiplyScalar(s))
+    }
+    propagateRef.current = (idx: number) => {
+      neighborsOf(idx).forEach((g) => timers.push(window.setTimeout(() => kick(g, 0.2), 38)))
+    }
+    actionsRef.current = {
+      explode: () => {
+        isExplodedRef.current = !isExplodedRef.current
+        sfx.playExplode(isExplodedRef.current)
+      },
+      twist: () => {
+        targetTopTwistRef.current += Math.PI / 2
+        sfx.playSnap(1950)
+      },
+      wave: () => {
+        // Ripple across the cube in Gray-code order so each step moves to a face neighbor
+        const order = [0, 1, 3, 2, 6, 7, 5, 4]
+        order.forEach((idx, step) => {
+          timers.push(
+            window.setTimeout(() => {
+              kick(brickGroups[idx], 0.34)
+              brickGroups[idx].userData.spinVelocity = 0.25
+              sfx.playChime(step)
+            }, step * 44)
+          )
+        })
+      },
     }
 
     const dom = renderer.domElement
@@ -482,7 +445,6 @@ export function LegoCube() {
     dom.addEventListener('click', onClick)
     dom.addEventListener('dblclick', onDoubleClick)
     dom.addEventListener('contextmenu', onContextMenu)
-    dom.addEventListener('wheel', onWheel, { passive: false })
 
     // Animation & Physics Engine Loop
     let frameId: number
@@ -587,11 +549,24 @@ export function LegoCube() {
           target.y += Math.sin(clockTime * 1.8 + idx * 0.7) * 0.035
         }
 
-        // Magnetic Proximity Lift & Emissive Flare on Hover
+        // Magnetic Proximity Lift & Emissive Flare on Hover, with sympathetic lift on face neighbors
+        const hoveredBase =
+          currentHoveredIdx !== null ? (brickGroups[currentHoveredIdx].userData.basePos as THREE.Vector3) : null
+        const isNeighbor =
+          hoveredBase !== null &&
+          currentHoveredIdx !== idx &&
+          Number(Math.sign(hoveredBase.x) !== Math.sign(base.x)) +
+            Number(Math.sign(hoveredBase.y) !== Math.sign(base.y)) +
+            Number(Math.sign(hoveredBase.z) !== Math.sign(base.z)) ===
+            1
         if (currentHoveredIdx === idx) {
           target.add(explodeDir.clone().multiplyScalar(0.42))
           group.scale.lerp(new THREE.Vector3(1.1, 1.1, 1.1), 0.22)
           mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, 0.55, 0.2)
+        } else if (isNeighbor) {
+          target.add(explodeDir.clone().multiplyScalar(0.12))
+          group.scale.lerp(new THREE.Vector3(1.03, 1.03, 1.03), 0.18)
+          mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, 0.24, 0.15)
         } else {
           group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.22)
           mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, 0.12, 0.1)
@@ -656,7 +631,7 @@ export function LegoCube() {
       dom.removeEventListener('click', onClick)
       dom.removeEventListener('dblclick', onDoubleClick)
       dom.removeEventListener('contextmenu', onContextMenu)
-      dom.removeEventListener('wheel', onWheel)
+      timers.forEach((t) => window.clearTimeout(t))
       renderer.dispose()
       boxGeo.dispose()
       studGeo.dispose()
@@ -691,18 +666,32 @@ export function LegoCube() {
       <div
         ref={mountRef}
         className="relative z-10 h-full w-full cursor-grab active:cursor-grabbing"
-        title="Click a piece to bounce · Drag to spin · Double-click to open up · Right-click to twist · Scroll to expand"
+        title="Click a piece to bounce · Drag to spin · Double-click to open up · Right-click to twist"
       />
 
-      {/* Clean Interaction Legend */}
-      <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 select-none items-center gap-3 whitespace-nowrap font-mono text-[11px] text-slate-500 dark:text-slate-400">
-        <span className="text-cyan-600 dark:text-cyan-300">Click piece</span>
-        <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Double-click</span>
-        <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Drag</span>
-        <span className="text-slate-300 dark:text-white/20">/</span>
-        <span>Scroll</span>
+      {/* Legend: each verb is a quiet text trigger, no boxes */}
+      <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 select-none items-center gap-3 whitespace-nowrap font-mono text-[11px] text-slate-500 dark:text-slate-400">
+        {(
+          [
+            ['Open', () => actionsRef.current.explode()],
+            ['Twist', () => actionsRef.current.twist()],
+            ['Wave', () => actionsRef.current.wave()],
+          ] as const
+        ).map(([label, run]) => (
+          <span key={label} className="flex items-center gap-3">
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={run}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), run())}
+              className="cursor-pointer border-b border-transparent pb-px transition-colors hover:border-cyan-500 hover:text-cyan-600 focus-visible:border-cyan-500 focus-visible:outline-none dark:hover:text-cyan-300"
+            >
+              {label}
+            </span>
+            <span className="text-slate-300 dark:text-white/20">/</span>
+          </span>
+        ))}
+        <span>Drag to orbit</span>
       </div>
     </div>
   )
